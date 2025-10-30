@@ -135,16 +135,16 @@ Searching for Curve Finance exploits on Ethereum.
 Found 3 results, but quality issues detected:
 
 1. **Euler Finance** - $8.2M
-   ⚠ Wrong protocol (not Curve)
-   ⚠ Missing transaction hash
+    Wrong protocol (not Curve)
+    Missing transaction hash
 
 2. **Mango Markets** - $1.5M
-   ⚠ Wrong chain (Solana, not Ethereum)
-   ⚠ Missing source attribution
+    Wrong chain (Solana, not Ethereum)
+    Missing source attribution
 
 3. **Wintermute** - $160M
-   ⚠ Wrong protocol
-   ⚠ Incomplete data
+    Wrong protocol
+    Incomplete data
 
 Quality issues detected:
 • Wrong protocols (expected Curve, got Euler/Mango/Wintermute)

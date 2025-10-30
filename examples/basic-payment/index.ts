@@ -35,7 +35,7 @@ async function main() {
       }
     });
 
-    console.log('✅ Payment successful!');
+    console.log(' Payment successful!');
     console.log(`   Transaction ID: ${payment.transactionId}`);
     console.log(`   Access Token: ${payment.token.substring(0, 32)}...`);
     console.log(`   Expires: ${new Date(payment.expiresAt).toLocaleString()}`);
@@ -52,26 +52,26 @@ async function main() {
       limit: 5
     });
 
-    console.log(`✅ Received ${exploits.length} recent exploits:`);
+    console.log(` Received ${exploits.length} recent exploits:`);
     exploits.forEach((exploit: any, i: number) => {
       console.log(`   ${i + 1}. ${exploit.protocol} - $${exploit.amount_usd.toLocaleString()}`);
     });
     console.log();
 
     console.log('='.repeat(70));
-    console.log('✅ Example complete!');
+    console.log(' Example complete!');
     console.log('='.repeat(70));
 
   } catch (error) {
     if (error instanceof X402Error) {
-      console.error('❌ x402 Error:');
+      console.error(' x402 Error:');
       console.error(`   Code: ${error.code}`);
       console.error(`   Message: ${error.message}`);
       if (error.statusCode) {
         console.error(`   Status: ${error.statusCode}`);
       }
     } else {
-      console.error('❌ Unexpected error:', error);
+      console.error(' Unexpected error:', error);
     }
     process.exit(1);
   }

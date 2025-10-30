@@ -10,12 +10,12 @@ x402Resolve extends HTTP 402 Payment Required with automated conflict resolution
 
 ## Features
 
-- ✅ **Escrow Payments** - Funds held until quality verified
-- ✅ **Automated Disputes** - File disputes programmatically
-- ✅ **Quality Scoring** - AI-powered data quality assessment
-- ✅ **Instant Refunds** - Partial/full refunds based on quality score
-- ✅ **Solana Native** - Built on Solana for speed and low cost
-- ✅ **TypeScript** - Full type safety
+-  **Escrow Payments** - Funds held until quality verified
+-  **Automated Disputes** - File disputes programmatically
+-  **Quality Scoring** - AI-powered data quality assessment
+-  **Instant Refunds** - Partial/full refunds based on quality score
+-  **Solana Native** - Built on Solana for speed and low cost
+-  **TypeScript** - Full type safety
 
 ## Installation
 

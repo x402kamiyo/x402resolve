@@ -67,7 +67,7 @@ let verifier_pubkey = ctx.accounts.verifier.key();
 msg!("Verifier: {}", verifier_pubkey);
 ```
 
-**Status:** ⚠️ PLACEHOLDER - Production requires full Ed25519 verification
+**Status:**  PLACEHOLDER - Production requires full Ed25519 verification
 
 **Required Implementation:**
 ```rust
@@ -262,10 +262,10 @@ headers = {
 
 ### Current Status
 
-- ❌ **Formal Security Audit:** Not yet conducted
-- ✅ **Internal Code Review:** Completed
-- ✅ **Dependency Scanning:** Automated via GitHub
-- ⚠️ **Penetration Testing:** Planned
+-  **Formal Security Audit:** Not yet conducted
+-  **Internal Code Review:** Completed
+-  **Dependency Scanning:** Automated via GitHub
+-  **Penetration Testing:** Planned
 
 ### Planned Audits
 
@@ -292,7 +292,7 @@ headers = {
 
 **Component:** Escrow Program
 **Severity:** Critical
-**Status:** ⚠️ Known Issue
+**Status:**  Known Issue
 
 **Description:**
 Current implementation logs verifier pubkey but doesn't verify Ed25519 signature on-chain.
@@ -307,7 +307,7 @@ Current implementation logs verifier pubkey but doesn't verify Ed25519 signature
 
 **Component:** Verifier Oracle
 **Severity:** High
-**Status:** ⚠️ Known Issue
+**Status:**  Known Issue
 
 **Description:**
 Generated keys used in development. Production requires secure key storage.

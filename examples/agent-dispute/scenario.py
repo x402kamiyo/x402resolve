@@ -70,7 +70,7 @@ async def main():
     print()
 
     # Step 1: Agent evaluates data
-    print("📊 Step 1: Agent evaluates received data")
+    print(" Step 1: Agent evaluates received data")
     print("-" * 70)
     print(f"Original Query: \"{ORIGINAL_QUERY}\"")
     print(f"Expected: {EXPECTED_RECORD_COUNT}+ Uniswap exploits on Ethereum")
@@ -78,7 +78,7 @@ async def main():
     print()
 
     # Analyze what was wrong
-    print("⚠️  Agent Analysis:")
+    print("  Agent Analysis:")
     print("   - Wrong protocols: Curve, Euler, Mango (NOT Uniswap!)")
     print("   - Wrong chains: Includes Solana (expected Ethereum only)")
     print("   - Incomplete: 3 exploits (expected 10+)")
@@ -110,13 +110,13 @@ async def main():
             )
 
             if response.status_code != 200:
-                print(f"❌ Verifier error: {response.text}")
+                print(f" Verifier error: {response.text}")
                 return
 
             result = response.json()
 
         except httpx.ConnectError:
-            print("❌ Error: Could not connect to x402 Verifier Oracle")
+            print(" Error: Could not connect to x402 Verifier Oracle")
             print("   Please start the verifier:")
             print("   $ cd packages/x402-verifier")
             print("   $ python verifier.py")
@@ -126,7 +126,7 @@ async def main():
 
     # Step 3: Display verification result
     print()
-    print("🔮 Step 3: x402 Verifier Oracle Assessment")
+    print(" Step 3: x402 Verifier Oracle Assessment")
     print("-" * 70)
     print(f"Quality Score: {result['quality_score']:.2f}/100")
     print(f"Reasoning: {result['reasoning']}")
@@ -148,7 +148,7 @@ async def main():
     print()
 
     # Step 5: Summary
-    print("✅ Step 5: Dispute Resolved")
+    print(" Step 5: Dispute Resolved")
     print("-" * 70)
     print(f"Resolution Time: {resolution_time:.2f} seconds")
     print(f"Human Intervention: ZERO")
@@ -171,7 +171,7 @@ async def main():
     print()
 
     print("=" * 70)
-    print("Demo complete! This is x402Resolve in action. 🚀")
+    print("Demo complete! This is x402Resolve in action. ")
     print("=" * 70)
 
 

@@ -38,12 +38,12 @@ const walletPath = path.join(walletDir, 'x402-devnet-wallet.json');
 fs.writeFileSync(walletPath, JSON.stringify(keypair));
 
 console.log('='.repeat(70));
-console.log('✅ Solana Devnet Wallet Created!');
+console.log(' Solana Devnet Wallet Created!');
 console.log('='.repeat(70));
 console.log('');
 console.log('📁 Keypair saved to:', walletPath);
 console.log('');
-console.log('⚠️  IMPORTANT: Keep this keypair SECRET!');
+console.log('  IMPORTANT: Keep this keypair SECRET!');
 console.log('   This file contains your private key.');
 console.log('   Do NOT commit to git (already in .gitignore)');
 console.log('');

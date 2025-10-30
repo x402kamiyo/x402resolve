@@ -4,7 +4,7 @@ Automated dispute resolution system for HTTP 402 payment-required APIs using Sol
 
 **Solana x402 Hackathon 2025 Submission**
 
-## 🚀 Live on Devnet
+##  Live on Devnet
 
 **Program ID:** `BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P`
 **Explorer:** [View on Solana Explorer](https://explorer.solana.com/address/BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P?cluster=devnet)

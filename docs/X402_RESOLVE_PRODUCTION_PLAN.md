@@ -1637,23 +1637,23 @@ slash_events = Counter(
 ## Success Metrics
 
 ### Technical Excellence
-- ✅ Byzantine fault tolerance (3+ verifiers required)
-- ✅ Sub-10 second consensus time (99th percentile)
-- ✅ 99.9% uptime (verifier node cluster)
-- ✅ Zero human intervention required
-- ✅ Slashing accuracy >95% (catches dishonest verifiers)
+-  Byzantine fault tolerance (3+ verifiers required)
+-  Sub-10 second consensus time (99th percentile)
+-  99.9% uptime (verifier node cluster)
+-  Zero human intervention required
+-  Slashing accuracy >95% (catches dishonest verifiers)
 
 ### Security
-- ✅ All attack vectors mitigated
-- ✅ Formal verification of escrow program (Soteria/Sec3)
-- ✅ External security audit (OtterSec/Neodyme)
-- ✅ Bug bounty program ($50K pool)
+-  All attack vectors mitigated
+-  Formal verification of escrow program (Soteria/Sec3)
+-  External security audit (OtterSec/Neodyme)
+-  Bug bounty program ($50K pool)
 
 ### Adoption
-- ✅ 10+ verifier nodes registered (decentralized)
-- ✅ 1,000+ disputes resolved (production load)
-- ✅ 3+ external APIs integrated (beyond KAMIYO)
-- ✅ Documentation + video tutorials (developer onboarding)
+-  10+ verifier nodes registered (decentralized)
+-  1,000+ disputes resolved (production load)
+-  3+ external APIs integrated (beyond KAMIYO)
+-  Documentation + video tutorials (developer onboarding)
 
 ---
 

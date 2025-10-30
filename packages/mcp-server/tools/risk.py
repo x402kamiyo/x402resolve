@@ -448,22 +448,22 @@ def _generate_recommendations(
 
         if any("flash loan" in cat for cat in categories):
             recommendations.append(
-                "⚠️ Flash loan attacks detected: Implement flash loan protection mechanisms"
+                " Flash loan attacks detected: Implement flash loan protection mechanisms"
             )
 
         if any("reentrancy" in cat for cat in categories):
             recommendations.append(
-                "⚠️ Reentrancy vulnerabilities found: Review and fix reentrancy guards"
+                " Reentrancy vulnerabilities found: Review and fix reentrancy guards"
             )
 
         if any("oracle" in cat for cat in categories):
             recommendations.append(
-                "⚠️ Oracle manipulation detected: Use multiple oracle sources and price sanity checks"
+                " Oracle manipulation detected: Use multiple oracle sources and price sanity checks"
             )
 
         if any("access control" in cat or "admin" in cat for cat in categories):
             recommendations.append(
-                "⚠️ Access control issues: Implement robust multi-sig and timelock mechanisms"
+                " Access control issues: Implement robust multi-sig and timelock mechanisms"
             )
 
     return recommendations
