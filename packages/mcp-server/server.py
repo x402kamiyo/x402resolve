@@ -3,8 +3,8 @@
 KAMIYO MCP Server
 Main MCP server implementation for crypto exploit intelligence
 
-This server wraps the existing KAMIYO API to provide AI agents
-(especially Claude Desktop) with real-time exploit intelligence.
+This server wraps the existing KAMIYO API to provide MCP-compatible
+applications with real-time exploit intelligence.
 """
 
 import sys
@@ -518,7 +518,7 @@ def main():
         type=str,
         choices=["stdio", "sse"],
         default="stdio",
-        help="MCP transport protocol (default: stdio for Claude Desktop)",
+        help="MCP transport protocol (default: stdio for MCP clients)",
     )
     parser.add_argument(
         "--host",
@@ -537,8 +537,8 @@ def main():
 
     try:
         if args.transport == "stdio":
-            # stdio transport for Claude Desktop
-            logger.info("Starting MCP server with stdio transport (Claude Desktop mode)")
+            # stdio transport for MCP clients
+            logger.info("Starting MCP server with stdio transport")
             mcp.run()
         else:
             # SSE transport for web-based agents
