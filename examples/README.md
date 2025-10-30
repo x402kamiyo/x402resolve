@@ -303,7 +303,7 @@ User gets notification when resolved
 - **Issues**: [GitHub Issues](https://github.com/x402kamiyo/x402resolve/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/x402kamiyo/x402resolve/discussions)
 - **Discord**: [Join Community]
-- **Email**: support@kamiyo.io
+- **Email**: support@kamiyo.ai
 
 ## Next Steps
 

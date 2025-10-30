@@ -142,7 +142,7 @@ See this demo in action in our 3-minute hackathon submission video:
 ## Contact
 
 - Project: [x402Resolve GitHub](https://github.com/x402kamiyo/x402resolve)
-- Website: [kamiyo.io](https://kamiyo.io)
+- Website: [kamiyo.ai](https://kamiyo.ai)
 - Discord: [Join our community]
 
 ---

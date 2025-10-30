@@ -31,7 +31,7 @@ npm install @kamiyo/x402-sdk
 import { KamiyoClient } from '@kamiyo/x402-sdk';
 
 const client = new KamiyoClient({
-  apiUrl: 'https://api.kamiyo.io',
+  apiUrl: 'https://api.kamiyo.ai',
   chain: 'solana',
   enablex402Resolve: false  // Disable escrow
 });
@@ -56,7 +56,7 @@ import { KamiyoClient } from '@kamiyo/x402-sdk';
 import { PublicKey } from '@solana/web3.js';
 
 const client = new KamiyoClient({
-  apiUrl: 'https://api.kamiyo.io',
+  apiUrl: 'https://api.kamiyo.ai',
   chain: 'solana',
   verifierUrl: 'http://localhost:8000',
   enablex402Resolve: true,  // Enable escrow + disputes

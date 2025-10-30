@@ -723,10 +723,10 @@ This project advances automated commerce by enabling trustless dispute resolutio
 - Docs: [Complete Documentation](./docs/)
 
 **Team**:
-- Website: [kamiyo.io](https://kamiyo.io)
+- Website: [kamiyo.ai](https://kamiyo.ai)
 - Twitter: [@KamiyoSecurity]
 - Discord: [Join Community]
-- Email: hello@kamiyo.io
+- Email: hello@kamiyo.ai
 
 **Judges**: Questions? Open a GitHub Discussion or reach out via Discord.
 
