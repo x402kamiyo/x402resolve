@@ -84,7 +84,7 @@ Client library for programmatic integration.
 import { KamiyoClient } from '@kamiyo/x402-sdk';
 
 const client = new KamiyoClient({
-  apiUrl: 'https://api.kamiyo.io',
+  apiUrl: 'https://api.kamiyo.ai',
   chain: 'solana',
   enablex402Resolve: true,
   walletPublicKey: wallet.publicKey
@@ -128,7 +128,7 @@ Model Context Protocol server for MCP-compatible applications.
       "command": "python3.11",
       "args": ["/path/to/packages/mcp-server/server.py"],
       "env": {
-        "KAMIYO_API_URL": "https://api.kamiyo.io",
+        "KAMIYO_API_URL": "https://api.kamiyo.ai",
         "X402_VERIFIER_URL": "https://verifier.x402resolve.com",
         "SOLANA_RPC_URL": "https://api.mainnet-beta.solana.com"
       }
@@ -341,6 +341,6 @@ MIT
 - GitHub: [github.com/x402kamiyo/x402resolve](https://github.com/x402kamiyo/x402resolve)
 - Documentation: [Complete Technical Docs](./docs/)
 - Demo: [Interactive Demo](./demo/index.html)
-- Website: [kamiyo.io](https://kamiyo.io)
+- Website: [kamiyo.ai](https://kamiyo.ai)
 
 Built for Solana x402 Hackathon 2025.

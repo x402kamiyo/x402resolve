@@ -611,7 +611,7 @@ const payment = await client.pay({
 });
 
 // Use payment token to fetch data
-const response = await fetch('https://api.kamiyo.io/v1/exploits', {
+const response = await fetch('https://api.kamiyo.ai/v1/exploits', {
   headers: {
     'Authorization': `Bearer ${payment.accessToken}`
   }
@@ -654,7 +654,7 @@ if (dataQualityIsPoor(data)) {
         "/path/to/kamiyo-x402-solana/packages/mcp-server/server.py"
       ],
       "env": {
-        "KAMIYO_API_URL": "https://api.kamiyo.io",
+        "KAMIYO_API_URL": "https://api.kamiyo.ai",
         "X402_VERIFIER_URL": "https://verifier.x402resolve.com",
         "SOLANA_RPC_URL": "https://api.mainnet-beta.solana.com"
       }
@@ -747,10 +747,10 @@ python server.py
 
 ## Support
 
-- **Documentation**: [docs.kamiyo.io](https://docs.kamiyo.io)
+- **Documentation**: [docs.kamiyo.ai](https://docs.kamiyo.ai)
 - **GitHub**: [github.com/x402kamiyo/x402resolve](https://github.com/x402kamiyo/x402resolve)
 - **Discord**: [Join Community]
-- **Email**: support@kamiyo.io
+- **Email**: support@kamiyo.ai
 
 ---
 

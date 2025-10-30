@@ -219,7 +219,7 @@ import { KamiyoClient } from '@kamiyo/x402-sdk';
 import { Connection, PublicKey } from '@solana/web3.js';
 
 const client = new KamiyoClient({
-  apiUrl: 'https://api.kamiyo.io',
+  apiUrl: 'https://api.kamiyo.ai',
   chain: 'solana',
   enablex402Resolve: true,
   walletPublicKey: agentWallet.publicKey,
