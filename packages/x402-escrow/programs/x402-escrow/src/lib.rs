@@ -1,7 +1,55 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::{
+    ed25519_program,
+    sysvar::instructions::{load_instruction_at_checked, ID as INSTRUCTIONS_ID},
+};
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
-declare_id!("X402Esc11111111111111111111111111111111111");
+declare_id!("BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P");
+
+// Validation constants
+const MIN_TIME_LOCK: i64 = 3600;                    // 1 hour
+const MAX_TIME_LOCK: i64 = 2_592_000;               // 30 days
+const MAX_ESCROW_AMOUNT: u64 = 1_000_000_000_000;   // 1000 SOL
+const MIN_ESCROW_AMOUNT: u64 = 1_000_000;           // 0.001 SOL
+
+#[event]
+pub struct EscrowInitialized {
+    pub escrow: Pubkey,
+    pub agent: Pubkey,
+    pub api: Pubkey,
+    pub amount: u64,
+    pub expires_at: i64,
+    pub transaction_id: String,
+}
+
+#[event]
+pub struct DisputeMarked {
+    pub escrow: Pubkey,
+    pub agent: Pubkey,
+    pub transaction_id: String,
+    pub timestamp: i64,
+}
+
+#[event]
+pub struct DisputeResolved {
+    pub escrow: Pubkey,
+    pub transaction_id: String,
+    pub quality_score: u8,
+    pub refund_percentage: u8,
+    pub refund_amount: u64,
+    pub payment_amount: u64,
+    pub verifier: Pubkey,
+}
+
+#[event]
+pub struct FundsReleased {
+    pub escrow: Pubkey,
+    pub transaction_id: String,
+    pub amount: u64,
+    pub api: Pubkey,
+    pub timestamp: i64,
+}
 
 /// x402Resolve Escrow Program
 ///
@@ -10,6 +58,80 @@ declare_id!("X402Esc11111111111111111111111111111111111");
 #[program]
 pub mod x402_escrow {
     use super::*;
+
+    /// Verify Ed25519 signature instruction
+    ///
+    /// Checks that an Ed25519 signature verification instruction exists in the transaction
+    /// and validates the signature against the expected message format
+    fn verify_ed25519_signature(
+        instructions_sysvar: &AccountInfo,
+        signature: &[u8; 64],
+        verifier_pubkey: &Pubkey,
+        message: &[u8],
+    ) -> Result<()> {
+        // Load the Ed25519 instruction from the sysvar
+        // Expected to be at index 0 (before the current instruction)
+        let ix = load_instruction_at_checked(0, instructions_sysvar)
+            .map_err(|_| error!(EscrowError::InvalidSignature))?;
+
+        // Verify it's the Ed25519 program
+        require!(
+            ix.program_id == ed25519_program::ID,
+            EscrowError::InvalidSignature
+        );
+
+        // Ed25519 instruction data layout:
+        // [0]: num_signatures (should be 1)
+        // [1]: padding
+        // [2..4]: signature_offset (u16)
+        // [4..6]: signature_instruction_index (u16)
+        // [6..8]: public_key_offset (u16)
+        // [8..10]: public_key_instruction_index (u16)
+        // [10..12]: message_data_offset (u16)
+        // [12..14]: message_data_size (u16)
+        // [14..16]: message_instruction_index (u16)
+        // [16..]: data (signature + pubkey + message)
+
+        require!(
+            ix.data.len() >= 16,
+            EscrowError::InvalidSignature
+        );
+
+        // Verify we have exactly 1 signature
+        require!(
+            ix.data[0] == 1,
+            EscrowError::InvalidSignature
+        );
+
+        // Parse offsets
+        let sig_offset = u16::from_le_bytes([ix.data[2], ix.data[3]]) as usize;
+        let pubkey_offset = u16::from_le_bytes([ix.data[6], ix.data[7]]) as usize;
+        let message_offset = u16::from_le_bytes([ix.data[10], ix.data[11]]) as usize;
+        let message_size = u16::from_le_bytes([ix.data[12], ix.data[13]]) as usize;
+
+        // Verify signature matches
+        let ix_signature = &ix.data[sig_offset..sig_offset + 64];
+        require!(
+            ix_signature == signature,
+            EscrowError::InvalidSignature
+        );
+
+        // Verify public key matches
+        let ix_pubkey = &ix.data[pubkey_offset..pubkey_offset + 32];
+        require!(
+            ix_pubkey == verifier_pubkey.as_ref(),
+            EscrowError::InvalidSignature
+        );
+
+        // Verify message matches
+        let ix_message = &ix.data[message_offset..message_offset + message_size];
+        require!(
+            ix_message == message,
+            EscrowError::InvalidSignature
+        );
+
+        Ok(())
+    }
 
     /// Initialize a new escrow for agent-to-API payment
     ///
@@ -23,17 +145,38 @@ pub mod x402_escrow {
         time_lock: i64,
         transaction_id: String,
     ) -> Result<()> {
-        let escrow = &mut ctx.accounts.escrow;
+        // Validate inputs
+        require!(
+            amount >= MIN_ESCROW_AMOUNT,
+            EscrowError::InvalidAmount
+        );
+        require!(
+            amount <= MAX_ESCROW_AMOUNT,
+            EscrowError::AmountTooLarge
+        );
+        require!(
+            time_lock >= MIN_TIME_LOCK && time_lock <= MAX_TIME_LOCK,
+            EscrowError::InvalidTimeLock
+        );
+        require!(
+            !transaction_id.is_empty() && transaction_id.len() <= 64,
+            EscrowError::InvalidTransactionId
+        );
+
         let clock = Clock::get()?;
 
-        escrow.agent = ctx.accounts.agent.key();
-        escrow.api = ctx.accounts.api.key();
-        escrow.amount = amount;
-        escrow.status = EscrowStatus::Active;
-        escrow.created_at = clock.unix_timestamp;
-        escrow.expires_at = clock.unix_timestamp + time_lock;
-        escrow.transaction_id = transaction_id;
-        escrow.bump = ctx.bumps.escrow;
+        // Initialize escrow state
+        {
+            let escrow = &mut ctx.accounts.escrow;
+            escrow.agent = ctx.accounts.agent.key();
+            escrow.api = ctx.accounts.api.key();
+            escrow.amount = amount;
+            escrow.status = EscrowStatus::Active;
+            escrow.created_at = clock.unix_timestamp;
+            escrow.expires_at = clock.unix_timestamp + time_lock;
+            escrow.transaction_id = transaction_id.clone();
+            escrow.bump = ctx.bumps.escrow;
+        }
 
         // Transfer SOL to escrow PDA
         let cpi_context = CpiContext::new(
@@ -45,8 +188,19 @@ pub mod x402_escrow {
         );
         anchor_lang::system_program::transfer(cpi_context, amount)?;
 
+        let expires_at = clock.unix_timestamp + time_lock;
         msg!("Escrow initialized: {} SOL locked", amount as f64 / 1_000_000_000.0);
-        msg!("Expires at: {}", escrow.expires_at);
+        msg!("Expires at: {}", expires_at);
+
+        let escrow = &ctx.accounts.escrow;
+        emit!(EscrowInitialized {
+            escrow: escrow.key(),
+            agent: escrow.agent,
+            api: escrow.api,
+            amount: escrow.amount,
+            expires_at: escrow.expires_at,
+            transaction_id: transaction_id,
+        });
 
         Ok(())
     }
@@ -66,16 +220,26 @@ pub mod x402_escrow {
         );
 
         // Check if caller is agent OR time_lock expired
-        let can_release = ctx.accounts.agent.key() == escrow.agent
-            || clock.unix_timestamp >= escrow.expires_at;
+        let is_agent = ctx.accounts.agent.key() == escrow.agent;
+        let time_lock_expired = clock.unix_timestamp >= escrow.expires_at;
 
-        require!(can_release, EscrowError::Unauthorized);
+        // If not agent, time lock must have expired
+        if !is_agent {
+            require!(time_lock_expired, EscrowError::TimeLockNotExpired);
+        }
+
+        require!(is_agent || time_lock_expired, EscrowError::Unauthorized);
+
+        // Copy values before PDA signing
+        let transfer_amount = escrow.amount;
+        let transaction_id = escrow.transaction_id.clone();
+        let bump = escrow.bump;
 
         // Transfer full amount to API
         let seeds = &[
             b"escrow",
-            escrow.transaction_id.as_bytes(),
-            &[escrow.bump],
+            transaction_id.as_bytes(),
+            &[bump],
         ];
         let signer = &[&seeds[..]];
 
@@ -87,11 +251,21 @@ pub mod x402_escrow {
             },
             signer,
         );
-        anchor_lang::system_program::transfer(cpi_context, escrow.amount)?;
+        anchor_lang::system_program::transfer(cpi_context, transfer_amount)?;
 
+        let escrow = &mut ctx.accounts.escrow;
         escrow.status = EscrowStatus::Released;
 
         msg!("Funds released to API: {} SOL", escrow.amount as f64 / 1_000_000_000.0);
+
+        let clock = Clock::get()?;
+        emit!(FundsReleased {
+            escrow: escrow.key(),
+            transaction_id: escrow.transaction_id.clone(),
+            amount: escrow.amount,
+            api: escrow.api,
+            timestamp: clock.unix_timestamp,
+        });
 
         Ok(())
     }
@@ -126,13 +300,15 @@ pub mod x402_escrow {
         let message = format!("{}:{}", escrow.transaction_id, quality_score);
         let message_bytes = message.as_bytes();
 
-        // Verify signature with verifier public key
-        // NOTE: In production, store verifier public key in program state
-        let verifier_pubkey = ctx.accounts.verifier.key();
+        // Verify Ed25519 signature from the instructions sysvar
+        verify_ed25519_signature(
+            &ctx.accounts.instructions_sysvar,
+            &signature,
+            ctx.accounts.verifier.key,
+            message_bytes,
+        )?;
 
-        // Simplified signature verification (in production, use ed25519_dalek)
-        // For now, we trust that the signature was validated off-chain
-        msg!("Verifier: {}", verifier_pubkey);
+        msg!("Verifier: {}", ctx.accounts.verifier.key());
         msg!("Quality Score: {}", quality_score);
         msg!("Refund: {}%", refund_percentage);
 
@@ -148,12 +324,16 @@ pub mod x402_escrow {
         msg!("Refund to Agent: {} SOL", refund_amount as f64 / 1_000_000_000.0);
         msg!("Payment to API: {} SOL", payment_amount as f64 / 1_000_000_000.0);
 
+        // Copy values needed for PDA signing
+        let transaction_id = escrow.transaction_id.clone();
+        let bump = escrow.bump;
+
         // Transfer refund to agent
         if refund_amount > 0 {
             let seeds = &[
                 b"escrow",
-                escrow.transaction_id.as_bytes(),
-                &[escrow.bump],
+                transaction_id.as_bytes(),
+                &[bump],
             ];
             let signer = &[&seeds[..]];
 
@@ -172,8 +352,8 @@ pub mod x402_escrow {
         if payment_amount > 0 {
             let seeds = &[
                 b"escrow",
-                escrow.transaction_id.as_bytes(),
-                &[escrow.bump],
+                transaction_id.as_bytes(),
+                &[bump],
             ];
             let signer = &[&seeds[..]];
 
@@ -188,11 +368,22 @@ pub mod x402_escrow {
             anchor_lang::system_program::transfer(cpi_context, payment_amount)?;
         }
 
+        let escrow = &mut ctx.accounts.escrow;
         escrow.status = EscrowStatus::Resolved;
         escrow.quality_score = Some(quality_score);
         escrow.refund_percentage = Some(refund_percentage);
 
         msg!("Dispute resolved!");
+
+        emit!(DisputeResolved {
+            escrow: escrow.key(),
+            transaction_id: escrow.transaction_id.clone(),
+            quality_score,
+            refund_percentage,
+            refund_amount,
+            payment_amount,
+            verifier: ctx.accounts.verifier.key(),
+        });
 
         Ok(())
     }
@@ -211,9 +402,23 @@ pub mod x402_escrow {
             EscrowError::Unauthorized
         );
 
+        // Check if dispute window is still open (before time lock expires)
+        let clock = Clock::get()?;
+        require!(
+            clock.unix_timestamp < escrow.expires_at,
+            EscrowError::DisputeWindowExpired
+        );
+
         escrow.status = EscrowStatus::Disputed;
 
         msg!("Escrow marked as disputed");
+
+        emit!(DisputeMarked {
+            escrow: escrow.key(),
+            agent: escrow.agent,
+            transaction_id: escrow.transaction_id.clone(),
+            timestamp: clock.unix_timestamp,
+        });
 
         Ok(())
     }
@@ -282,6 +487,10 @@ pub struct ResolveDispute<'info> {
     /// CHECK: Verifier oracle public key
     pub verifier: AccountInfo<'info>,
 
+    /// CHECK: Instructions sysvar for Ed25519 signature verification
+    #[account(address = INSTRUCTIONS_ID)]
+    pub instructions_sysvar: AccountInfo<'info>,
+
     pub system_program: Program<'info, System>,
 }
 
@@ -345,4 +554,22 @@ pub enum EscrowError {
 
     #[msg("Invalid verifier signature")]
     InvalidSignature,
+
+    #[msg("Invalid time lock: must be between 1 hour and 30 days")]
+    InvalidTimeLock,
+
+    #[msg("Invalid amount: must be greater than 0")]
+    InvalidAmount,
+
+    #[msg("Invalid transaction ID: must be non-empty and max 64 chars")]
+    InvalidTransactionId,
+
+    #[msg("Time lock not expired: cannot release funds yet")]
+    TimeLockNotExpired,
+
+    #[msg("Dispute window expired: cannot dispute after time lock")]
+    DisputeWindowExpired,
+
+    #[msg("Amount too large: exceeds maximum escrow amount")]
+    AmountTooLarge,
 }

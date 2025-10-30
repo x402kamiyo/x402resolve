@@ -371,6 +371,29 @@ describe("x402-escrow", () => {
         expect(err.toString()).to.include("InvalidRefundPercentage");
       }
     });
+
+    it("accepts valid oracle signature format", async () => {
+      const qualityScore = 75;
+      const refundPercentage = 25;
+      const signature = new Array(64).fill(0);
+
+      const agentBalanceBefore = await provider.connection.getBalance(agent.publicKey);
+      const apiBalanceBefore = await provider.connection.getBalance(api.publicKey);
+
+      await program.methods
+        .resolveDispute(qualityScore, refundPercentage, signature)
+        .accounts({
+          escrow: escrowPda,
+          agent: agent.publicKey,
+          api: api.publicKey,
+          verifier: verifier.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+
+      const escrowAccount = await program.account.escrow.fetch(escrowPda);
+      expect(escrowAccount.status).to.deep.equal({ resolved: {} });
+    });
   });
 
   describe("release_funds", () => {

@@ -4,6 +4,13 @@ Automated dispute resolution system for HTTP 402 payment-required APIs using Sol
 
 **Solana x402 Hackathon 2025 Submission**
 
+## 🚀 Live on Devnet
+
+**Program ID:** `BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P`
+**Explorer:** [View on Solana Explorer](https://explorer.solana.com/address/BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P?cluster=devnet)
+**Network:** Solana Devnet
+**Deployed:** October 30, 2025
+
 ## Overview
 
 Standard x402 payments are irreversible. When data quality doesn't meet expectations, there's no programmatic way to dispute or get refunds. Traditional chargebacks require manual intervention and take weeks to resolve.
