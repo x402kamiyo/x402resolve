@@ -13,13 +13,13 @@ Use this when:
 ## How It Works
 
 ```
-Agent → Pay 0.01 SOL → Escrow (Time-Locked 24h)
+Client → Pay 0.01 SOL → Escrow (Time-Locked 24h)
         ↓
     Get Access Token
         ↓
     Query API → Receive Data
         ↓
-    Evaluate Quality ← AI Assessment
+    Evaluate Quality
         ↓
     ┌─────────────┴─────────────┐
     │                           │
@@ -33,12 +33,12 @@ after 24h                      ↓
     │                          ↓
     │                   Quality Score: 45/100
     │                          ↓
-    │                   Refund: 75% ($0.0075 SOL)
-    │                   API Gets: 25% ($0.0025 SOL)
+    │                   Refund: 75% (0.0075 SOL)
+    │                   API Gets: 25% (0.0025 SOL)
     │                          ↓
     └───────────────┬───────────┘
                     │
-            ✅ Resolution Complete
+            Resolution Complete
 ```
 
 ## Run
@@ -61,50 +61,50 @@ ts-node index.ts
 
 ```
 ======================================================================
-🛡️  x402Resolve: Payment with Dispute Protection
+x402Resolve: Payment with Dispute Protection
 ======================================================================
 
-1️⃣  Creating escrow payment...
+1. Creating escrow payment...
 ----------------------------------------------------------------------
-✅ Escrow created!
+Escrow created
    Escrow Address: Escrow1x402PDAAccount...
    Amount: 0.01 SOL
    Dispute Window: 24 hours
    Solana TX: 5KQx7zY...
 
-2️⃣  Requesting data from API...
+2. Requesting data from API...
 ----------------------------------------------------------------------
-✅ Data received!
+Data received
    Exploits: 3 results
    Query: "Uniswap V3 exploits on Ethereum"
 
    Results:
-   1. Curve Finance - $61.7M (WRONG PROTOCOL!)
-   2. Euler Finance - $8.2M (WRONG PROTOCOL!)
-   3. Mango Markets - $1.5M (WRONG CHAIN!)
+   1. Curve Finance - $61.7M (WRONG PROTOCOL)
+   2. Euler Finance - $8.2M (WRONG PROTOCOL)
+   3. Mango Markets - $1.5M (WRONG CHAIN)
 
-3️⃣  Evaluating data quality...
+3. Evaluating data quality...
 ----------------------------------------------------------------------
-❌ Quality issues detected:
+Quality issues detected:
    • Wrong protocols (expected Uniswap, got Curve/Euler/Mango)
    • Wrong blockchain (expected Ethereum, got Solana)
    • Incomplete (3 vs 10+ expected)
 
-4️⃣  Filing dispute...
+4. Filing dispute...
 ----------------------------------------------------------------------
-✅ Dispute filed!
+Dispute filed
    Dispute ID: dispute_x402_xyz789
    Status: pending_verification
    Verifier Oracle: https://verifier.x402resolve.com
 
-5️⃣  Waiting for quality verification... (simulated)
+5. Waiting for quality verification... (simulated)
 ----------------------------------------------------------------------
-⏳ x402 Verifier analyzing data...
+x402 Verifier analyzing data...
    Checking semantic coherence...
    Validating completeness...
    Assessing freshness...
 
-✅ Quality verification complete!
+Quality verification complete
 
    Quality Score: 45/100
    ├─ Semantic Coherence: 60% (protocols don't match query)
@@ -113,40 +113,39 @@ ts-node index.ts
 
    Overall: POOR QUALITY
 
-6️⃣  Processing refund...
+6. Processing refund...
 ----------------------------------------------------------------------
-✅ Refund processed!
+Refund processed
 
    Quality Score: 45/100
    Refund Percentage: 75%
 
    Breakdown:
-   • Agent refund: 0.0075 SOL (75%)
+   • Client refund: 0.0075 SOL (75%)
    • API payment: 0.0025 SOL (25%)
 
    Solana TX: 7LPz4kQ9...
 
 ======================================================================
-✅ Dispute Resolved!
+Dispute Resolved
 ======================================================================
 
 Summary:
   • Original payment: 0.01 SOL
   • Quality score: 45/100 (poor)
-  • Refund to agent: 0.0075 SOL (75%)
+  • Refund to client: 0.0075 SOL (75%)
   • Payment to API: 0.0025 SOL (25%)
   • Resolution time: 2 seconds
   • Human intervention: ZERO
 
 Key Benefits:
-  ✅ Automated quality verification
-  ✅ Fair refund based on objective score
-  ✅ Fast resolution (24-48h in production)
-  ✅ All transactions on Solana blockchain
-  ✅ No manual dispute process needed
+  - Automated quality verification
+  - Fair refund based on objective score
+  - Fast resolution (24-48h in production)
+  - All transactions on Solana blockchain
+  - No manual dispute process needed
 
-Next: Try mcp-integration example to see how Claude Desktop
-      can file disputes automatically!
+Next: Try mcp-integration example for programmatic dispute filing
 ```
 
 ## Code Walkthrough
@@ -224,7 +223,7 @@ const resolved = await client.monitorDispute(dispute.disputeId);
 ## Key Features Demonstrated
 
 1. **Time-Locked Escrow**: Funds held in PDA for 24-48h
-2. **Quality Evaluation**: Multi-factor AI scoring
+2. **Quality Evaluation**: Multi-factor scoring
 3. **Automated Refunds**: 0-100% sliding scale
 4. **On-Chain Execution**: All on Solana blockchain
 5. **Event-Driven**: Real-time status updates
@@ -258,8 +257,8 @@ else:
 |---------|---------------|--------------|
 | Payment Method | Direct transfer | Escrowed |
 | Release Time | Instant | 24-48h time-lock |
-| Quality Check | None | AI-powered |
-| Refund Support | ❌ No | ✅ Yes (0-100%) |
+| Quality Check | None | Automated |
+| Refund Support | No | Yes (0-100%) |
 | Dispute Process | N/A | Automated |
 | Human Review | N/A | None needed |
 | Use Case | Trusted APIs | Any API |

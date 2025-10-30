@@ -1,11 +1,11 @@
 # MCP Integration Example
 
-Demonstrates how Claude Desktop uses the KAMIYO MCP server to automatically file disputes for poor data quality.
+Demonstrates how MCP-compatible applications use the KAMIYO MCP server to automatically file disputes for poor data quality.
 
 ## Use Case
 
 Use this when:
-- You're an AI agent (like Claude Desktop)
+- You're building a programmatic integration
 - You need crypto exploit intelligence
 - You want automated quality verification
 - You want to file disputes programmatically via MCP
@@ -13,13 +13,13 @@ Use this when:
 ## How It Works
 
 ```
-User → Ask Claude for exploit data
+User → Request exploit data
         ↓
-Claude → Use search_crypto_exploits MCP tool
+App → Use search_crypto_exploits MCP tool
         ↓
 KAMIYO API → Return data
         ↓
-Claude → Evaluate quality automatically
+App → Evaluate quality automatically
         ↓
     ┌─────────────┴─────────────┐
     │                           │
@@ -39,9 +39,9 @@ to user                        ↓
 
 ## Setup
 
-### 1. Configure Claude Desktop
+### 1. Configure MCP-Compatible Application
 
-Create or edit `~/.config/claude/mcp_config.json`:
+Example configuration for MCP client:
 
 ```json
 {
@@ -86,9 +86,9 @@ cd ../../packages/mcp-server
 python server.py --help
 ```
 
-### 4. Restart Claude Desktop
+### 4. Restart MCP Client
 
-After configuring MCP, restart Claude Desktop to load the server.
+After configuring MCP, restart your MCP-compatible application to load the server.
 
 ## Example Interaction
 
@@ -98,12 +98,12 @@ After configuring MCP, restart Claude Desktop to load the server.
 User:
 Search for Uniswap V3 exploits on Ethereum
 
-Claude:
-I'll search for Uniswap V3 exploits on Ethereum using the KAMIYO security database.
+Application:
+Searching for Uniswap V3 exploits on Ethereum using the KAMIYO security database.
 
 [Uses search_crypto_exploits MCP tool]
 
-I found 8 Uniswap V3 exploits on Ethereum:
+Found 8 Uniswap V3 exploits on Ethereum:
 
 1. **Uniswap V3 Reentrancy** (2024-03-15)
    - Amount: $1,200,000
@@ -118,7 +118,7 @@ I found 8 Uniswap V3 exploits on Ethereum:
 [... 6 more exploits]
 
 All results have complete blockchain verification and source attribution.
-Quality assessment: HIGH ✅
+Quality assessment: HIGH
 ```
 
 ### Scenario 2: Poor Quality Data → Automatic Dispute
@@ -127,24 +127,24 @@ Quality assessment: HIGH ✅
 User:
 Search for Curve Finance exploits on Ethereum, I need comprehensive data
 
-Claude:
-I'll search for Curve Finance exploits on Ethereum.
+Application:
+Searching for Curve Finance exploits on Ethereum.
 
 [Uses search_crypto_exploits MCP tool]
 
-I found 3 results, but I notice some quality issues:
+Found 3 results, but quality issues detected:
 
 1. **Euler Finance** - $8.2M
-   ⚠️ Wrong protocol (not Curve)
-   ⚠️ Missing transaction hash
+   ⚠ Wrong protocol (not Curve)
+   ⚠ Missing transaction hash
 
 2. **Mango Markets** - $1.5M
-   ⚠️ Wrong chain (Solana, not Ethereum)
-   ⚠️ Missing source attribution
+   ⚠ Wrong chain (Solana, not Ethereum)
+   ⚠ Missing source attribution
 
 3. **Wintermute** - $160M
-   ⚠️ Wrong protocol
-   ⚠️ Incomplete data
+   ⚠ Wrong protocol
+   ⚠ Incomplete data
 
 Quality issues detected:
 • Wrong protocols (expected Curve, got Euler/Mango/Wintermute)
@@ -152,11 +152,11 @@ Quality issues detected:
 • Missing required fields (tx_hash, source)
 • Incomplete dataset (3 vs 10+ expected)
 
-Let me file a dispute for poor data quality...
+Filing dispute for poor data quality...
 
 [Uses file_dispute MCP tool]
 
-✅ Dispute filed successfully!
+Dispute filed successfully
 
 Dispute ID: dispute_x402_xyz789
 Status: Pending verification
@@ -167,11 +167,11 @@ x402 Verifier Oracle will analyze the data quality using:
 • Completeness (40%): Are transaction hashes and sources present?
 • Freshness (20%): Is the data recent?
 
-Based on the issues I identified, I estimate you'll receive a 75% refund
+Based on the issues identified, estimated 75% refund
 (approximately $7.50 of your $10.00 payment) once the quality score is
 calculated.
 
-I'll notify you when the dispute is resolved.
+Will notify when the dispute is resolved.
 ```
 
 ### Scenario 3: Dispute Resolution
@@ -180,12 +180,12 @@ I'll notify you when the dispute is resolved.
 User:
 What's the status of my dispute?
 
-Claude:
-Let me check the status of your dispute (dispute_x402_xyz789)...
+Application:
+Checking the status of your dispute (dispute_x402_xyz789)...
 
-[Uses search or monitoring capability]
+[Uses monitoring capability]
 
-✅ Dispute resolved!
+Dispute resolved
 
 Quality Assessment:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -201,7 +201,7 @@ Breakdown:
   └─ Missing source: 2/3 records
 
 • Freshness: 100%
-  └─ All data within 30 days ✓
+  └─ All data within 30 days
 
 Refund Details:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -227,13 +227,13 @@ Check MCP server status.
 ```
 User: Check KAMIYO server health
 
-Claude: [Uses health_check tool]
+Application: [Uses health_check tool]
 
-✅ KAMIYO MCP Server - Healthy
+KAMIYO MCP Server - Healthy
   Version: 1.0.0
   Uptime: 3,600 seconds (1 hour)
-  API Connection: Connected ✓
-  Database: Connected ✓
+  API Connection: Connected
+  Database: Connected
   Environment: Development
 ```
 
@@ -244,7 +244,7 @@ Search exploit database with tier-based limits.
 ```
 User: Search for flash loan attacks in 2024
 
-Claude: [Uses search_crypto_exploits with parameters]
+Application: [Uses search_crypto_exploits with parameters]
 ```
 
 ### 3. `assess_defi_protocol_risk`
@@ -254,7 +254,7 @@ Assess protocol security based on exploit history.
 ```
 User: How risky is Aave right now?
 
-Claude: [Uses assess_defi_protocol_risk tool]
+Application: [Uses assess_defi_protocol_risk tool]
 ```
 
 ### 4. `monitor_wallet`
@@ -264,22 +264,22 @@ Check if wallet interacted with exploited protocols (Team+ tier).
 ```
 User: Check if wallet 0x742d... has any exploit exposure
 
-Claude: [Uses monitor_wallet tool]
+Application: [Uses monitor_wallet tool]
 ```
 
-### 5. `file_dispute` ✨ NEW
+### 5. `file_dispute` (NEW)
 
 File quality dispute with automated resolution.
 
 ```
 User: [Implicitly triggered when quality is poor]
 
-Claude: [Automatically uses file_dispute tool when data quality issues detected]
+Application: [Automatically uses file_dispute tool when data quality issues detected]
 ```
 
 ## Expected Output
 
-When you use Claude Desktop with the KAMIYO MCP server, you'll see:
+When you use an MCP-compatible application with the KAMIYO MCP server:
 
 1. **MCP Server Logs** (in terminal):
 ```
@@ -291,30 +291,30 @@ When you use Claude Desktop with the KAMIYO MCP server, you'll see:
 [INFO] Tool invoked: file_dispute (quality score: 45)
 ```
 
-2. **Claude Desktop Interface**:
-- Claude will show MCP tool usage in the UI
-- You'll see real-time tool invocations
-- Results are presented naturally in conversation
+2. **Application Interface**:
+- Application shows MCP tool usage in the UI
+- Real-time tool invocations displayed
+- Results presented naturally in conversation
 
 ## Testing
 
 ### Test 1: Basic Search (No Dispute)
 
 ```bash
-# In Claude Desktop:
+# In MCP-compatible application:
 User: "Search for recent Ethereum exploits"
 ```
 
-Expected: Claude uses `search_crypto_exploits` and returns results.
+Expected: Application uses `search_crypto_exploits` and returns results.
 
 ### Test 2: Automatic Dispute
 
 ```bash
-# In Claude Desktop:
+# In MCP-compatible application:
 User: "Search for Uniswap exploits, I need high-quality data"
 ```
 
-If data quality is poor, Claude should automatically:
+If data quality is poor, application should automatically:
 1. Detect quality issues
 2. Explain the problems
 3. File dispute using `file_dispute` tool
@@ -323,26 +323,26 @@ If data quality is poor, Claude should automatically:
 ### Test 3: Health Check
 
 ```bash
-# In Claude Desktop:
+# In MCP-compatible application:
 User: "Check if the KAMIYO MCP server is working"
 ```
 
-Expected: Claude uses `health_check` and reports status.
+Expected: Application uses `health_check` and reports status.
 
 ## Key Benefits
 
-✅ **Automated Quality Control**: Claude detects poor data automatically
-✅ **No Manual Disputes**: Dispute filing is programmatic via MCP
-✅ **Transparent Scoring**: Multi-factor AI quality assessment
-✅ **Fair Refunds**: 0-100% sliding scale based on objective scores
-✅ **Fast Resolution**: 24-48h automated processing
-✅ **Blockchain Verified**: All transactions on Solana
+**Automated Quality Control**: Applications detect poor data automatically
+**No Manual Disputes**: Dispute filing is programmatic via MCP
+**Transparent Scoring**: Multi-factor quality assessment
+**Fair Refunds**: 0-100% sliding scale based on objective scores
+**Fast Resolution**: 24-48h automated processing
+**Blockchain Verified**: All transactions on Solana
 
 ## Architecture
 
 ```
 ┌─────────────────┐
-│ Claude Desktop  │
+│ MCP Application │
 └────────┬────────┘
          │
          │ MCP Protocol (stdio)
@@ -376,13 +376,13 @@ Expected: Claude uses `health_check` and reports status.
 
 ## Troubleshooting
 
-### MCP Server Not Showing in Claude
+### MCP Server Not Showing in Application
 
 1. Check `mcp_config.json` path is correct
 2. Verify Python 3.11+ is installed
 3. Ensure dependencies installed: `pip3.11 install -r requirements-mcp.txt`
 4. Check server starts manually: `python3.11 server.py --help`
-5. Restart Claude Desktop
+5. Restart MCP-compatible application
 
 ### Dispute Filing Fails
 
@@ -393,7 +393,7 @@ Expected: Claude uses `health_check` and reports status.
 
 ### Data Quality Always Poor
 
-This is intentional for demo! The system is designed to show dispute resolution.
+This is intentional for demo purposes. The system is designed to show dispute resolution.
 In production, quality varies based on actual data returned by KAMIYO API.
 
 ## Learn More
@@ -401,12 +401,11 @@ In production, quality varies based on actual data returned by KAMIYO API.
 - [MCP Server Documentation](../../packages/mcp-server/README.md)
 - [x402 Payment System](../../docs/X402_PAYMENT_SYSTEM.md)
 - [MCP Protocol Spec](https://modelcontextprotocol.io)
-- [Claude Desktop Guide](https://claude.ai/desktop)
 
 ## Next Steps
 
-1. ✅ Configure MCP server
-2. ✅ Test basic search
-3. ✅ Trigger automatic dispute
-4. ✅ Monitor dispute resolution
-5. 🎯 Integrate into your AI agent workflow!
+1. Configure MCP server
+2. Test basic search
+3. Trigger automatic dispute
+4. Monitor dispute resolution
+5. Integrate into your workflow

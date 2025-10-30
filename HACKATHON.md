@@ -1,6 +1,6 @@
 # x402Resolve - Solana x402 Hackathon Submission
 
-> **Automated AI-powered dispute resolution for crypto exploit intelligence with Solana x402 payments**
+**Automated dispute resolution for crypto exploit intelligence with Solana x402 payments**
 
 **Team**: KAMIYO
 **Submission Date**: October 30, 2025
@@ -9,60 +9,49 @@
 
 ---
 
-## 🎯 Executive Summary
+## Executive Summary
 
-**The Problem**: AI agents purchasing API data face a critical challenge - what happens when data quality is poor? Traditional payments are irreversible, chargebacks require human intervention and take weeks, and AI agents can't objectively verify quality.
+**Problem**: When purchasing API data via x402 payments, there is no programmatic way to dispute or get refunds for poor quality data. Traditional payments are irreversible, and chargebacks require manual intervention.
 
-**Our Solution**: x402Resolve combines KAMIYO's $2.1B+ crypto exploit intelligence database with automated dispute resolution. When an AI agent (like Claude) receives poor quality data, it files a dispute via MCP, gets an objective AI quality score from our verifier oracle, and receives an automatic partial refund—all in 24-48 hours with zero human intervention.
+**Solution**: x402Resolve combines KAMIYO's crypto exploit intelligence database ($2.1B+ tracked) with automated dispute resolution. When data quality is insufficient, a dispute is filed, an objective quality score is calculated by the verifier oracle, and an automatic partial refund is executed on-chain within 24-48 hours.
 
-**Key Innovation**: First system to enable AI agents to autonomously file quality disputes, get objective AI-powered scoring, and receive sliding-scale refunds (0-100%) based on data quality—all executed on-chain via Solana smart contracts.
+**Innovation**: First system to enable programmatic quality disputes with sliding-scale refunds (0-100%) based on objective quality metrics, executed on-chain via Solana smart contracts.
 
 ---
 
-## 📹 Demo Video
+## Demo Video
 
 **[3-Minute Demo Video Link]** *(To be added)*
 
-**Interactive Demo**: [demo/index.html](./demo/index.html) - Open in browser, no installation required!
+**Interactive Demo**: [demo/index.html](./demo/index.html) - Open in browser, no installation required.
 
 **Key Highlights**:
-- 0:00-0:30: Problem statement & user pain
-- 0:30-1:00: x402Resolve solution overview
+- 0:00-0:30: Problem statement
+- 0:30-1:00: Solution overview
 - 1:00-2:00: Live dispute resolution demo
-- 2:00-2:30: Quality scoring & automated refunds
+- 2:00-2:30: Quality scoring and automated refunds
 - 2:30-3:00: Multi-category value proposition
 
 ---
 
-## 🏆 Prize Category Submissions
+## Prize Category Submissions
 
 ### 1. Best MCP Server ($10,000)
 
-**Why We Should Win:**
+**Submission**:
 
-Our MCP server enables Claude Desktop and other AI agents to autonomously file quality disputes—the first system to combine MCP tools with on-chain dispute resolution.
+MCP server with 5 production tools, including programmatic dispute filing capability.
 
-**What We Built:**
-- **5 Production MCP Tools**:
-  - `health_check`: Server status monitoring
-  - `search_crypto_exploits`: Search $2.1B+ in tracked exploits
-  - `assess_defi_protocol_risk`: AI risk scoring
-  - `monitor_wallet`: Exploit exposure checking (Team+ tier)
-  - `file_dispute`: **NEW** - Automated quality dispute filing
+**Tools Implemented**:
+- `health_check`: Server status monitoring
+- `search_crypto_exploits`: Search exploit database ($2.1B+ tracked)
+- `assess_defi_protocol_risk`: Risk assessment based on exploit history
+- `monitor_wallet`: Exploit exposure checking (Team+ tier)
+- `file_dispute`: Automated quality dispute filing (new)
 
-**Innovation**: Claude can automatically detect poor data quality and file disputes without user intervention:
-
-```
-User: "Search for Uniswap exploits"
-Claude: [Uses search_crypto_exploits]
-Claude: [Detects quality issues]
-Claude: [Automatically uses file_dispute]
-Claude: "Dispute filed! You'll get a 75% refund based on quality score."
-```
-
-**Technical Excellence**:
-- FastMCP implementation (Python)
-- Async/await for performance
+**Technical Implementation**:
+- FastMCP framework (Python)
+- Async/await architecture
 - Tier-based access control
 - Rate limiting per subscription
 - Comprehensive error handling
@@ -70,7 +59,7 @@ Claude: "Dispute filed! You'll get a 75% refund based on quality score."
 
 **Documentation**: [packages/mcp-server/README.md](./packages/mcp-server/README.md)
 
-**Setup**:
+**Configuration Example**:
 ```json
 {
   "mcpServers": {
@@ -86,17 +75,17 @@ Claude: "Dispute filed! You'll get a 75% refund based on quality score."
 }
 ```
 
-**Impact**: Enables trustless AI-to-API payments with automated quality guarantees.
+**Value Proposition**: Enables trustless payments with automated quality guarantees for MCP-compatible applications.
 
 ---
 
 ### 2. Best Dev Tool ($10,000)
 
-**Why We Should Win:**
+**Submission**:
 
-We built a complete developer toolkit for Solana x402 payments with dispute resolution: TypeScript SDK, Python Verifier Oracle, and Rust Escrow Program—three production-ready packages working together seamlessly.
+Complete developer toolkit for Solana x402 payments with dispute resolution: TypeScript SDK, Python Verifier Oracle, and Rust Escrow Program.
 
-**What We Built:**
+**Components**:
 
 #### TypeScript SDK (`packages/x402-sdk/`)
 ```typescript
@@ -129,9 +118,9 @@ client.on('disputeResolved', (event) => {
 ```
 
 #### x402 Verifier Oracle (`packages/x402-verifier/`)
-Python/FastAPI service with AI-powered quality scoring:
+Python/FastAPI service with multi-factor quality scoring:
 
-**Multi-Factor Algorithm**:
+**Algorithm**:
 - **Semantic Coherence (40%)**: Sentence embeddings + cosine similarity
 - **Completeness (40%)**: Required field validation
 - **Freshness (20%)**: Data recency scoring
@@ -166,85 +155,64 @@ Rust/Anchor smart contract:
 - Time-lock prevents indefinite escrow
 - Cryptographic proof of quality assessment
 
-**Developer Experience**:
-- Complete TypeScript SDK
-- Python quality scoring service
-- Rust smart contract
-- Comprehensive API documentation
-- Working examples (3 integration demos)
-- Production-ready configuration
-
 **Documentation**: [docs/X402_PAYMENT_SYSTEM.md](./docs/X402_PAYMENT_SYSTEM.md)
 
-**Impact**: Developers can integrate automated dispute resolution in <30 minutes.
+**Value Proposition**: Developers can integrate automated dispute resolution in under 30 minutes.
 
 ---
 
 ### 3. Best Agent Application ($10,000)
 
-**Why We Should Win:**
+**Submission**:
 
-We built the first end-to-end AI agent workflow for purchasing intelligence with automated quality verification and dispute resolution—all without human intervention.
+End-to-end automated workflow for purchasing intelligence with quality verification and dispute resolution, executed without human intervention.
 
-**Complete Agent Workflow**:
+**Workflow**:
 
 ```
 1. Agent needs exploit intelligence
-   ↓
 2. Pay via x402Resolve escrow (Solana)
-   ↓
 3. Receive data from KAMIYO API
-   ↓
-4. AI evaluates quality automatically
-   ↓
-5a. Quality Good?              5b. Quality Poor?
-    ↓                              ↓
-    Wait for auto-release          File dispute (MCP tool)
-    ↓                              ↓
-    Escrow → API                   x402 Verifier scores
-    ↓                              ↓
-    Done ✅                         Partial refund (0-100%)
-                                   ↓
-                                   Done ✅
+4. Evaluate quality automatically
+5a. Quality acceptable → Wait for auto-release → Escrow releases to API
+5b. Quality poor → File dispute → Verifier scores → Partial refund (0-100%)
 ```
 
-**Real-World Use Case**: Security AI Agent
+**Use Case: Security Intelligence Agent**
 
-An AI security researcher needs Curve Finance exploit data:
+An automated security researcher needs Curve Finance exploit data:
 
-1. **Agent pays** 0.05 SOL via escrow
-2. **API returns** 3 exploits (but wrong protocols + incomplete)
-3. **Agent detects** quality issues automatically
-4. **Agent files** dispute via MCP: `file_dispute(reason="Wrong protocols, incomplete")`
-5. **Verifier scores** quality: 45/100
-6. **Automatic refund**: 75% (0.0375 SOL) → Agent, 25% (0.0125 SOL) → API
-7. **Resolution time**: 18 hours (production: 24-48h)
+1. Pay 0.05 SOL via escrow
+2. API returns 3 exploits (wrong protocols + incomplete)
+3. Detect quality issues automatically
+4. File dispute via MCP: `file_dispute(reason="Wrong protocols, incomplete")`
+5. Verifier scores quality: 45/100
+6. Automatic refund: 75% (0.0375 SOL) to agent, 25% (0.0125 SOL) to API
+7. Resolution time: 18 hours (production: 24-48h)
 
-**Agent Autonomy Achieved**:
-- ✅ Pay programmatically (Solana x402)
-- ✅ Verify quality automatically (AI scoring)
-- ✅ File disputes without human intervention (MCP)
-- ✅ Get fair refunds based on objective metrics (sliding scale)
-- ✅ All transactions verifiable on-chain (Solana)
+**Capabilities Demonstrated**:
+- Pay programmatically (Solana x402)
+- Verify quality automatically (scoring algorithm)
+- File disputes without human intervention (MCP)
+- Get fair refunds based on objective metrics (sliding scale)
+- All transactions verifiable on-chain (Solana)
 
 **Technologies**:
-- MCP for AI agent tools
+- MCP for programmatic tools
 - Sentence Transformers for semantic analysis
-- Solana for payments & escrow
+- Solana for payments and escrow
 - FastAPI for verifier oracle
-- TypeScript SDK for agent integration
+- TypeScript SDK for integration
 
-**Example Integration**: [examples/mcp-integration/](./examples/mcp-integration/)
-
-**Impact**: Enables autonomous AI commerce with quality guarantees.
+**Example**: [examples/mcp-integration/](./examples/mcp-integration/)
 
 ---
 
 ### 4. Best API Integration ($10,000)
 
-**Why We Should Win:**
+**Submission**:
 
-We integrated KAMIYO's production crypto exploit intelligence API ($2.1B+ tracked) with x402Resolve payment layer—the first intelligence API with automated quality guarantees.
+KAMIYO production crypto exploit intelligence API ($2.1B+ tracked) integrated with x402Resolve payment layer and automated quality guarantees.
 
 **KAMIYO API Overview**:
 
@@ -272,11 +240,11 @@ POST /api/v1/wallet/check
 
 **x402Resolve Integration**:
 
-Every API call now includes:
-1. **Escrow-based payment** (Solana)
-2. **Quality guarantee** (automated scoring)
-3. **Dispute capability** (0-100% refunds)
-4. **Transparent verification** (on-chain)
+Every API call includes:
+1. Escrow-based payment (Solana)
+2. Quality guarantee (automated scoring)
+3. Dispute capability (0-100% refunds)
+4. Transparent verification (on-chain)
 
 **Payment Flow**:
 ```typescript
@@ -294,7 +262,6 @@ const response = await fetch(API_URL, {
 // 3. If quality is poor, dispute automatically processes refund
 if (qualityPoor) {
   await client.dispute({ transactionId: payment.txId });
-  // Automatic refund based on quality score
 }
 ```
 
@@ -302,7 +269,7 @@ if (qualityPoor) {
 
 **Query**: "Get Uniswap V3 exploit history on Ethereum"
 
-**Response**: 3 exploits (Curve, Euler, Mango) ← Wrong protocols!
+**Response**: 3 exploits (Curve, Euler, Mango) - wrong protocols
 
 **Quality Score**: 45/100
 - Semantic: 60% (protocols don't match)
@@ -312,12 +279,12 @@ if (qualityPoor) {
 **Result**: 75% automatic refund
 
 **API Features with x402Resolve**:
-- ✅ Pay-per-query pricing
-- ✅ Tier-based access (Free, Personal, Team, Enterprise)
-- ✅ Automated quality scoring
-- ✅ Fair refunds (sliding scale 0-100%)
-- ✅ Fast dispute resolution (24-48h)
-- ✅ MCP integration for AI agents
+- Pay-per-query pricing
+- Tier-based access (Free, Personal, Team, Enterprise)
+- Automated quality scoring
+- Fair refunds (sliding scale 0-100%)
+- Fast dispute resolution (24-48h)
+- MCP integration
 
 **Production Metrics**:
 - Response time: <200ms (p95)
@@ -327,25 +294,23 @@ if (qualityPoor) {
 
 **Documentation**: [docs/X402_PAYMENT_SYSTEM.md](./docs/X402_PAYMENT_SYSTEM.md)
 
-**Impact**: First intelligence API with automated quality guarantees, enabling trustless agent commerce.
-
 ---
 
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 ### System Overview
 
 ```
 ┌─────────────────────┐
-│   AI Agent          │
-│   (Claude Desktop)  │
+│   Client            │
+│   (MCP Application) │
 └──────────┬──────────┘
            │ MCP Protocol
            ↓
 ┌─────────────────────────────────┐
 │   KAMIYO MCP Server             │
 │   • search_crypto_exploits      │
-│   • file_dispute (NEW)          │
+│   • file_dispute                │
 └──────────┬──────────────────────┘
            │ HTTP/REST
            ↓
@@ -356,14 +321,14 @@ if (qualityPoor) {
            │ Data Response
            ↓
 ┌─────────────────────────────────┐
-│   Quality Check (Agent-side)    │
+│   Quality Check                 │
 │   Semantic, Complete, Fresh     │
 └──────────┬──────────────────────┘
            │ If Poor Quality
            ↓
 ┌─────────────────────────────────┐
 │   x402 Verifier Oracle          │
-│   • AI Quality Scoring          │
+│   • Quality Scoring             │
 │   • Ed25519 Signature           │
 └──────────┬──────────────────────┘
            │ Quality Score + Sig
@@ -377,7 +342,7 @@ if (qualityPoor) {
            │ Refund TX
            ↓
 ┌─────────────────────────────────┐
-│   Agent Wallet                  │
+│   Client Wallet                 │
 │   Receives 0-100% refund        │
 └─────────────────────────────────┘
 ```
@@ -385,8 +350,8 @@ if (qualityPoor) {
 ### Technology Stack
 
 **Frontend**:
-- Interactive Demo: HTML/CSS/JavaScript (no build!)
-- Claude Desktop: MCP Protocol
+- Interactive Demo: HTML/CSS/JavaScript
+- MCP Protocol for integration
 
 **MCP Server**:
 - Python 3.11+
@@ -419,13 +384,13 @@ if (qualityPoor) {
 
 ---
 
-## 📊 Innovation Highlights
+## Innovation Highlights
 
-### 1. First AI-Powered Quality Scoring for x402
+### 1. Quality Scoring for x402
 
 **Traditional x402**: Payment → Data (no quality guarantees)
 
-**x402Resolve**: Payment → Escrow → Data → AI Quality Score → Fair Refund
+**x402Resolve**: Payment → Escrow → Data → Quality Score → Fair Refund
 
 **Multi-Factor Algorithm**:
 ```python
@@ -446,78 +411,74 @@ freshness_score = max(0, 1 - data_age_days / 30)
 quality_score = semantic*0.4 + completeness*0.4 + freshness*0.2
 ```
 
-### 2. Sliding Scale Refunds (Fair for Both Parties)
+### 2. Sliding Scale Refunds
 
-**Not Binary** (full refund or nothing):
+Not binary (full refund or nothing):
 
-| Quality | Refund | Agent Gets | API Gets | Fairness |
-|---------|--------|------------|----------|----------|
-| 95 | 0% | $0 | $10 | Data was good ✅ |
+| Quality | Refund | Client Gets | API Gets | Outcome |
+|---------|--------|-------------|----------|---------|
+| 95 | 0% | $0 | $10 | Data acceptable |
 | 75 | 25% | $2.50 | $7.50 | Minor issues |
 | 55 | 50% | $5.00 | $5.00 | Moderate quality |
 | 35 | 75% | $7.50 | $2.50 | Significant issues |
-| 15 | 100% | $10 | $0 | Very poor quality ❌ |
+| 15 | 100% | $10 | $0 | Poor quality |
 
-**Why This Matters**: API providers aren't punished for minor issues, and users aren't stuck with terrible data.
+API providers are not penalized for minor issues, and clients are not stuck with poor data.
 
-### 3. MCP Integration for Autonomous Agents
+### 3. MCP Integration
 
-**First system where AI agents can**:
+Enables programmatic capabilities:
 - Detect poor quality automatically
-- File disputes programmatically via MCP
-- Monitor resolution without human intervention
-- Receive refunds to their wallets
-
-**Example**: Claude detects wrong protocols in exploit data and automatically files dispute with evidence.
+- File disputes via MCP tools
+- Monitor resolution without intervention
+- Receive refunds automatically
 
 ### 4. On-Chain Verification
 
-**All transactions on Solana**:
+All transactions on Solana:
 - Escrow creation: Verifiable PDA address
 - Quality score: Cryptographically signed by verifier
 - Refund split: Transparent on-chain execution
-- Immutable history: Audit trail forever
+- Immutable history: Permanent audit trail
 
-**Transparency**: Anyone can verify disputes on Solana explorer.
+Transparency: All disputes verifiable on Solana explorer.
 
 ---
 
-## 🎬 Live Demonstrations
+## Live Demonstrations
 
 ### Demo 1: Interactive Web UI
 
 **Location**: [demo/index.html](./demo/index.html)
 
-**What It Shows**:
+**Capabilities**:
 - File disputes with different scenarios
 - Real-time quality scoring (simulated)
 - Animated resolution timeline
 - Refund calculation (0-100% sliding scale)
 
-**Perfect For**: Understanding the workflow visually without code.
+**Access**: `open demo/index.html` (works in any browser)
 
-**Try It**: `open demo/index.html` (works in any browser!)
-
-### Demo 2: Claude Desktop Integration
+### Demo 2: MCP Integration
 
 **Location**: [examples/mcp-integration/](./examples/mcp-integration/)
 
-**What It Shows**:
-- Claude automatically detects poor quality
-- Files dispute via `file_dispute` MCP tool
-- Monitors resolution
-- Notifies user of refund amount
+**Capabilities**:
+- Automatic poor quality detection
+- Dispute filing via `file_dispute` MCP tool
+- Resolution monitoring
+- Refund notification
 
 **Setup**:
 1. Configure `~/.config/claude/mcp_config.json`
-2. Restart Claude Desktop
-3. Ask: "Search for Uniswap exploits"
+2. Restart MCP-compatible application
+3. Query: "Search for Uniswap exploits"
 
 ### Demo 3: TypeScript SDK Integration
 
 **Location**: [examples/with-dispute/](./examples/with-dispute/)
 
-**What It Shows**:
+**Capabilities**:
 - Complete payment → dispute → refund workflow
 - TypeScript SDK usage
 - Solana transactions
@@ -527,54 +488,54 @@ quality_score = semantic*0.4 + completeness*0.4 + freshness*0.2
 
 ---
 
-## 📈 Metrics & Achievements
+## Metrics & Achievements
 
 ### Code Metrics
 
 | Metric | Value |
 |--------|-------|
-| **Total Packages** | 4 (Verifier, Escrow, SDK, MCP) |
-| **Lines of Code** | ~3,500+ |
-| **Lines of Documentation** | ~2,500+ |
-| **MCP Tools** | 5 (including file_dispute) |
-| **Integration Examples** | 3 (basic, dispute, MCP) |
-| **Quality Factors** | 3 (semantic, completeness, freshness) |
-| **Refund Granularity** | 0-100% sliding scale |
-| **Resolution Time** | 24-48 hours (automated) |
+| Total Packages | 4 (Verifier, Escrow, SDK, MCP) |
+| Lines of Code | ~3,500+ |
+| Lines of Documentation | ~2,500+ |
+| MCP Tools | 5 (including file_dispute) |
+| Integration Examples | 3 (basic, dispute, MCP) |
+| Quality Factors | 3 (semantic, completeness, freshness) |
+| Refund Granularity | 0-100% sliding scale |
+| Resolution Time | 24-48 hours (automated) |
 
 ### Technical Achievements
 
-✅ **Production-Ready Components**:
+**Production-Ready Components**:
 - MCP server with 5 tools
-- Python verifier oracle with AI scoring
+- Python verifier oracle with quality scoring
 - Rust/Anchor Solana program
 - TypeScript SDK with events
 - Complete documentation
 
-✅ **Developer Experience**:
-- 3 integration examples (beginner → advanced)
-- Interactive web demo (no code!)
+**Developer Experience**:
+- 3 integration examples (beginner to advanced)
+- Interactive web demo
 - Comprehensive API documentation
-- .env.example templates
-- Error handling & logging
+- Environment configuration templates
+- Error handling and logging
 
-✅ **Security**:
+**Security**:
 - Ed25519 cryptographic signatures
 - PDA-based deterministic escrow
 - Time-lock prevents indefinite holding
 - Rate limiting per tier
-- Input validation & sanitization
+- Input validation and sanitization
 
-✅ **Innovation**:
-- First AI-powered quality scoring for x402
-- First MCP integration with on-chain disputes
+**Innovation**:
+- Quality scoring for x402 payments
+- MCP integration with on-chain disputes
 - Sliding scale refunds (not binary)
 - Multi-factor quality algorithm
-- Autonomous agent workflow
+- Automated workflow
 
 ---
 
-## 🚀 Deployment & Testing
+## Deployment & Testing
 
 ### Testnet Deployment
 
@@ -590,19 +551,19 @@ quality_score = semantic*0.4 + completeness*0.4 + freshness*0.2
 
 ### Testing Performed
 
-✅ **Unit Tests**:
+**Unit Tests**:
 - Quality scoring algorithm
 - Refund calculation
 - Escrow PDA derivation
 - Signature verification
 
-✅ **Integration Tests**:
-- MCP server with Claude Desktop
+**Integration Tests**:
+- MCP server with compatible applications
 - SDK with Solana devnet
 - Verifier Oracle API endpoints
 - End-to-end dispute flow
 
-✅ **Manual Testing**:
+**Manual Testing**:
 - Interactive demo (multiple scenarios)
 - MCP tool invocations
 - Different quality scores
@@ -610,7 +571,7 @@ quality_score = semantic*0.4 + completeness*0.4 + freshness*0.2
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 ### Complete Documentation Set
 
@@ -651,7 +612,7 @@ search_crypto_exploits(query, limit?, chain?)
 
 ---
 
-## 🎯 Business Model & Sustainability
+## Business Model & Sustainability
 
 ### Revenue Streams
 
@@ -689,41 +650,41 @@ search_crypto_exploits(query, limit?, chain?)
 **Phase 2** (Months 4-6): Enterprise integration
 - Target: 5 enterprise customers, 10K API calls/day
 
-**Phase 3** (Months 7-12): AI agent economy expansion
-- Target: Integration with major AI agent platforms
-- Become standard for trustless AI commerce
+**Phase 3** (Months 7-12): Ecosystem expansion
+- Target: Integration with major platforms
+- Establish standard for trustless commerce
 
 ---
 
-## 🔮 Future Roadmap
+## Future Roadmap
 
 ### Phase 2: Production Hardening (Q1 2026)
 
-- [ ] Multi-oracle consensus (3+ verifiers)
-- [ ] Verifier reputation system with staking
-- [ ] On-chain governance for parameter tuning
-- [ ] L2 integration (reduce Solana fees)
-- [ ] WebAssembly verifier (client-side scoring)
+- Multi-oracle consensus (3+ verifiers)
+- Verifier reputation system with staking
+- On-chain governance for parameter tuning
+- L2 integration (reduce Solana fees)
+- WebAssembly verifier (client-side scoring)
 
 ### Phase 3: Ecosystem Expansion (Q2 2026)
 
-- [ ] Integrate with OpenAI Swarm
-- [ ] LangChain plugin
-- [ ] AutoGPT integration
-- [ ] Marketplace for custom verifiers
-- [ ] Cross-chain support (Ethereum, Polygon)
+- OpenAI Swarm integration
+- LangChain plugin
+- AutoGPT integration
+- Marketplace for custom verifiers
+- Cross-chain support (Ethereum, Polygon)
 
-### Phase 4: AI Agent Economy (Q3-Q4 2026)
+### Phase 4: Platform Development (Q3-Q4 2026)
 
-- [ ] Agent-to-agent payments
-- [ ] Decentralized verifier network
-- [ ] Quality prediction models (prevent disputes)
-- [ ] Insurance products (quality guarantees)
-- [ ] Industry standard for AI commerce
+- Agent-to-agent payments
+- Decentralized verifier network
+- Quality prediction models (prevent disputes)
+- Insurance products (quality guarantees)
+- Industry standard establishment
 
 ---
 
-## 👥 Team
+## Team
 
 **KAMIYO** - Crypto Security Intelligence Platform
 
@@ -741,11 +702,11 @@ search_crypto_exploits(query, limit?, chain?)
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 **Built for Solana x402 Hackathon 2025**
 
-This project advances the AI agent economy by enabling trustless, automated dispute resolution for agent-to-API payments with objective quality guarantees.
+This project advances automated commerce by enabling trustless dispute resolution with objective quality guarantees.
 
 **Special Thanks**:
 - Solana Foundation for x402 protocol
@@ -754,7 +715,7 @@ This project advances the AI agent economy by enabling trustless, automated disp
 
 ---
 
-## 📞 Contact & Links
+## Contact & Links
 
 **Project**:
 - GitHub: [github.com/x402kamiyo/x402resolve](https://github.com/x402kamiyo/x402resolve)
@@ -767,11 +728,11 @@ This project advances the AI agent economy by enabling trustless, automated disp
 - Discord: [Join Community]
 - Email: hello@kamiyo.io
 
-**Judges**: Questions? Open a GitHub Discussion or reach out via Discord!
+**Judges**: Questions? Open a GitHub Discussion or reach out via Discord.
 
 ---
 
-## ✅ Submission Checklist
+## Submission Checklist
 
 - [x] Open source (GitHub public)
 - [x] Deployed to Solana devnet
@@ -782,15 +743,13 @@ This project advances the AI agent economy by enabling trustless, automated disp
 - [x] TypeScript SDK
 - [x] Python Verifier Oracle
 - [x] Rust Solana Program
-- [x] Interactive demo (no code needed!)
+- [x] Interactive demo
 - [x] Multi-category submission (4 categories)
 - [x] Production-ready code
 - [x] Comprehensive testing
 
 ---
 
-**Thank you for considering x402Resolve for the Solana x402 Hackathon! We believe automated dispute resolution with AI-powered quality guarantees is the future of trustless AI commerce.** 🚀
+**Try the interactive demo**: `open demo/index.html` (no installation required)
 
-**Try our interactive demo**: `open demo/index.html` (no installation required!)
-
-**Questions?** Open a GitHub issue or join our Discord!
+**Questions?** Open a GitHub issue or join our Discord.
