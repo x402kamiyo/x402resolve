@@ -2,7 +2,7 @@
 
 > Model Context Protocol server for AI agents to access crypto exploit intelligence with automated dispute resolution
 
-**Solana x402 Hackathon Submission** 🏆
+**Solana x402 Hackathon Submission** 
 
 This MCP server enables AI agents (especially Claude Desktop) to search $2.1B+ in tracked crypto exploits and file automated disputes for poor data quality.
 
@@ -13,7 +13,7 @@ kamiyo/
 ├── mcp/                          # MCP server implementation
 │   ├── __init__.py              # Package initialization
 │   ├── config.py                # Configuration management
-│   ├── server.py                # Main MCP server (Phase 1 ✅)
+│   ├── server.py                # Main MCP server (Phase 1 )
 │   ├── tools/                   # MCP tool implementations
 │   │   └── __init__.py
 │   ├── auth/                    # Authentication & subscriptions
@@ -26,14 +26,14 @@ kamiyo/
     └── validate_structure.py   # Structure validation
 ```
 
-## 🚀 Phase 1 Deliverables (COMPLETE)
+##  Phase 1 Deliverables (COMPLETE)
 
-### ✅ 1. MCP Directory Structure
+###  1. MCP Directory Structure
 - Created `/mcp` with subdirectories: `tools/`, `auth/`, `utils/`
 - All `__init__.py` files in place
 - Proper Python package structure
 
-### ✅ 2. Dependencies (requirements-mcp.txt)
+###  2. Dependencies (requirements-mcp.txt)
 ```
 fastmcp>=0.2.0          # MCP SDK for Python
 pydantic>=2.5.0         # Data validation
@@ -44,7 +44,7 @@ httpx>=0.25.0           # Async HTTP client
 structlog>=24.1.0       # Structured logging
 ```
 
-### ✅ 3. Configuration Management (mcp/config.py)
+###  3. Configuration Management (mcp/config.py)
 - Environment-based configuration
 - Production validation
 - Subscription tier settings
@@ -58,7 +58,7 @@ structlog>=24.1.0       # Structured logging
 - `DATABASE_URL`: Database connection
 - Rate limits per tier (Personal/Team/Enterprise)
 
-### ✅ 4. Basic MCP Server (mcp/server.py)
+###  4. Basic MCP Server (mcp/server.py)
 - FastMCP-based server implementation
 - Startup/shutdown handlers
 - Error handling
@@ -74,7 +74,7 @@ structlog>=24.1.0       # Structured logging
 - Database connection testing
 - API connection testing
 
-### ✅ 5. Testing Infrastructure
+###  5. Testing Infrastructure
 - `scripts/mcp/test_local.sh`: Automated local testing
 - `scripts/mcp/validate_structure.py`: Structure validation
 - Executable permissions set
@@ -131,10 +131,10 @@ python3.11 scripts/mcp/validate_structure.py
 ```
 
 Checks:
-- ✅ Directory structure
-- ✅ Required files
-- ✅ Python modules
-- ✅ File permissions
+-  Directory structure
+-  Required files
+-  Python modules
+-  File permissions
 
 ### Test Health Check Tool
 ```bash
@@ -240,7 +240,7 @@ python3.11 -m mcp.server --token <your-jwt-token>
 
 4. Test with: "Check KAMIYO MCP server health"
 
-## 🛠️ Available Tools
+## 🛠 Available Tools
 
 ### 1. health_check (Phase 1)
 **No authentication required**
@@ -561,10 +561,10 @@ result = await file_dispute(
 
 The server validates configuration on startup in production:
 
-- ✅ `MCP_JWT_SECRET` must not be default value
-- ✅ `STRIPE_SECRET_KEY` must not use test keys
-- ✅ Database connection must be available
-- ✅ API connection must be reachable
+-  `MCP_JWT_SECRET` must not be default value
+-  `STRIPE_SECRET_KEY` must not use test keys
+-  Database connection must be available
+-  API connection must be reachable
 
 ### Error Handling
 
@@ -573,7 +573,7 @@ The server validates configuration on startup in production:
 - Comprehensive error logging
 - Production-safe error messages
 
-## 📊 Monitoring
+##  Monitoring
 
 ### Startup Checks
 - Database connectivity
@@ -586,12 +586,12 @@ The server validates configuration on startup in production:
 - `degraded`: Some systems unavailable
 - `unhealthy`: Critical systems down
 
-## ✅ Phase 2: Core MCP Tools (COMPLETE)
+##  Phase 2: Core MCP Tools (COMPLETE)
 
 ### Days 3-4: Core MCP Tools
-- [✅] `search_crypto_exploits`: Search exploit database with tier-based limits
-- [✅] `assess_defi_protocol_risk`: DeFi protocol risk assessment
-- [✅] `monitor_wallet`: Wallet monitoring (Team+ only)
+- [] `search_crypto_exploits`: Search exploit database with tier-based limits
+- [] `assess_defi_protocol_risk`: DeFi protocol risk assessment
+- [] `monitor_wallet`: Wallet monitoring (Team+ only)
 
 ### Days 5-6: Authentication & Subscriptions
 - [ ] JWT token generation/verification
@@ -662,15 +662,15 @@ export DATABASE_URL="postgresql://user:pass@localhost:5432/kamiyo"
 export KAMIYO_API_URL="http://localhost:8000"
 ```
 
-## ✅ Phase 1 Status: COMPLETE
+##  Phase 1 Status: COMPLETE
 
 **Completed:**
-- ✅ MCP directory structure
-- ✅ Configuration management
-- ✅ Basic MCP server
-- ✅ Health check tool
-- ✅ Testing infrastructure
-- ✅ Documentation
+-  MCP directory structure
+-  Configuration management
+-  Basic MCP server
+-  Health check tool
+-  Testing infrastructure
+-  Documentation
 
 **Ready for Phase 2:**
 - Core tool implementations

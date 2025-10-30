@@ -59,7 +59,7 @@ if (!validation.valid) {
 // Create escrow
 try {
   const signature = await client.createEscrow(params);
-  console.log('✅ Escrow created:', signature);
+  console.log(' Escrow created:', signature);
   console.log('View on Explorer:', EscrowUtils.getExplorerUrl(signature, 'devnet'));
 } catch (error) {
   console.error('Failed to create escrow:', error);
@@ -78,7 +78,7 @@ console.log('Current status:', status);
 
 if (status === 'Active') {
   const signature = await client.releaseFunds(transactionId);
-  console.log('✅ Funds released:', signature);
+  console.log(' Funds released:', signature);
 }
 ```
 
@@ -87,7 +87,7 @@ if (status === 'Active') {
 ```typescript
 // Step 1: Agent marks as disputed
 const disputeSig = await client.markDisputed(transactionId);
-console.log('✅ Dispute marked:', disputeSig);
+console.log(' Dispute marked:', disputeSig);
 
 // Step 2: Verifier resolves (off-chain quality assessment)
 const qualityScore = 45; // 0-100
@@ -102,7 +102,7 @@ const resolveSig = await client.resolveDispute(
   verifierPublicKey
 );
 
-console.log('✅ Dispute resolved:', resolveSig);
+console.log(' Dispute resolved:', resolveSig);
 
 // Check resolution details
 const escrow = await client.getEscrow(transactionId);
@@ -360,7 +360,7 @@ async function completeEscrowWorkflow() {
     transactionId: txId,
     apiPublicKey: apiAddress,
   });
-  console.log('✅ Created:', createSig);
+  console.log(' Created:', createSig);
 
   // 2. Make API call (off-chain)
   const apiResponse = await makeApiCall();
@@ -369,11 +369,11 @@ async function completeEscrowWorkflow() {
   if (apiResponse.quality === 'good') {
     // Release funds
     const releaseSig = await client.releaseFunds(txId);
-    console.log('✅ Released:', releaseSig);
+    console.log(' Released:', releaseSig);
   } else {
     // Dispute
     const disputeSig = await client.markDisputed(txId);
-    console.log('✅ Disputed:', disputeSig);
+    console.log(' Disputed:', disputeSig);
 
     // Wait for verifier resolution
     // (In practice, verifier would be a separate service)
@@ -400,7 +400,7 @@ async function monitorAgentEscrows(agentPubkey: PublicKey) {
 
     // Handle expired escrows
     if (isExpired && status === 'Active') {
-      console.log('⚠️ Escrow expired, can be released by anyone');
+      console.log(' Escrow expired, can be released by anyone');
     }
   }
 }
@@ -423,8 +423,8 @@ async function createMultipleEscrows(params: CreateEscrowParams[]) {
   const successful = results.filter((r) => r.success);
   const failed = results.filter((r) => !r.success);
 
-  console.log(`✅ Successful: ${successful.length}`);
-  console.log(`❌ Failed: ${failed.length}`);
+  console.log(` Successful: ${successful.length}`);
+  console.log(` Failed: ${failed.length}`);
 
   return { successful, failed };
 }

@@ -161,7 +161,7 @@ assess_defi_protocol_risk("Compound", subscription_tier="enterprise")
 # Before investing, check protocol security
 result = assess_defi_protocol_risk("Yearn Finance")
 if result['risk_level'] in ['high', 'critical']:
-    print("⚠️ High risk protocol - proceed with caution")
+    print(" High risk protocol - proceed with caution")
 ```
 
 **2. Portfolio Review**
@@ -297,7 +297,7 @@ wallets = [
 for wallet in wallets:
     result = monitor_wallet(wallet)
     if result['risk_assessment']['risk_level'] != 'safe':
-        print(f"⚠️ Risk detected in {wallet}: {result['risk_assessment']['risk_level']}")
+        print(f" Risk detected in {wallet}: {result['risk_assessment']['risk_level']}")
 ```
 
 **2. Pre-Transaction Check**
@@ -401,12 +401,12 @@ for protocol, count in sorted_protocols[:5]:
 | Max results | 10 | 50 | 200 | 1000 |
 | Data freshness | 24h delay | Real-time | Real-time | Real-time |
 | **assess_defi_protocol_risk** |
-| Basic risk score | ❌ | ✅ | ✅ | ✅ |
-| Exploit summary | ❌ | ❌ | ✅ | ✅ |
-| Recommendations | ❌ | ❌ | ❌ | ✅ |
-| Peer comparison | ❌ | ❌ | ❌ | ✅ |
+| Basic risk score |  |  |  |  |
+| Exploit summary |  |  |  |  |
+| Recommendations |  |  |  |  |
+| Peer comparison |  |  |  |  |
 | **monitor_wallet** |
-| Access | ❌ | ❌ | ✅ | ✅ |
+| Access |  |  |  |  |
 
 ---
 
@@ -416,13 +416,13 @@ for protocol, count in sorted_protocols[:5]:
 
 **Use specific terms:**
 ```
-✅ search_crypto_exploits("Curve Finance")
-❌ search_crypto_exploits("curve")  # May return unrelated results
+ search_crypto_exploits("Curve Finance")
+ search_crypto_exploits("curve")  # May return unrelated results
 ```
 
 **Combine filters:**
 ```
-✅ search_crypto_exploits("flash loan", chain="Ethereum", since="2024-01-01T00:00:00Z")
+ search_crypto_exploits("flash loan", chain="Ethereum", since="2024-01-01T00:00:00Z")
 ```
 
 **Start broad, then narrow:**

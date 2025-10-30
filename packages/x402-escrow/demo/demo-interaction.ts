@@ -17,7 +17,7 @@ const TIME_LOCK = 3600; // 1 hour
 const TRANSACTION_ID = `demo_tx_${Date.now()}`;
 
 async function main() {
-  console.log('🚀 x402Resolve Escrow Demo\n');
+  console.log(' x402Resolve Escrow Demo\n');
 
   // Setup
   const provider = anchor.AnchorProvider.env();
@@ -52,7 +52,7 @@ async function main() {
   console.log('📦 Scenario 1: Happy Path (No Dispute)\n');
 
   try {
-    console.log('1️⃣  Initializing escrow...');
+    console.log('1⃣  Initializing escrow...');
     const tx1 = await program.methods
       .initializeEscrow(
         new anchor.BN(DEMO_AMOUNT),
@@ -67,8 +67,8 @@ async function main() {
       })
       .rpc();
 
-    console.log(`   ✅ Escrow initialized: ${tx1}`);
-    console.log(`   📊 View on Explorer: https://explorer.solana.com/tx/${tx1}?cluster=devnet\n`);
+    console.log(`    Escrow initialized: ${tx1}`);
+    console.log(`    View on Explorer: https://explorer.solana.com/tx/${tx1}?cluster=devnet\n`);
 
     // Check escrow state
     const escrowAccount = await program.account.escrow.fetch(escrowPda);
@@ -78,7 +78,7 @@ async function main() {
     console.log(`     Created: ${new Date(escrowAccount.createdAt.toNumber() * 1000).toISOString()}`);
     console.log(`     Expires: ${new Date(escrowAccount.expiresAt.toNumber() * 1000).toISOString()}\n`);
 
-    console.log('2️⃣  Agent releases funds (happy with service)...');
+    console.log('2⃣  Agent releases funds (happy with service)...');
     const tx2 = await program.methods
       .releaseFunds()
       .accounts({
@@ -89,21 +89,21 @@ async function main() {
       })
       .rpc();
 
-    console.log(`   ✅ Funds released to API: ${tx2}`);
-    console.log(`   📊 View on Explorer: https://explorer.solana.com/tx/${tx2}?cluster=devnet\n`);
+    console.log(`    Funds released to API: ${tx2}`);
+    console.log(`    View on Explorer: https://explorer.solana.com/tx/${tx2}?cluster=devnet\n`);
 
     const escrowAfterRelease = await program.account.escrow.fetch(escrowPda);
-    console.log('   ✅ Happy path completed successfully!\n');
+    console.log('    Happy path completed successfully!\n');
 
   } catch (error) {
-    console.error('   ❌ Error in happy path:', error.message);
+    console.error('    Error in happy path:', error.message);
   }
 
   // ============================================================================
   // Scenario 2: Dispute Resolution
   // ============================================================================
 
-  console.log('\n⚖️  Scenario 2: Dispute Resolution\n');
+  console.log('\n⚖  Scenario 2: Dispute Resolution\n');
 
   const DISPUTE_TX_ID = `dispute_tx_${Date.now()}`;
   const [disputeEscrowPda] = PublicKey.findProgramAddressSync(
@@ -112,7 +112,7 @@ async function main() {
   );
 
   try {
-    console.log('1️⃣  Initializing new escrow...');
+    console.log('1⃣  Initializing new escrow...');
     const tx3 = await program.methods
       .initializeEscrow(
         new anchor.BN(DEMO_AMOUNT),
@@ -127,9 +127,9 @@ async function main() {
       })
       .rpc();
 
-    console.log(`   ✅ Escrow initialized: ${tx3}\n`);
+    console.log(`    Escrow initialized: ${tx3}\n`);
 
-    console.log('2️⃣  Agent marks escrow as disputed...');
+    console.log('2⃣  Agent marks escrow as disputed...');
     const tx4 = await program.methods
       .markDisputed()
       .accounts({
@@ -138,10 +138,10 @@ async function main() {
       })
       .rpc();
 
-    console.log(`   ✅ Dispute marked: ${tx4}`);
-    console.log(`   📊 View on Explorer: https://explorer.solana.com/tx/${tx4}?cluster=devnet\n`);
+    console.log(`    Dispute marked: ${tx4}`);
+    console.log(`    View on Explorer: https://explorer.solana.com/tx/${tx4}?cluster=devnet\n`);
 
-    console.log('3️⃣  Verifier resolves dispute (50% refund)...');
+    console.log('3⃣  Verifier resolves dispute (50% refund)...');
 
     // Quality score 50 = 50% refund
     const qualityScore = 50;
@@ -159,8 +159,8 @@ async function main() {
       })
       .rpc();
 
-    console.log(`   ✅ Dispute resolved: ${tx5}`);
-    console.log(`   📊 View on Explorer: https://explorer.solana.com/tx/${tx5}?cluster=devnet\n`);
+    console.log(`    Dispute resolved: ${tx5}`);
+    console.log(`    View on Explorer: https://explorer.solana.com/tx/${tx5}?cluster=devnet\n`);
 
     const resolvedEscrow = await program.account.escrow.fetch(disputeEscrowPda);
     console.log('   Resolution Details:');
@@ -169,10 +169,10 @@ async function main() {
     console.log(`     Refund Amount: ${(DEMO_AMOUNT * refundPercentage / 100) / LAMPORTS_PER_SOL} SOL to agent`);
     console.log(`     Payment Amount: ${(DEMO_AMOUNT * (100 - refundPercentage) / 100) / LAMPORTS_PER_SOL} SOL to API\n`);
 
-    console.log('   ✅ Dispute resolution completed successfully!\n');
+    console.log('    Dispute resolution completed successfully!\n');
 
   } catch (error) {
-    console.error('   ❌ Error in dispute resolution:', error.message);
+    console.error('    Error in dispute resolution:', error.message);
   }
 
   // ============================================================================
@@ -180,8 +180,8 @@ async function main() {
   // ============================================================================
 
   console.log('\n⏰ Scenario 3: Time Lock Auto-Release\n');
-  console.log('   ℹ️  This scenario requires waiting for time lock to expire');
-  console.log('   ℹ️  In production, anyone can release after expiration\n');
+  console.log('   ℹ  This scenario requires waiting for time lock to expire');
+  console.log('   ℹ  In production, anyone can release after expiration\n');
 
   const EXPIRED_TX_ID = `expired_tx_${Date.now()}`;
   const SHORT_TIME_LOCK = 60; // 1 minute for demo
@@ -191,7 +191,7 @@ async function main() {
   );
 
   try {
-    console.log('1️⃣  Initializing escrow with short time lock...');
+    console.log('1⃣  Initializing escrow with short time lock...');
     const tx6 = await program.methods
       .initializeEscrow(
         new anchor.BN(DEMO_AMOUNT),
@@ -206,25 +206,25 @@ async function main() {
       })
       .rpc();
 
-    console.log(`   ✅ Escrow initialized with ${SHORT_TIME_LOCK}s time lock: ${tx6}\n`);
-    console.log('   ℹ️  Wait 60 seconds and then anyone can call release_funds()\n');
+    console.log(`    Escrow initialized with ${SHORT_TIME_LOCK}s time lock: ${tx6}\n`);
+    console.log('   ℹ  Wait 60 seconds and then anyone can call release_funds()\n');
 
   } catch (error) {
-    console.error('   ❌ Error:', error.message);
+    console.error('    Error:', error.message);
   }
 
   // ============================================================================
   // Summary
   // ============================================================================
 
-  console.log('\n📊 Demo Summary\n');
+  console.log('\n Demo Summary\n');
   console.log('Demonstrated:');
-  console.log('  ✅ Escrow initialization with validation');
-  console.log('  ✅ Happy path fund release');
-  console.log('  ✅ Dispute marking');
-  console.log('  ✅ Dispute resolution with sliding scale refunds');
-  console.log('  ✅ Event emissions (check Explorer for events)');
-  console.log('  ✅ Time lock mechanism\n');
+  console.log('   Escrow initialization with validation');
+  console.log('   Happy path fund release');
+  console.log('   Dispute marking');
+  console.log('   Dispute resolution with sliding scale refunds');
+  console.log('   Event emissions (check Explorer for events)');
+  console.log('   Time lock mechanism\n');
 
   console.log('Program Features:');
   console.log('  • Input validation (amount, time lock, transaction ID)');

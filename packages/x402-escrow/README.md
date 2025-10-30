@@ -8,12 +8,12 @@ The x402 Escrow Program holds payments in escrow with time-lock and enables auto
 
 ## Features
 
-- ✅ **Time-Locked Escrow** - Payments held for dispute period (e.g., 24 hours)
-- ✅ **Auto-Release** - Funds automatically released to API after time-lock
-- ✅ **Dispute Resolution** - Agent can dispute and get instant refund
-- ✅ **Verifier Signatures** - Oracle signatures validated on-chain
-- ✅ **Sliding Scale Refunds** - Partial refunds based on quality score (0-100%)
-- ✅ **PDA-Based** - Secure escrow accounts using Program Derived Addresses
+-  **Time-Locked Escrow** - Payments held for dispute period (e.g., 24 hours)
+-  **Auto-Release** - Funds automatically released to API after time-lock
+-  **Dispute Resolution** - Agent can dispute and get instant refund
+-  **Verifier Signatures** - Oracle signatures validated on-chain
+-  **Sliding Scale Refunds** - Partial refunds based on quality score (0-100%)
+-  **PDA-Based** - Secure escrow accounts using Program Derived Addresses
 
 ## Architecture
 

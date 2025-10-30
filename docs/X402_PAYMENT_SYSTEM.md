@@ -95,7 +95,7 @@ The x402 payment system enables **pay-per-use access** to KAMIYO's crypto exploi
          │    - 0-29:   100%
          ↓
 ┌─────────────────────────┐
-│  Dispute Resolved ✅     │
+│  Dispute Resolved      │
 └─────────────────────────┘
 ```
 
@@ -674,7 +674,7 @@ Claude: I found 15 Uniswap exploits, but I notice 5 of them are missing transact
 
 Claude: [Uses file_dispute MCP tool]
 
-Claude: ✅ Dispute filed (ID: dispute_x402_xyz789). The x402 Verifier Oracle will analyze the data quality within 24 hours. Based on the missing fields, you'll likely receive a 50-75% refund.
+Claude:  Dispute filed (ID: dispute_x402_xyz789). The x402 Verifier Oracle will analyze the data quality within 24 hours. Based on the missing fields, you'll likely receive a 50-75% refund.
 ```
 
 ## Security

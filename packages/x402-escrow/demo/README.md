@@ -33,8 +33,8 @@ ts-node demo/demo-interaction.ts
 
 **Expected Output:**
 ```
-✅ Escrow initialized
-✅ Funds released to API
+ Escrow initialized
+ Funds released to API
 ```
 
 ### Scenario 2: Dispute Resolution
@@ -45,9 +45,9 @@ ts-node demo/demo-interaction.ts
 
 **Expected Output:**
 ```
-✅ Escrow initialized
-✅ Dispute marked
-✅ Dispute resolved
+ Escrow initialized
+ Dispute marked
+ Dispute resolved
    Quality Score: 50
    Refund: 50%
 ```
@@ -59,12 +59,12 @@ ts-node demo/demo-interaction.ts
 
 ## Key Features Demonstrated
 
-- ✅ Input validation (amounts, time locks, transaction IDs)
-- ✅ PDA-based escrow accounts
-- ✅ Sliding scale refunds (0-100%)
-- ✅ Dispute window enforcement
-- ✅ Event emissions
-- ✅ Time-lock mechanism
+-  Input validation (amounts, time locks, transaction IDs)
+-  PDA-based escrow accounts
+-  Sliding scale refunds (0-100%)
+-  Dispute window enforcement
+-  Event emissions
+-  Time-lock mechanism
 
 ## Validation Examples
 

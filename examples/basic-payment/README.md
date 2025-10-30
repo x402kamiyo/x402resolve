@@ -38,14 +38,14 @@ ts-node index.ts
 
 📤 Step 1: Paying for API access...
 ----------------------------------------------------------------------
-✅ Payment successful!
+ Payment successful!
    Transaction ID: tx_abc123def456
    Access Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
    Expires: 1/15/2025, 3:30:00 PM
 
 🔍 Step 2: Querying API...
 ----------------------------------------------------------------------
-✅ Received 5 recent exploits:
+ Received 5 recent exploits:
    1. Curve Finance - $61,700,000
    2. Euler Finance - $8,200,000
    3. Mango Markets - $1,500,000
@@ -53,7 +53,7 @@ ts-node index.ts
    5. Nomad Bridge - $190,000,000
 
 ======================================================================
-✅ Example complete!
+ Example complete!
 ======================================================================
 ```
 
@@ -62,7 +62,7 @@ ts-node index.ts
 | Feature | Basic Payment | Escrow Payment |
 |---------|---------------|----------------|
 | Release Time | Instant | Time-lock (e.g., 24h) |
-| Dispute Support | ❌ No | ✅ Yes |
-| Refund Support | ❌ No | ✅ Yes (automated) |
+| Dispute Support |  No |  Yes |
+| Refund Support |  No |  Yes (automated) |
 | Use Case | Trusted APIs | Unknown APIs |
 | Cost | Lower gas | Higher gas |

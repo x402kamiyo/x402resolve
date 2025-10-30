@@ -219,11 +219,11 @@ Monitor my wallet for interactions with risky protocols
 | **AI Agents** | 1 | 5 | Unlimited |
 | **Search Results** | Max 50 | Max 200 | Max 1000 |
 | **Risk Assessment** | Basic | + Recent exploits | + Recommendations |
-| **Wallet Monitoring** | ❌ | ✅ | ✅ |
+| **Wallet Monitoring** |  |  |  |
 | **Data Sources** | 20+ | 20+ | 20+ |
 | **Data Delay** | Real-time | Real-time | Real-time |
 | **Support** | Email | Priority | Dedicated |
-| **SLA** | ❌ | ❌ | 99.9% |
+| **SLA** |  |  | 99.9% |
 
 ---
 
