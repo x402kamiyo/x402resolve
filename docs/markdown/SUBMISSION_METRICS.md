@@ -425,7 +425,7 @@ const escrow = await client.createEscrow({ provider, consumer, amount });
 If the demo isn't live yet, enable it in 3 steps:
 
 1. Go to repository Settings → Pages
-2. Source: Deploy from a branch → select `main` branch and `/demo` folder
+2. Source: Deploy from a branch → select `main` branch and `/docs` folder
 3. Save and wait 2-3 minutes for deployment
 
 The workflow `.github/workflows/deploy-demo.yml` is pre-configured and will auto-deploy on any `demo/` folder changes.

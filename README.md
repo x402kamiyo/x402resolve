@@ -6,7 +6,7 @@ Escrow-based payment system with programmatic dispute resolution for HTTP 402 AP
 
 ## Quick Links
 
-**Live Demo**: [https://x402kamiyo.github.io/x402resolve](https://x402kamiyo.github.io/x402resolve) (GitHub Pages) • **Devnet**: [Program Explorer](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet) • **Docs**: [Technical](./docs/)
+**Live Demo**: [https://x402kamiyo.github.io/x402resolve](https://x402kamiyo.github.io/x402resolve) (GitHub Pages) • **Devnet**: [Program Explorer](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet) • **Docs**: [Technical](./docs/markdown/)
 
 ## Hosted Demo
 
@@ -52,7 +52,7 @@ Standard x402 payments are irreversible. x402Resolve adds quality guarantees thr
 
 **Flow**: Payment → Escrow → Data → Quality Check → Fair Refund (if needed)
 
-**Demo**: [Interactive Web Demo](./demo/index.html) | **Docs**: [Complete Documentation](./docs/)
+**Demo**: [Interactive Web Demo](./demo/index.html) | **Docs**: [Complete Documentation](./docs/markdown/)
 
 ## Trust Model
 
@@ -527,7 +527,7 @@ MIT
 ## Links
 
 - GitHub: [github.com/x402kamiyo/x402resolve](https://github.com/x402kamiyo/x402resolve)
-- Documentation: [Complete Technical Docs](./docs/)
+- Documentation: [Complete Technical Docs](./docs/markdown/)
 - Demo: [Interactive Demo](./demo/index.html)
 - Website: [kamiyo.ai](https://kamiyo.ai)
 
