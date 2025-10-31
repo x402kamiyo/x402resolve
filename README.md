@@ -184,7 +184,7 @@ const payment = await client.pay({
 - Social: High limits (50/hour)
 - KYC: Unlimited access
 
-See [TRUST_MODEL.md](./TRUST_MODEL.md) and [TRUST_FEATURES_COMPLETE.md](./TRUST_FEATURES_COMPLETE.md) for complete architecture.
+See [TRUST_MODEL.md](./TRUST_MODEL.md), [TRUST_FEATURES_COMPLETE.md](./TRUST_FEATURES_COMPLETE.md), and [USE_CASES.md](./docs/USE_CASES.md) for complete architecture and applications beyond crypto security.
 
 ## Architecture
 
@@ -482,10 +482,11 @@ API: 0.0065 SOL
 - Integration examples (3)
 - Technical documentation
 
-**In Progress**:
-- End-to-end testing
-- Demo video production
-- Security audit
+**Documentation**:
+- [Multi-Oracle Design](./docs/MULTI_ORACLE_DESIGN.md) - Phase 2 consensus mechanism
+- [Test Results](./docs/TEST_RESULTS.md) - 77/77 tests passing
+- [Hosted Demo Guide](./docs/HOSTED_DEMO.md) - Deploy to GitHub Pages/Vercel/Netlify
+- [Use Cases](./docs/USE_CASES.md) - 10+ industries beyond crypto security
 
 **Timeline**: Submit by November 11, 2025
 
@@ -582,5 +583,5 @@ Built for Solana x402 Hackathon 2025.
 **Malicious Agent**: Strike system (4 strikes = permanent ban from program)
 **Data Provider Exit**: Time-lock ensures funds released after 7 days max
 
-**Multi-Oracle Roadmap**: Phase 2 will implement 3+ oracle consensus for critical disputes
+**Multi-Oracle System**: Phase 2 implements 3-oracle consensus with median scoring, outlier detection, and slashing mechanisms. Random oracle selection + 10 SOL stake requirement prevents Sybil attacks. Automatic multi-oracle trigger for transactions >1 SOL. See [Multi-Oracle Design](./docs/MULTI_ORACLE_DESIGN.md)
 
