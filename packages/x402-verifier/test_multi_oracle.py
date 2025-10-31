@@ -296,5 +296,163 @@ class TestFeeDistribution:
         assert fees["primary"] == 0.01  # Capped at maximum
 
 
+class TestOracleFallbacks:
+    """Test oracle failure and fallback mechanisms"""
+
+    def test_handle_oracle_timeout_with_backup(self):
+        system = MultiOracleSystem()
+
+        # Register 3 oracles
+        for i in range(3):
+            key = nacl.signing.SigningKey.generate()
+            pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+            system.register_oracle(pubkey, 10.0, key)
+
+        oracles_list = list(system.oracles.keys())
+        timeout_oracle = oracles_list[0]
+
+        # Handle timeout
+        backup = system.handle_oracle_timeout(timeout_oracle, 3600)
+
+        assert backup is not None
+        assert backup != timeout_oracle
+        assert backup in system.oracles
+        assert system.oracles[timeout_oracle].reputation_score == 450  # 500 - 50
+
+    def test_handle_oracle_timeout_no_backup(self):
+        system = MultiOracleSystem()
+
+        # Register only 1 oracle
+        key = nacl.signing.SigningKey.generate()
+        pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+        system.register_oracle(pubkey, 10.0, key)
+
+        # Handle timeout - no backup available
+        backup = system.handle_oracle_timeout(pubkey)
+
+        assert backup is None
+
+    def test_full_oracle_failure_new_set(self):
+        system = MultiOracleSystem()
+
+        # Register 6 oracles (3 failed, 3 available)
+        for i in range(6):
+            key = nacl.signing.SigningKey.generate()
+            pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+            system.register_oracle(pubkey, 10.0 + i, key)
+
+        oracles_list = list(system.oracles.keys())
+        failed = oracles_list[:3]
+
+        resolution = system.handle_full_oracle_failure(failed, 1.5)
+
+        assert resolution["strategy"] == "new_oracle_set"
+        assert len(resolution["oracles"]) == 3
+        assert all(o not in failed for o in resolution["oracles"])
+
+    def test_full_oracle_failure_reduced_threshold(self):
+        system = MultiOracleSystem()
+
+        # Register 4 oracles (3 failed, 1 available)
+        for i in range(4):
+            key = nacl.signing.SigningKey.generate()
+            pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+            system.register_oracle(pubkey, 10.0, key)
+
+        oracles_list = list(system.oracles.keys())
+        failed = oracles_list[:2]
+
+        resolution = system.handle_full_oracle_failure(failed, 1.5)
+
+        assert resolution["strategy"] == "reduced_threshold"
+        assert len(resolution["oracles"]) == 2
+
+    def test_full_oracle_failure_admin_oracle(self):
+        system = MultiOracleSystem()
+
+        # Register 1 high-reputation oracle
+        key = nacl.signing.SigningKey.generate()
+        pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+        system.register_oracle(pubkey, 10.0, key)
+        system.oracles[pubkey].reputation_score = 950  # Admin level
+
+        # All others failed
+        failed = ["oracle1", "oracle2", "oracle3"]
+
+        resolution = system.handle_full_oracle_failure(failed, 1.5)
+
+        assert resolution["strategy"] == "admin_oracle"
+        assert len(resolution["oracles"]) == 1
+        assert resolution["oracles"][0] == pubkey
+
+    def test_full_oracle_failure_delayed_retry(self):
+        system = MultiOracleSystem()
+
+        # No oracles available
+        failed = ["oracle1", "oracle2", "oracle3"]
+
+        resolution = system.handle_full_oracle_failure(failed, 2.0)
+
+        assert resolution["strategy"] == "delayed_retry"
+        assert resolution["retry_hours"] == 24
+        assert resolution["interim_refund_pct"] == 50
+        assert resolution["interim_refund_amount"] == 1.0  # 50% of 2.0
+
+
+class TestCollusionDetection:
+    """Test collusion detection mechanisms"""
+
+    def test_detect_collusion_identical_scores(self):
+        system = MultiOracleSystem()
+        assessments = [
+            OracleAssessment("oracle1", 75, "reason", "sig1", 1000),
+            OracleAssessment("oracle2", 75, "reason", "sig2", 1001),
+            OracleAssessment("oracle3", 75, "reason", "sig3", 1002)
+        ]
+
+        detected, indices = system.detect_collusion(assessments)
+
+        assert detected == True
+        assert len(indices) == 3
+
+    def test_detect_collusion_low_variance(self):
+        system = MultiOracleSystem()
+        assessments = [
+            OracleAssessment("oracle1", 70, "reason", "sig1", 1000),
+            OracleAssessment("oracle2", 71, "reason", "sig2", 1001),
+            OracleAssessment("oracle3", 70, "reason", "sig3", 1002)
+        ]
+
+        detected, indices = system.detect_collusion(assessments)
+
+        assert detected == True  # Variance < 2.0
+
+    def test_detect_collusion_paired_scores(self):
+        system = MultiOracleSystem()
+        assessments = [
+            OracleAssessment("oracle1", 80, "reason", "sig1", 1000),
+            OracleAssessment("oracle2", 80, "reason", "sig2", 1001),
+            OracleAssessment("oracle3", 65, "reason", "sig3", 1002)
+        ]
+
+        detected, indices = system.detect_collusion(assessments)
+
+        assert detected == True
+        assert 0 in indices and 1 in indices
+
+    def test_no_collusion_detected(self):
+        system = MultiOracleSystem()
+        assessments = [
+            OracleAssessment("oracle1", 70, "reason", "sig1", 1000),
+            OracleAssessment("oracle2", 85, "reason", "sig2", 1001),
+            OracleAssessment("oracle3", 92, "reason", "sig3", 1002)
+        ]
+
+        detected, indices = system.detect_collusion(assessments)
+
+        assert detected == False
+        assert len(indices) == 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
