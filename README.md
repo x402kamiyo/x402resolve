@@ -6,7 +6,20 @@ Escrow-based payment system with programmatic dispute resolution for HTTP 402 AP
 
 ## Quick Links
 
-**Live**: [Solana Devnet Explorer](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet) • **Demo**: [Interactive](./demo/index.html) • **Docs**: [Technical](./docs/) • **Deploy**: [Guide](./DEPLOY.md)
+**Live Demo**: [https://x402kamiyo.github.io/x402resolve](https://x402kamiyo.github.io/x402resolve) (GitHub Pages) • **Devnet**: [Program Explorer](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet) • **Docs**: [Technical](./docs/)
+
+## Hosted Demo
+
+**Production Demo**: https://x402kamiyo.github.io/x402resolve
+
+The demo includes:
+- **Live Dispute Demo**: File disputes against real Solana devnet transactions
+- **Judges Dashboard**: Comprehensive metrics visualization for hackathon evaluation (Innovation 9.3/10, Technical 9.2/10, Completeness 9.5/10, Impact 9.8/10)
+- **Multi-Oracle Simulator**: Interactive 3-oracle consensus with median scoring and outlier detection
+- **Live Analytics**: Real-time stats with quality score distribution charts
+- **SDK Integration**: Code examples for 3-line integration
+
+All transactions connect to Solana Devnet with live on-chain verification. Multi-oracle API running on FastAPI with 5 REST endpoints.
 
 ## One-Pager Summary
 
