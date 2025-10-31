@@ -371,8 +371,163 @@ class MultiOracleSystem:
                 "secondary": secondary_fee
             }
 
+    def handle_oracle_timeout(
+        self,
+        oracle_pubkey: str,
+        timeout_seconds: int = 3600
+    ) -> Optional[str]:
+        """
+        Handle oracle non-response with fallback selection
 
-# Example usage
+        Fallback chain:
+        1. Penalize reputation (-50 points, no stake slash)
+        2. Select backup oracle from remaining active pool
+        3. Return backup oracle pubkey or None if insufficient
+
+        Args:
+            oracle_pubkey: Non-responsive oracle
+            timeout_seconds: Timeout duration for logging
+
+        Returns:
+            Backup oracle pubkey or None
+        """
+        if oracle_pubkey in self.oracles:
+            oracle = self.oracles[oracle_pubkey]
+            oracle.reputation_score = max(0, oracle.reputation_score - 50)
+            logger.warning(
+                f"Oracle {oracle_pubkey[:8]} timeout ({timeout_seconds}s). "
+                f"Reputation: {oracle.reputation_score}"
+            )
+
+        active = [
+            pub for pub, o in self.oracles.items()
+            if o.status == OracleStatus.ACTIVE and pub != oracle_pubkey
+        ]
+
+        if active:
+            import random
+            backup = random.choice(active)
+            logger.info(f"Selected backup oracle: {backup[:8]}")
+            return backup
+
+        return None
+
+    def handle_full_oracle_failure(
+        self,
+        failed_oracles: List[str],
+        dispute_value: float
+    ) -> Dict:
+        """
+        Multi-layer fallback when all selected oracles fail
+
+        Fallback chain:
+        1. Select entirely new oracle set (30min timeout)
+        2. Lower threshold to 2 oracles if <3 available
+        3. Use single admin oracle if available (rep >= 900)
+        4. Schedule 24hr retry + 50% good-faith refund
+
+        Args:
+            failed_oracles: List of failed oracle pubkeys
+            dispute_value: Transaction amount in SOL
+
+        Returns:
+            Resolution strategy dict
+        """
+        # Attempt 1: Select new oracle set
+        active = [
+            pub for pub, o in self.oracles.items()
+            if o.status == OracleStatus.ACTIVE and pub not in failed_oracles
+        ]
+
+        if len(active) >= 3:
+            # Select from non-failed oracles only
+            import hashlib
+            import random
+            random.seed(hashlib.sha256(str(len(failed_oracles)).encode()).digest())
+            new_selection = random.sample(active, min(3, len(active)))
+            return {
+                "strategy": "new_oracle_set",
+                "oracles": new_selection,
+                "timeout": 1800
+            }
+
+        # Attempt 2: Lower threshold to 2 oracles
+        if len(active) >= 2:
+            return {
+                "strategy": "reduced_threshold",
+                "oracles": active[:2],
+                "timeout": 1800
+            }
+
+        # Attempt 3: Admin oracle
+        admin = next(
+            (pub for pub, o in self.oracles.items()
+             if o.reputation_score >= 900 and o.status == OracleStatus.ACTIVE),
+            None
+        )
+        if admin:
+            return {
+                "strategy": "admin_oracle",
+                "oracles": [admin],
+                "timeout": 1800
+            }
+
+        # Attempt 4: Delay + partial refund
+        return {
+            "strategy": "delayed_retry",
+            "retry_hours": 24,
+            "interim_refund_pct": 50,
+            "interim_refund_amount": dispute_value * 0.5
+        }
+
+    def detect_collusion(
+        self,
+        assessments: List[OracleAssessment]
+    ) -> Tuple[bool, List[int]]:
+        """
+        Detect suspicious oracle coordination patterns
+
+        Detection criteria:
+        - All identical scores (HIGH suspicion)
+        - Variance < 2.0 (MEDIUM suspicion)
+        - Paired similarity (MEDIUM suspicion)
+
+        Args:
+            assessments: Oracle quality assessments
+
+        Returns:
+            (collusion_detected, suspicious_oracle_indices)
+        """
+        if len(assessments) < 2:
+            return (False, [])
+
+        scores = [a.quality_score for a in assessments]
+
+        # All identical
+        if len(set(scores)) == 1:
+            logger.error(f"Collusion detected: All identical scores ({scores[0]})")
+            return (True, list(range(len(scores))))
+
+        # Low variance
+        std_dev = statistics.stdev(scores)
+        if std_dev < 2.0:
+            logger.warning(f"Possible collusion: Low variance ({std_dev:.2f})")
+            return (True, list(range(len(scores))))
+
+        # Paired similarity
+        for i in range(len(scores)):
+            if scores.count(scores[i]) >= 2:
+                paired = [j for j, s in enumerate(scores) if s == scores[i]]
+                if len(paired) >= 2:
+                    logger.warning(
+                        f"Possible collusion: Paired scores {scores[i]} "
+                        f"at indices {paired}"
+                    )
+                    return (True, paired)
+
+        return (False, [])
+
+
 # FastAPI integration
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
