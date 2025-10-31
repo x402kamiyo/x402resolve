@@ -11,7 +11,7 @@ x402Resolve implements a comprehensive trust system for autonomous agent commerc
 
 ---
 
-## 1. How do we trust them (agents)?
+## 1. How do we trust agents?
 
 ### On-Chain Audit Trail
 
