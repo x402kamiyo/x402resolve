@@ -909,7 +909,7 @@ pub mod x402_escrow {
                 const version = await connection.getVersion();
                 document.getElementById('networkStatus').textContent = `Network: ✓ Devnet`;
                 document.getElementById('networkStatus').style.background = '#1a1a1a';
-                document.getElementById('networkStatus').style.borderColor = '#00d9ff';
+                document.getElementById('networkStatus').style.borderColor = '#333';
             } catch (error) {
                 document.getElementById('networkStatus').textContent = 'Network: ✗ Offline';
                 document.getElementById('networkStatus').style.background = '#1a1a1a';
@@ -938,7 +938,7 @@ pub mod x402_escrow {
                         document.getElementById('programStatus').textContent = `Program: ✓ Deployed`;
                     }
                     document.getElementById('programStatus').style.background = '#1a1a1a';
-                    document.getElementById('programStatus').style.borderColor = '#00d9ff';
+                    document.getElementById('programStatus').style.borderColor = '#333';
                 } else {
                     document.getElementById('programStatus').textContent = 'Program: Not found';
                 }
@@ -952,7 +952,7 @@ pub mod x402_escrow {
             setTimeout(() => {
                 document.getElementById('oracleStatus').textContent = 'Oracle: ✓ Ready';
                 document.getElementById('oracleStatus').style.background = '#1a1a1a';
-                document.getElementById('oracleStatus').style.borderColor = '#00d9ff';
+                document.getElementById('oracleStatus').style.borderColor = '#333';
             }, 500);
         }
 
