@@ -420,7 +420,11 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>x402Resolve</h1>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
+                <h1 style="margin: 0;">x402Resolve</h1>
+                <span style="color: #555; font-size: 1.25rem;">by</span>
+                <a href="https://kamiyo.ai" target="_blank" style="color: #fff; text-decoration: none; font-size: 1.5rem; font-weight: 700; border-bottom: 2px solid #fff; padding-bottom: 2px;">KAMIYO</a>
+            </div>
             <p>Quality-based refund system for API payments on Solana</p>
             <div class="live-badge">
                 <span class="live-dot"></span>
@@ -1382,5 +1386,24 @@ pub mod x402_escrow {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
     </script>
+
+    <footer style="text-align: center; padding: 60px 20px 40px; border-top: 1px solid #222; margin-top: 80px;">
+        <div style="margin-bottom: 20px;">
+            <a href="https://kamiyo.ai" target="_blank" style="color: #fff; text-decoration: none; font-size: 1.5rem; font-weight: 700;">
+                KAMIYO
+            </a>
+        </div>
+        <p style="color: #666; font-size: 0.875rem; margin-bottom: 8px;">
+            Security intelligence platform for DeFi
+        </p>
+        <p style="color: #444; font-size: 0.8125rem;">
+            x402Resolve demonstrates KAMIYO's expertise in real-time threat detection, AI-powered quality analysis, and automated security systems.
+        </p>
+        <div style="margin-top: 24px; display: flex; justify-content: center; gap: 24px; font-size: 0.875rem;">
+            <a href="https://kamiyo.ai" target="_blank" style="color: #888; text-decoration: none; border-bottom: 1px solid #333;">Visit KAMIYO</a>
+            <a href="https://github.com/x402kamiyo/x402resolve" target="_blank" style="color: #888; text-decoration: none; border-bottom: 1px solid #333;">GitHub</a>
+            <a href="https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet" target="_blank" style="color: #888; text-decoration: none; border-bottom: 1px solid #333;">Solana Explorer</a>
+        </div>
+    </footer>
 </body>
 </html>
