@@ -58,7 +58,7 @@
             align-items: center;
             gap: 8px;
             background: #111;
-            border: 1px solid #00d9ff;
+            border: 1px solid #333;
             padding: 8px 16px;
             border-radius: 6px;
             font-size: 0.875rem;
@@ -895,7 +895,7 @@ pub mod x402_escrow {
             try {
                 const connection = new solanaWeb3.Connection('https://api.devnet.solana.com');
                 const version = await connection.getVersion();
-                document.getElementById('networkStatus').textContent = `Network: ✓ Devnet`;
+                document.getElementById('networkStatus').innerHTML = `Network: <span style="color: #00d9ff;">✓</span> Devnet`;
                 document.getElementById('networkStatus').style.background = '#1a1a1a';
                 document.getElementById('networkStatus').style.borderColor = '#333';
             } catch (error) {
@@ -921,9 +921,9 @@ pub mod x402_escrow {
                     try {
                         const programDataInfo = await connection.getAccountInfo(programDataPubkey);
                         const size = programDataInfo ? Math.round(programDataInfo.data.length / 1024) : 275;
-                        document.getElementById('programStatus').textContent = `Program: ✓ Deployed (${size}KB)`;
+                        document.getElementById('programStatus').innerHTML = `Program: <span style="color: #00d9ff;">✓</span> Deployed (${size}KB)`;
                     } catch {
-                        document.getElementById('programStatus').textContent = `Program: ✓ Deployed`;
+                        document.getElementById('programStatus').innerHTML = `Program: <span style="color: #00d9ff;">✓</span> Deployed`;
                     }
                     document.getElementById('programStatus').style.background = '#1a1a1a';
                     document.getElementById('programStatus').style.borderColor = '#333';
@@ -938,7 +938,7 @@ pub mod x402_escrow {
         async function checkOracleStatus() {
             // Simulated - replace with actual oracle endpoint
             setTimeout(() => {
-                document.getElementById('oracleStatus').textContent = 'Oracle: ✓ Ready';
+                document.getElementById('oracleStatus').innerHTML = 'Oracle: <span style="color: #00d9ff;">✓</span> Ready';
                 document.getElementById('oracleStatus').style.background = '#1a1a1a';
                 document.getElementById('oracleStatus').style.borderColor = '#333';
             }, 500);
