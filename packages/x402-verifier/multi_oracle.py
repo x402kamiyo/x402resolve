@@ -373,77 +373,239 @@ class MultiOracleSystem:
 
 
 # Example usage
-if __name__ == "__main__":
-    # Initialize system
-    system = MultiOracleSystem()
+# FastAPI integration
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List
 
-    # Register 5 oracles with minimum stake
-    oracle_keys = [nacl.signing.SigningKey.generate() for _ in range(5)]
-    for i, key in enumerate(oracle_keys):
-        pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
-        system.register_oracle(pubkey, 10.0 + i, key)
+app = FastAPI(
+    title="Multi-Oracle Consensus System",
+    description="Phase 2 multi-oracle consensus for x402Resolve",
+    version="2.0.0"
+)
 
-    # Simulate high-value transaction (1.5 SOL)
-    transaction_value = 1.5
-    required, count = system.requires_multi_oracle(transaction_value)
+# CORS for browser access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    print(f"\nTransaction: {transaction_value} SOL")
-    print(f"Multi-oracle required: {required}")
-    print(f"Oracle count: {count}")
+# Global system instance
+global_system = MultiOracleSystem()
 
-    if required:
-        # Select 3 oracles
-        import secrets
-        seed = secrets.token_bytes(32)
-        selected = system.select_oracles(count, seed)
+# Request/Response models
+class RegisterOracleRequest(BaseModel):
+    pubkey: str
+    stake: float
 
-        # Simulate assessments
+class MultiOracleRequest(BaseModel):
+    transaction_value: float
+    transaction_id: str
+    assessments: List[Dict]
+
+class ConsensusResponse(BaseModel):
+    median_score: int
+    mean_score: float
+    std_dev: float
+    confidence: int
+    outlier_count: int
+    refund_percentage: float
+    fees: Dict[str, float]
+
+@app.get("/")
+async def root():
+    """Health check"""
+    return {
+        "service": "Multi-Oracle Consensus System",
+        "version": "2.0.0",
+        "status": "operational",
+        "active_oracles": len([o for o in global_system.oracles.values() if o.status == OracleStatus.ACTIVE])
+    }
+
+@app.post("/register-oracle")
+async def register_oracle(request: RegisterOracleRequest):
+    """Register a new oracle"""
+    try:
+        key = nacl.signing.SigningKey.generate()
+        success = global_system.register_oracle(request.pubkey, request.stake, key)
+
+        if success:
+            return {"success": True, "message": f"Oracle {request.pubkey[:8]} registered"}
+        else:
+            raise HTTPException(status_code=400, detail="Registration failed")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/consensus", response_model=ConsensusResponse)
+async def calculate_consensus(request: MultiOracleRequest):
+    """Calculate multi-oracle consensus"""
+    try:
+        # Check if multi-oracle required
+        required, count = global_system.requires_multi_oracle(request.transaction_value)
+
+        if not required:
+            raise HTTPException(status_code=400, detail="Transaction value too low for multi-oracle")
+
+        # Convert assessments
         assessments = [
             OracleAssessment(
-                oracle_pubkey=selected[0],
-                quality_score=72,
-                reasoning="Semantic: 0.82, Completeness: 0.65, Freshness: 1.0",
-                signature="abc123...",
-                timestamp=1699564800
-            ),
-            OracleAssessment(
-                oracle_pubkey=selected[1],
-                quality_score=68,
-                reasoning="Semantic: 0.78, Completeness: 0.60, Freshness: 1.0",
-                signature="def456...",
-                timestamp=1699564810
-            ),
-            OracleAssessment(
-                oracle_pubkey=selected[2],
-                quality_score=70,
-                reasoning="Semantic: 0.80, Completeness: 0.62, Freshness: 1.0",
-                signature="ghi789...",
-                timestamp=1699564820
+                oracle_pubkey=a['oracle_pubkey'],
+                quality_score=a['quality_score'],
+                reasoning=a['reasoning'],
+                signature=a['signature'],
+                timestamp=a['timestamp']
             )
+            for a in request.assessments
         ]
 
         # Calculate consensus
-        consensus = system.calculate_consensus(assessments)
+        consensus = global_system.calculate_consensus(assessments)
 
-        print(f"\nConsensus Result:")
-        print(f"  Median Score: {consensus.median_score}/100")
-        print(f"  Mean Score: {consensus.mean_score:.1f}/100")
-        print(f"  Std Dev: {consensus.std_dev:.1f}")
-        print(f"  Confidence: {consensus.confidence}%")
-        print(f"  Outliers: {consensus.outlier_indices}")
+        # Calculate refund
+        median = consensus.median_score
+        refund_pct = 0.0
+        if median < 50:
+            refund_pct = 100.0
+        elif median < 80:
+            refund_pct = ((80 - median) / 80) * 100
 
-        # Calculate fee distribution
-        fees = system.calculate_fee_split(transaction_value, count)
-        print(f"\nFee Distribution:")
-        print(f"  Primary oracle: {fees['primary']:.6f} SOL")
-        print(f"  Secondary oracles: {fees['secondary']:.6f} SOL each")
+        # Fee distribution
+        fees = global_system.calculate_fee_split(request.transaction_value, len(assessments))
 
-        # Simulate outlier detection and slashing
-        if consensus.outlier_indices:
-            outlier_idx = consensus.outlier_indices[0]
-            outlier_pk = assessments[outlier_idx].oracle_pubkey
-            slashed, banned = system.slash_oracle(outlier_pk, "Outlier assessment")
-            print(f"\nSlashing:")
-            print(f"  Oracle: {outlier_pk[:8]}")
-            print(f"  Amount: {slashed:.6f} SOL")
-            print(f"  Banned: {banned}")
+        # Slash outliers
+        for idx in consensus.outlier_indices:
+            outlier_pk = assessments[idx].oracle_pubkey
+            global_system.slash_oracle(outlier_pk, "Outlier assessment")
+
+        return ConsensusResponse(
+            median_score=consensus.median_score,
+            mean_score=consensus.mean_score,
+            std_dev=consensus.std_dev,
+            confidence=consensus.confidence,
+            outlier_count=len(consensus.outlier_indices),
+            refund_percentage=refund_pct,
+            fees=fees
+        )
+
+    except Exception as e:
+        logger.error(f"Consensus calculation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/oracles")
+async def list_oracles():
+    """List all registered oracles"""
+    return {
+        "oracles": [
+            {
+                "pubkey": pk[:16] + "...",
+                "stake": oracle.stake,
+                "reputation": oracle.reputation_score,
+                "total_assessments": oracle.total_assessments,
+                "status": oracle.status.value
+            }
+            for pk, oracle in global_system.oracles.items()
+        ]
+    }
+
+@app.get("/simulate")
+async def simulate_consensus(transaction_value: float = 1.5):
+    """Simulate multi-oracle consensus (demo purposes)"""
+    try:
+        # Ensure oracles registered
+        if len(global_system.oracles) < 3:
+            for i in range(5):
+                key = nacl.signing.SigningKey.generate()
+                pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+                global_system.register_oracle(pubkey, 10.0 + i, key)
+
+        # Check requirements
+        required, count = global_system.requires_multi_oracle(transaction_value)
+
+        if not required:
+            return {"error": "Transaction value too low for multi-oracle"}
+
+        # Select oracles
+        import secrets
+        seed = secrets.token_bytes(32)
+        selected = global_system.select_oracles(count, seed)
+
+        # Generate simulated assessments
+        import random
+        base_score = 65 + random.random() * 15
+        assessments = []
+        for i, oracle_pk in enumerate(selected):
+            score = int(base_score + (random.random() * 6 - 3))
+            assessments.append(
+                OracleAssessment(
+                    oracle_pubkey=oracle_pk,
+                    quality_score=score,
+                    reasoning=f"Semantic: 0.{random.randint(60,90)}, Completeness: 0.{random.randint(60,90)}, Freshness: 0.{random.randint(80,100)}",
+                    signature="sim_" + secrets.token_hex(32),
+                    timestamp=int(time.time())
+                )
+            )
+
+        # Calculate consensus
+        consensus = global_system.calculate_consensus(assessments)
+
+        # Calculate refund
+        median = consensus.median_score
+        refund_pct = 0.0
+        if median < 50:
+            refund_pct = 100.0
+        elif median < 80:
+            refund_pct = ((80 - median) / 80) * 100
+
+        # Fee distribution
+        fees = global_system.calculate_fee_split(transaction_value, count)
+
+        return {
+            "transaction_value": transaction_value,
+            "oracles_selected": [pk[:16] + "..." for pk in selected],
+            "assessments": [
+                {
+                    "oracle": a.oracle_pubkey[:16] + "...",
+                    "score": a.quality_score
+                }
+                for a in assessments
+            ],
+            "consensus": {
+                "median": consensus.median_score,
+                "mean": round(consensus.mean_score, 2),
+                "std_dev": round(consensus.std_dev, 2),
+                "confidence": consensus.confidence,
+                "outliers": len(consensus.outlier_indices)
+            },
+            "refund_percentage": round(refund_pct, 2),
+            "refund_amount": round(transaction_value * refund_pct / 100, 4),
+            "fees": fees
+        }
+
+    except Exception as e:
+        logger.error(f"Simulation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+if __name__ == "__main__":
+    import uvicorn
+    import time
+
+    logger.info("Multi-Oracle Consensus System starting...")
+
+    # Pre-register 5 oracles for demo
+    oracle_keys = [nacl.signing.SigningKey.generate() for _ in range(5)]
+    for i, key in enumerate(oracle_keys):
+        pubkey = key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode()
+        global_system.register_oracle(pubkey, 10.0 + i, key)
+        logger.info(f"Registered oracle {pubkey[:8]} with {10.0 + i} SOL stake")
+
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8001,
+        log_level="info"
+    )
