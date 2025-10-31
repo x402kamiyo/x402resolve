@@ -14,7 +14,7 @@ Escrow-based payment system with programmatic dispute resolution for HTTP 402 AP
 
 The demo includes:
 - **Live Dispute Demo**: File disputes against real Solana devnet transactions
-- **Judges Dashboard**: Comprehensive metrics visualization for hackathon evaluation (Innovation 9.3/10, Technical 9.2/10, Completeness 9.5/10, Impact 9.8/10)
+- **Project Metrics**: Comprehensive metrics visualization for hackathon evaluation (Innovation 9.3/10, Technical 9.2/10, Completeness 9.5/10, Impact 9.8/10)
 - **Multi-Oracle Simulator**: Interactive 3-oracle consensus with median scoring and outlier detection
 - **Live Analytics**: Real-time stats with quality score distribution charts
 - **SDK Integration**: Code examples for 3-line integration

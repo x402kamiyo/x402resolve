@@ -432,7 +432,7 @@ The workflow `.github/workflows/deploy-demo.yml` is pre-configured and will auto
 
 **Demo Features:**
 - Live Dispute Demo: Real Solana devnet transactions
-- Judges Dashboard: All 4 hackathon scoring metrics with Chart.js visualizations
+- Project Metrics: All 4 hackathon scoring metrics with Chart.js visualizations
 - Multi-Oracle Simulator: Interactive 3-oracle consensus
 - Live Analytics: Real-time quality score distributions
 - SDK Integration: Copy-paste code examples
