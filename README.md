@@ -24,7 +24,7 @@ x402Resolve implements time-locked escrow on Solana with automated quality verif
 
 x402Resolve addresses five critical trust questions for autonomous agent commerce:
 
-### 1. How Do We Trust Them (Agents)?
+### 1. How Do We Trust Agents?
 
 **On-Chain Audit Trail**: Every transaction recorded immutably on Solana
 - Payment, dispute, quality score, and refund all publicly verifiable
