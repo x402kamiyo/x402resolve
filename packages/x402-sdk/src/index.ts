@@ -5,4 +5,5 @@
 
 export { KamiyoClient } from './client';
 export { ReputationManager } from './reputation';
+export { EscrowClient, EscrowValidator, EscrowUtils } from './escrow-client';
 export * from './types';
