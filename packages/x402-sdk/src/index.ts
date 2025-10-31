@@ -4,4 +4,5 @@
  */
 
 export { KamiyoClient } from './client';
+export { ReputationManager } from './reputation';
 export * from './types';
