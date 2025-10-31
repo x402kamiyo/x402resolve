@@ -65,7 +65,7 @@ EXPECTED_RECORD_COUNT = 10  # Agent expected at least 10 exploits
 
 async def main():
     print("=" * 70)
-    print("🤖 x402Resolve Dispute Resolution Demo")
+    print("x402Resolve Dispute Resolution Demo")
     print("=" * 70)
     print()
 
