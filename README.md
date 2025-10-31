@@ -2,7 +2,7 @@
 
 ### Built by [KAMIYO](https://kamiyo.ai)
 
-**Automated Quality Guarantees for API Payments**
+**Automated Dispute Resolution for x402 APIs on Solana**
 
 Escrow-based payment system with programmatic dispute resolution for HTTP 402 APIs. First system to enable objective quality assessment and sliding-scale refunds (0-100%) executed on-chain.
 
