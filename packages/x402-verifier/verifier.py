@@ -339,8 +339,8 @@ async def get_public_key():
 if __name__ == "__main__":
     import uvicorn
 
-    logger.info(" x402 Verifier Oracle starting...")
-    logger.info(f"📡 Verifier Public Key: {VERIFIER_PUBLIC_KEY.encode(encoder=nacl.encoding.HexEncoder).decode()}")
+    logger.info("x402 Verifier Oracle starting...")
+    logger.info(f"Verifier Public Key: {VERIFIER_PUBLIC_KEY.encode(encoder=nacl.encoding.HexEncoder).decode()}")
 
     uvicorn.run(
         app,
