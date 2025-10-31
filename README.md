@@ -1,8 +1,12 @@
 # x402Resolve
 
+### Built by [KAMIYO](https://kamiyo.ai)
+
 **Automated Quality Guarantees for API Payments**
 
 Escrow-based payment system with programmatic dispute resolution for HTTP 402 APIs. First system to enable objective quality assessment and sliding-scale refunds (0-100%) executed on-chain.
+
+**About KAMIYO**: Security intelligence platform for DeFi. x402Resolve demonstrates KAMIYO's expertise in real-time threat detection, AI-powered quality analysis, and automated security systems applied to API payment infrastructure.
 
 ## Quick Links
 
