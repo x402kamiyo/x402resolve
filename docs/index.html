@@ -57,7 +57,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #111;
+            background: #000;
             border: 1px solid #333;
             padding: 8px 16px;
             border-radius: 6px;
@@ -87,7 +87,7 @@
         }
 
         .status-item {
-            background: #111;
+            background: #000;
             border: 1px solid #222;
             padding: 6px 14px;
             border-radius: 6px;
@@ -140,7 +140,7 @@
         }
 
         .card {
-            background: #111;
+            background: #000;
             border: 1px solid #222;
             border-radius: 8px;
             padding: 24px;
@@ -609,17 +609,17 @@
                 <div class="card">
                     <h3 style="margin-bottom: 20px; text-align: center;">Key Differentiators</h3>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                        <div style="text-align: center; padding: 20px; background: #111; border-radius: 8px; border: 1px solid #222;">
+                        <div style="text-align: center; padding: 20px; background: #000; border-radius: 8px; border: 1px solid #222;">
                             <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">81%</div>
                             <div style="color: #ccc; margin-top: 10px;">Average Fraud Reduction</div>
                             <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">Across 11 industries</div>
                         </div>
-                        <div style="text-align: center; padding: 20px; background: #111; border-radius: 8px; border: 1px solid #222;">
+                        <div style="text-align: center; padding: 20px; background: #000; border-radius: 8px; border: 1px solid #222;">
                             <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">48hrs</div>
                             <div style="color: #ccc; margin-top: 10px;">Resolution Time</div>
                             <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">85% faster than traditional</div>
                         </div>
-                        <div style="text-align: center; padding: 20px; background: #111; border-radius: 8px; border: 1px solid #222;">
+                        <div style="text-align: center; padding: 20px; background: #000; border-radius: 8px; border: 1px solid #222;">
                             <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">99.9%</div>
                             <div style="color: #ccc; margin-top: 10px;">Oracle Fallback Success</div>
                             <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">4-layer redundancy</div>
@@ -1128,7 +1128,7 @@ pub mod x402_escrow {
                     <strong>✅ Dispute Resolved!</strong> Quality verification complete.
                 </div>
 
-                <div style="background: #111; padding: 20px; border-radius: 8px; border: 1px solid #222;">
+                <div style="background: #000; padding: 20px; border-radius: 8px; border: 1px solid #222;">
                     <h3 style="margin-bottom: 15px;">Quality Assessment</h3>
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0;">
                         <div style="text-align: center;">
@@ -1151,7 +1151,7 @@ pub mod x402_escrow {
                 </div>
 
                 ${refundPct > 0 ? `
-                    <div style="background: #111; padding: 30px; border-radius: 12px; text-align: center; margin-top: 20px; border: 2px solid #00d9ff;">
+                    <div style="background: #000; padding: 30px; border-radius: 12px; text-align: center; margin-top: 20px; border: 2px solid #00d9ff;">
                         <div style="font-size: 1.2rem; color: #00d9ff;">Refund Processed</div>
                         <div style="font-size: 3rem; font-weight: bold; margin: 15px 0; color: #fff;">${refundAmount} SOL</div>
                         <div style="font-size: 1.1rem; color: #ccc;">${refundPct}% of ${escrowAmount} SOL escrow</div>
@@ -1160,7 +1160,7 @@ pub mod x402_escrow {
                         </div>
                     </div>
                 ` : `
-                    <div style="text-align: center; padding: 30px; background: #111; border-radius: 12px; margin-top: 20px; border: 2px solid #00d9ff;">
+                    <div style="text-align: center; padding: 30px; background: #000; border-radius: 12px; margin-top: 20px; border: 2px solid #00d9ff;">
                         <h3 style="color: #00d9ff; margin-bottom: 10px; font-size: 1.5rem;">No Refund Needed</h3>
                         <p style="color: #ccc; font-size: 1.1rem;">Data quality meets standards (score ≥ 80)</p>
                     </div>
