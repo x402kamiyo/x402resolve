@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>x402Resolve - Live Demo | Solana x402 Hackathon 2025</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
@@ -14,10 +17,12 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
             min-height: 100vh;
             padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
@@ -27,100 +32,100 @@
 
         .header {
             text-align: center;
-            color: white;
             margin-bottom: 40px;
+            padding: 40px 20px;
+            border-bottom: 1px solid #222;
         }
 
         .header h1 {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
+            font-weight: 700;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            animation: fadeInDown 0.6s ease-out;
+            color: #fff;
+            letter-spacing: -0.02em;
         }
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .header p {
+            font-size: 1rem;
+            color: #888;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .live-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.2);
-            padding: 10px 24px;
-            border-radius: 25px;
-            font-size: 1rem;
+            background: #111;
+            border: 1px solid #222;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.875rem;
             margin: 15px auto;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
             animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .live-dot {
-            width: 10px;
-            height: 10px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: blink 1.5s ease-in-out infinite;
-        }
-
-        @keyframes blink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0.5; }
         }
 
         .network-status {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 12px;
             flex-wrap: wrap;
             margin-top: 15px;
         }
 
         .status-item {
-            background: rgba(255,255,255,0.15);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            background: #111;
+            border: 1px solid #222;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #888;
         }
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 32px;
             flex-wrap: wrap;
             justify-content: center;
+            border-bottom: 1px solid #222;
+            padding-bottom: 0;
         }
 
         .tab {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 2px solid transparent;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 1rem;
+            background: transparent;
+            color: #888;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 12px 20px;
+            border-radius: 0;
+            font-size: 0.9375rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            font-weight: 400;
         }
 
         .tab:hover {
-            background: rgba(255,255,255,0.3);
+            color: #e5e5e5;
+            background: rgba(255,255,255,0.05);
         }
 
         .tab.active {
-            background: white;
-            color: #667eea;
-            border-color: white;
+            color: #fff;
+            border-bottom-color: #fff;
+            font-weight: 700;
         }
 
         .tab-content {
@@ -129,12 +134,6 @@
 
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .demo-grid {
@@ -151,31 +150,24 @@
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 24px;
         }
 
         .card h2 {
-            color: #667eea;
+            color: #fff;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .card h2 span {
+            display: none;
         }
 
         .form-group {
@@ -184,23 +176,27 @@
 
         label {
             display: block;
-            color: #333;
-            font-weight: 600;
+            color: #e5e5e5;
+            font-weight: 400;
             margin-bottom: 8px;
+            font-size: 0.875rem;
         }
 
         input, textarea, select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e8ed;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
+            padding: 10px 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            transition: border-color 0.2s;
+            font-family: 'Atkinson Hyperlegible', monospace;
         }
 
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #555;
         }
 
         textarea {
@@ -209,29 +205,24 @@
         }
 
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #fff;
+            color: #0a0a0a;
             border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             width: 100%;
         }
 
         button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
+            background: #e5e5e5;
         }
 
         button:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
         }
 
@@ -243,35 +234,11 @@
         }
 
         .oracle-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #1a1a1a;
+            border: 1px solid #333;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 8px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .oracle-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255,255,255,0.1),
-                transparent
-            );
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .oracle-status {
@@ -292,18 +259,19 @@
         }
 
         .consensus-viz {
-            background: #f9fafb;
+            background: #0a0a0a;
+            border: 1px solid #222;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 8px;
             margin: 20px 0;
         }
 
         .consensus-result {
             text-align: center;
             padding: 30px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border-radius: 12px;
+            background: #1a1a1a;
+            border: 1px solid #10b981;
+            border-radius: 8px;
             margin-top: 20px;
         }
 
@@ -339,48 +307,40 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #e1e8ed;
+            background: #333;
             flex-shrink: 0;
             margin-top: 3px;
         }
 
         .timeline-item.active .timeline-dot {
-            background: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
-            animation: ping 1s ease-out;
-        }
-
-        @keyframes ping {
-            0% {
-                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.5);
-            }
-            100% {
-                box-shadow: 0 0 0 15px rgba(102, 126, 234, 0);
-            }
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
         }
 
         .alert {
-            padding: 15px;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: 6px;
             margin-bottom: 20px;
+            border: 1px solid;
+            font-size: 0.875rem;
         }
 
         .alert-info {
-            background: #dbeafe;
-            border-left: 4px solid #3b82f6;
-            color: #1e40af;
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
         }
 
         .alert-success {
-            background: #dcfce7;
-            border-left: 4px solid #10b981;
-            color: #065f46;
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
         }
 
         .alert-warning {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            color: #92400e;
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
         }
 
         .stats-grid {
@@ -391,27 +351,28 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 16px;
+            border-radius: 8px;
             text-align: center;
         }
 
         .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 10px 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 8px 0;
+            color: #fff;
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
+            font-size: 0.8125rem;
+            color: #888;
         }
 
         .code-block {
-            background: #1e293b;
-            color: #e2e8f0;
+            background: #0a0a0a;
+            color: #e5e5e5;
             padding: 20px;
             border-radius: 8px;
             overflow-x: auto;
@@ -459,14 +420,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 x402Resolve</h1>
+            <h1>x402Resolve</h1>
+            <p>Quality-based refund system for API payments on Solana</p>
             <div class="live-badge">
                 <span class="live-dot"></span>
-                <span>LIVE ON SOLANA DEVNET</span>
+                <span>LIVE ON DEVNET</span>
             </div>
-            <p style="font-size: 1.2rem; margin: 15px 0; opacity: 0.95;">
-                Multi-Oracle Consensus + AI Quality Verification + Automated Refunds
-            </p>
             <div class="network-status">
                 <span class="status-item" id="programStatus">Program: Loading...</span>
                 <span class="status-item" id="oracleStatus">Oracle: Checking...</span>
