@@ -67,7 +67,7 @@
         .live-dot {
             width: 8px;
             height: 8px;
-            background: #10b981;
+            background: #00d9ff;
             border-radius: 50%;
             animation: pulse 2s ease-in-out infinite;
         }
@@ -123,8 +123,8 @@
         }
 
         .tab.active {
-            color: #fff;
-            border-bottom-color: #fff;
+            color: #00d9ff;
+            border-bottom-color: #00d9ff;
             font-weight: 700;
         }
 
@@ -205,7 +205,7 @@
         }
 
         button {
-            background: #fff;
+            background: #00d9ff;
             color: #0a0a0a;
             border: none;
             padding: 12px 24px;
@@ -218,12 +218,21 @@
         }
 
         button:hover:not(:disabled) {
-            background: #e5e5e5;
+            background: #00c4e6;
         }
 
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        a {
+            color: #00d9ff;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #00c4e6;
         }
 
         .oracle-grid {
@@ -270,7 +279,7 @@
             text-align: center;
             padding: 30px;
             background: #1a1a1a;
-            border: 1px solid #10b981;
+            border: 1px solid #00d9ff;
             border-radius: 8px;
             margin-top: 20px;
         }
@@ -313,8 +322,8 @@
         }
 
         .timeline-item.active .timeline-dot {
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+            background: #00d9ff;
+            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2);
         }
 
         .alert {
@@ -326,15 +335,15 @@
         }
 
         .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: rgba(59, 130, 246, 0.3);
-            color: #93c5fd;
+            background: rgba(0, 217, 255, 0.1);
+            border-color: rgba(0, 217, 255, 0.3);
+            color: #00d9ff;
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: rgba(16, 185, 129, 0.3);
-            color: #6ee7b7;
+            background: rgba(0, 217, 255, 0.1);
+            border-color: rgba(0, 217, 255, 0.3);
+            color: #00d9ff;
         }
 
         .alert-warning {
@@ -423,7 +432,7 @@
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
                 <h1 style="margin: 0;">x402Resolve</h1>
                 <span style="color: #555; font-size: 1.25rem;">by</span>
-                <a href="https://kamiyo.ai" target="_blank" style="color: #fff; text-decoration: none; font-size: 1.5rem; font-weight: 700; border-bottom: 2px solid #fff; padding-bottom: 2px;">KAMIYO</a>
+                <a href="https://kamiyo.ai" target="_blank" style="color: #00d9ff; text-decoration: none; font-size: 1.5rem; font-weight: 700; border-bottom: 2px solid #00d9ff; padding-bottom: 2px;">KAMIYO</a>
             </div>
             <p>Quality-based refund system for API payments on Solana</p>
             <div class="live-badge">
@@ -609,23 +618,23 @@
                     </div>
                 </div>
 
-                <div class="card" style="background: #f8f9fa; padding: 30px;">
-                    <h3 style="margin-bottom: 20px; color: #333; text-align: center;">Key Differentiators</h3>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; text-align: center;">Key Differentiators</h3>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                        <div style="text-align: center; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="font-size: 2rem; color: #10b981; font-weight: bold;">81%</div>
-                            <div style="color: #666; margin-top: 10px;">Average Fraud Reduction</div>
-                            <div style="font-size: 0.85rem; color: #999; margin-top: 5px;">Across 11 industries</div>
+                        <div style="text-align: center; padding: 20px; background: #111; border-radius: 8px; border: 1px solid #222;">
+                            <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">81%</div>
+                            <div style="color: #ccc; margin-top: 10px;">Average Fraud Reduction</div>
+                            <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">Across 11 industries</div>
                         </div>
-                        <div style="text-align: center; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="font-size: 2rem; color: #3b82f6; font-weight: bold;">48hrs</div>
-                            <div style="color: #666; margin-top: 10px;">Resolution Time</div>
-                            <div style="font-size: 0.85rem; color: #999; margin-top: 5px;">85% faster than traditional</div>
+                        <div style="text-align: center; padding: 20px; background: #111; border-radius: 8px; border: 1px solid #222;">
+                            <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">48hrs</div>
+                            <div style="color: #ccc; margin-top: 10px;">Resolution Time</div>
+                            <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">85% faster than traditional</div>
                         </div>
-                        <div style="text-align: center; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="font-size: 2rem; color: #8b5cf6; font-weight: bold;">99.9%</div>
-                            <div style="color: #666; margin-top: 10px;">Oracle Fallback Success</div>
-                            <div style="font-size: 0.85rem; color: #999; margin-top: 5px;">4-layer redundancy</div>
+                        <div style="text-align: center; padding: 20px; background: #111; border-radius: 8px; border: 1px solid #222;">
+                            <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">99.9%</div>
+                            <div style="color: #ccc; margin-top: 10px;">Oracle Fallback Success</div>
+                            <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">4-layer redundancy</div>
                         </div>
                     </div>
                 </div>
@@ -895,7 +904,7 @@ pub mod x402_escrow {
                 const version = await connection.getVersion();
                 document.getElementById('networkStatus').textContent = `Network: ✓ Devnet`;
                 document.getElementById('networkStatus').style.background = '#1a1a1a';
-                document.getElementById('networkStatus').style.borderColor = '#10b981';
+                document.getElementById('networkStatus').style.borderColor = '#00d9ff';
             } catch (error) {
                 document.getElementById('networkStatus').textContent = 'Network: ✗ Offline';
                 document.getElementById('networkStatus').style.background = '#1a1a1a';
@@ -924,7 +933,7 @@ pub mod x402_escrow {
                         document.getElementById('programStatus').textContent = `Program: ✓ Deployed`;
                     }
                     document.getElementById('programStatus').style.background = '#1a1a1a';
-                    document.getElementById('programStatus').style.borderColor = '#10b981';
+                    document.getElementById('programStatus').style.borderColor = '#00d9ff';
                 } else {
                     document.getElementById('programStatus').textContent = 'Program: Not found';
                 }
@@ -938,7 +947,7 @@ pub mod x402_escrow {
             setTimeout(() => {
                 document.getElementById('oracleStatus').textContent = 'Oracle: ✓ Ready';
                 document.getElementById('oracleStatus').style.background = '#1a1a1a';
-                document.getElementById('oracleStatus').style.borderColor = '#10b981';
+                document.getElementById('oracleStatus').style.borderColor = '#00d9ff';
             }, 500);
         }
 
@@ -1131,41 +1140,41 @@ pub mod x402_escrow {
                     <strong>✅ Dispute Resolved!</strong> Quality verification complete.
                 </div>
 
-                <div style="background: #f9fafb; padding: 20px; border-radius: 8px;">
+                <div style="background: #111; padding: 20px; border-radius: 8px; border: 1px solid #222;">
                     <h3 style="margin-bottom: 15px;">Quality Assessment</h3>
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0;">
                         <div style="text-align: center;">
-                            <div style="font-size: 0.85rem; color: #666;">Overall</div>
-                            <div style="font-size: 2rem; font-weight: bold; color: ${qualityScore >= 80 ? '#10b981' : qualityScore >= 50 ? '#f59e0b' : '#ef4444'};">${qualityScore}</div>
+                            <div style="font-size: 0.85rem; color: #999;">Overall</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: ${qualityScore >= 80 ? '#00d9ff' : qualityScore >= 50 ? '#f59e0b' : '#ef4444'};">${qualityScore}</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 0.85rem; color: #666;">Semantic</div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #667eea;">${Math.round(score.semantic * 100)}</div>
+                            <div style="font-size: 0.85rem; color: #999;">Semantic</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #00d9ff;">${Math.round(score.semantic * 100)}</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 0.85rem; color: #666;">Complete</div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #667eea;">${Math.round(score.completeness * 100)}</div>
+                            <div style="font-size: 0.85rem; color: #999;">Complete</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #00d9ff;">${Math.round(score.completeness * 100)}</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 0.85rem; color: #666;">Fresh</div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #667eea;">${Math.round(score.freshness * 100)}</div>
+                            <div style="font-size: 0.85rem; color: #999;">Fresh</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #00d9ff;">${Math.round(score.freshness * 100)}</div>
                         </div>
                     </div>
                 </div>
 
                 ${refundPct > 0 ? `
-                    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 12px; text-align: center; margin-top: 20px;">
-                        <div style="font-size: 1.2rem; opacity: 0.9;">💰 Refund Processed</div>
-                        <div style="font-size: 3rem; font-weight: bold; margin: 15px 0;">${refundAmount} SOL</div>
-                        <div style="font-size: 1.1rem; opacity: 0.9;">${refundPct}% of ${escrowAmount} SOL escrow</div>
-                        <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px; font-size: 0.9rem; font-family: monospace;">
+                    <div style="background: #111; padding: 30px; border-radius: 12px; text-align: center; margin-top: 20px; border: 2px solid #00d9ff;">
+                        <div style="font-size: 1.2rem; color: #00d9ff;">Refund Processed</div>
+                        <div style="font-size: 3rem; font-weight: bold; margin: 15px 0; color: #fff;">${refundAmount} SOL</div>
+                        <div style="font-size: 1.1rem; color: #ccc;">${refundPct}% of ${escrowAmount} SOL escrow</div>
+                        <div style="margin-top: 15px; padding: 10px; background: #0a0a0a; border-radius: 8px; font-size: 0.9rem; font-family: monospace; color: #999;">
                             Solana TX: ${txId}
                         </div>
                     </div>
                 ` : `
-                    <div style="text-align: center; padding: 30px; background: #f3f4f6; border-radius: 12px; margin-top: 20px;">
-                        <h3 style="color: #10b981; margin-bottom: 10px; font-size: 1.5rem;">✅ No Refund Needed</h3>
-                        <p style="color: #666; font-size: 1.1rem;">Data quality meets standards (score ≥ 80)</p>
+                    <div style="text-align: center; padding: 30px; background: #111; border-radius: 12px; margin-top: 20px; border: 2px solid #00d9ff;">
+                        <h3 style="color: #00d9ff; margin-bottom: 10px; font-size: 1.5rem;">No Refund Needed</h3>
+                        <p style="color: #ccc; font-size: 1.1rem;">Data quality meets standards (score ≥ 80)</p>
                     </div>
                 `}
 
