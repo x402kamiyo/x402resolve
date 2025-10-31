@@ -10,7 +10,7 @@ cd /workspaces/x402resolve/packages/x402-escrow
 npm install
 
 # Ensure program is deployed
-solana program show BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P --url devnet
+solana program show AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR --url devnet
 ```
 
 ## Running the Demo
@@ -80,7 +80,7 @@ The demo will fail if:
 
 View emitted events on Solana Explorer:
 ```
-https://explorer.solana.com/address/BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P?cluster=devnet
+https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet
 ```
 
 Events emitted:
@@ -109,7 +109,7 @@ solana airdrop 2 <YOUR_WALLET> --url devnet
 ### Program Not Found
 ```bash
 # Verify program is deployed
-solana program show BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P --url devnet
+solana program show AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR --url devnet
 ```
 
 ### Transaction Failed
@@ -187,6 +187,6 @@ anchor run initialize-escrow --provider.cluster devnet
 ## Support
 
 For issues or questions:
-- Check program logs: `solana logs BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P --url devnet`
+- Check program logs: `solana logs AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR --url devnet`
 - View transactions on Explorer
 - Review error codes in `lib.rs`

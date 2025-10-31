@@ -15,7 +15,7 @@ import * as fs from 'fs';
 
 // Configuration
 const SOLANA_RPC = process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com';
-const PROGRAM_ID = new PublicKey('BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P');
+const PROGRAM_ID = new PublicKey('AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR');
 
 // Load wallets
 function loadWallet(path: string): Keypair {

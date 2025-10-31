@@ -9,9 +9,9 @@ cd /workspaces/x402resolve/packages/x402-escrow
 
 echo ""
 echo "Build complete!"
-echo "Program ID: BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P"
+echo "Program ID: AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR"
 echo ""
 echo "Next steps:"
 echo "1. Deploy: anchor deploy"
-echo "2. View on explorer: https://explorer.solana.com/address/BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P?cluster=devnet"
+echo "2. View on explorer: https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet"
 echo "3. Run tests: anchor test"

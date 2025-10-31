@@ -6,10 +6,9 @@ Automated dispute resolution system for HTTP 402 payment-required APIs using Sol
 
 ##  Live on Devnet
 
-**Program ID:** `BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P`
-**Explorer:** [View on Solana Explorer](https://explorer.solana.com/address/BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P?cluster=devnet)
+**Program ID:** `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR`
+**Explorer:** [View on Solana Explorer](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
 **Network:** Solana Devnet
-**Deployed:** October 30, 2025
 
 ## Overview
 
@@ -18,6 +17,151 @@ Standard x402 payments are irreversible. When data quality doesn't meet expectat
 x402Resolve implements time-locked escrow on Solana with automated quality verification. When disputed data doesn't meet quality standards, an objective scoring system calculates a fair refund (0-100% sliding scale) and executes it on-chain automatically.
 
 **Demo**: [Interactive Web Demo](./demo/index.html) | **Docs**: [Technical Documentation](./docs/)
+
+## Trust Model
+
+**16 trust features implemented**
+
+x402Resolve addresses five critical trust questions for autonomous agent commerce:
+
+### 1. How Do We Trust Them (Agents)?
+
+**On-Chain Audit Trail**: Every transaction recorded immutably on Solana
+- Payment, dispute, quality score, and refund all publicly verifiable
+- Creates permanent reputation record
+- Cannot be deleted or modified
+
+**Cryptographic Verification**: All quality assessments signed with Ed25519
+- Prevents quality score manipulation
+- Proves oracle actually assessed the data
+- Enables slashing for dishonest oracles
+
+**Objective Quality Scoring**: Algorithm removes human bias
+- Semantic similarity via sentence embeddings (40%)
+- Completeness validation for required fields (40%)
+- Freshness scoring for data recency (20%)
+- Consistent across all transactions
+
+**Agent Reputation System**: On-chain performance tracking
+- Reputation score 0-1000 based on transaction history
+- Disputes won/partial/lost categorization
+- Average quality received tracking
+- Permanent on-chain record
+
+**Historical Performance**: Query reputation anytime
+- Total transactions and dispute rate
+- Win/loss ratios for disputes
+- Verification level and access limits
+
+**Verification Badges**: Graduated access levels
+- Basic: 1 tx/hour, 10 tx/day
+- Staked: 10 tx/hour, 100 tx/day
+- Social: 50 tx/hour, 500 tx/day
+- KYC: Unlimited access
+
+### 2. What's the Scope of Work?
+
+**Query-Based Specification**: Clear definition of expected data
+- Query string defines semantic expectations
+- Required fields validated automatically
+- Minimum record counts enforced
+- Data age limits checked
+
+**Example**:
+```typescript
+const payment = await client.pay({
+  query: 'Uniswap V3 exploits on Ethereum',
+  expectedCriteria: {
+    minRecords: 5,
+    requiredFields: ['tx_hash', 'amount_usd', 'timestamp'],
+    maxAgeDays: 30
+  }
+});
+```
+
+**Structured Work Agreements**: Formal scope definition
+- WorkAgreement struct on-chain
+- Query, required fields, minimum records
+- Data age limits, quality thresholds
+- Pre-agreed acceptance criteria
+
+**Pre-Flight Validation**: Check before payment
+- Validate work spec feasibility
+- Provider commits to requirements
+- Reduces disputes from misalignment
+
+### 3. What Happens When They Mess Up?
+
+**Automated Dispute Resolution**: Zero manual intervention required
+- Quality check fails → Dispute filed automatically
+- Verifier oracle scores quality objectively
+- Refund calculated via sliding scale (0-100%)
+- Executed on-chain within 24-48 hours
+
+**Fair Refunds**: Not binary (all-or-nothing)
+
+| Quality Score | Refund | Outcome |
+|---------------|--------|---------|
+| 80-100 | 0% | Data acceptable |
+| 50-79 | Partial | Sliding scale |
+| 0-49 | 100% | Unacceptable quality |
+
+**Multi-Tier Dispute Resolution**: Escalation support
+- Automatic resolution (80% of cases)
+- Client appeal with stake (15%)
+- Multi-oracle consensus (4%)
+- Human arbitration (1%)
+
+**Provider Penalties**: Consequences for failures
+- Strike system (4 strikes = permanent ban)
+- Suspension periods (7, 30 days)
+- Reputation impact tracked on-chain
+- Poor quality count monitoring
+
+### 4. Who Gives Them Reputation, Credit, or Refunds?
+
+**Automated Verifier Oracle**: Objective quality assessment
+- Multi-factor algorithm (semantic + completeness + freshness)
+- Ed25519 signed results
+- Fast response (<5 minutes)
+
+**On-Chain Execution**: Smart contract enforces refunds
+- No human discretion
+- Cannot be overridden by single party
+- Transparent and verifiable
+- Permanent blockchain record
+
+### 5. How Do We Stop Them From Being Exploited?
+
+**Time-Lock Protection**: Prevents indefinite escrow
+- Maximum 7-day escrow duration
+- Automatic release after time-lock expires
+- Clear dispute window (48 hours)
+
+**PDA-Based Security**: Deterministic escrow addresses
+- No one can steal funds (only program controls PDA)
+- No private key to lose
+- Collision-resistant
+
+**Rate Limiting**: Prevents spam and abuse
+- Per-entity hourly and daily limits
+- Based on verification level
+- Automatic counter reset
+- Prevents Sybil attacks
+
+**Dispute Cost Scaling**: Economic disincentive
+- Base cost: 0.001 SOL
+- Multiplier based on dispute rate
+- High abuse pattern: 10x cost
+- Refunded if dispute valid
+
+**Sybil Attack Protection**: Graduated verification
+- Basic: Low limits (1/hour)
+- Staked: Medium limits (10/hour)
+- Social: High limits (50/hour)
+- KYC: Unlimited access
+
+See [TRUST_MODEL.md](./TRUST_MODEL.md) and [TRUST_FEATURES_COMPLETE.md](./TRUST_FEATURES_COMPLETE.md) for complete architecture.
 
 ## Architecture
 

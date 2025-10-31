@@ -19,7 +19,7 @@ import idl from './idl/x402_escrow.json';
 // Setup
 const connection = new Connection('https://api.devnet.solana.com');
 const wallet = new Wallet(Keypair.generate());
-const programId = new PublicKey('BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P');
+const programId = new PublicKey('AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR');
 
 // Initialize client
 const client = new EscrowClient({ programId, connection, wallet }, idl);
@@ -482,7 +482,7 @@ import {
 - Documentation: `/packages/x402-sdk/README.md`
 - Examples: `/packages/x402-sdk/examples/`
 - Issues: GitHub Issues
-- Program ID: `BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P` (devnet)
+- Program ID: `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR` (devnet)
 
 ## Next Steps
 
