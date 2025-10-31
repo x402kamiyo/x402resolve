@@ -413,11 +413,28 @@ const escrow = await client.createEscrow({ provider, consumer, amount });
 
 ## Contact & Links
 
-- **GitHub:** https://github.com/yourusername/x402resolve
-- **Demo:** https://yourusername.github.io/x402resolve
+- **GitHub:** https://github.com/x402kamiyo/x402resolve
+- **Live Demo:** https://x402kamiyo.github.io/x402resolve
 - **Devnet Program:** `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR`
 - **Documentation:** /docs/README.md
-- **Discord:** https://discord.gg/x402resolve
-- **Email:** team@x402resolve.com
+- **Multi-Oracle API:** FastAPI on port 8001 (5 endpoints)
+- **Test Results:** 101/101 passing (34 multi-oracle, 17 SDK, 42 verifier, 8 integration)
+
+## GitHub Pages Setup (For Judges)
+
+If the demo isn't live yet, enable it in 3 steps:
+
+1. Go to repository Settings → Pages
+2. Source: Deploy from a branch → select `main` branch and `/demo` folder
+3. Save and wait 2-3 minutes for deployment
+
+The workflow `.github/workflows/deploy-demo.yml` is pre-configured and will auto-deploy on any `demo/` folder changes.
+
+**Demo Features:**
+- Live Dispute Demo: Real Solana devnet transactions
+- Judges Dashboard: All 4 hackathon scoring metrics with Chart.js visualizations
+- Multi-Oracle Simulator: Interactive 3-oracle consensus
+- Live Analytics: Real-time quality score distributions
+- SDK Integration: Copy-paste code examples
 
 **Built on Solana. Securing the API economy.**
