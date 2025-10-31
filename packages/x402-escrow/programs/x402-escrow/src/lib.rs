@@ -90,7 +90,7 @@ pub struct FundsReleased {
 ///
 /// Checks that an Ed25519 signature verification instruction exists in the transaction
 /// and validates the signature against the expected message format
-fn verify_ed25519_signature(
+pub fn verify_ed25519_signature(
     instructions_sysvar: &AccountInfo,
     signature: &[u8; 64],
     verifier_pubkey: &Pubkey,
@@ -548,7 +548,7 @@ pub mod x402_escrow {
         }
 
         // Get limits based on verification level
-        let (hour_limit, day_limit, _dispute_day_limit) = get_rate_limits(rate_limiter.verification_level);
+        let (hour_limit, day_limit, _dispute_day_limit) = get_rate_limits(rate_limiter.verification_level.clone());
 
         // Check limits
         require!(
