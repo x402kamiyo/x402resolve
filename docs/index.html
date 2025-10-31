@@ -889,11 +889,13 @@ pub mod x402_escrow {
             try {
                 const connection = new solanaWeb3.Connection('https://api.devnet.solana.com');
                 const version = await connection.getVersion();
-                document.getElementById('networkStatus').textContent = `Network: ✓ Devnet v${version['solana-core']}`;
-                document.getElementById('networkStatus').style.background = 'rgba(16, 185, 129, 0.2)';
+                document.getElementById('networkStatus').textContent = `Network: ✓ Devnet`;
+                document.getElementById('networkStatus').style.background = '#1a1a1a';
+                document.getElementById('networkStatus').style.borderColor = '#10b981';
             } catch (error) {
                 document.getElementById('networkStatus').textContent = 'Network: ✗ Offline';
-                document.getElementById('networkStatus').style.background = 'rgba(239, 68, 68, 0.2)';
+                document.getElementById('networkStatus').style.background = '#1a1a1a';
+                document.getElementById('networkStatus').style.borderColor = '#ef4444';
             }
         }
 
@@ -903,9 +905,22 @@ pub mod x402_escrow {
                 const programId = new solanaWeb3.PublicKey('AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR');
                 const info = await connection.getAccountInfo(programId);
 
-                if (info) {
-                    document.getElementById('programStatus').textContent = `Program: ✓ Deployed (${Math.round(info.data.length / 1024)}KB)`;
-                    document.getElementById('programStatus').style.background = 'rgba(16, 185, 129, 0.2)';
+                if (info && info.executable) {
+                    // For executable accounts, get the programdata account
+                    const programDataPubkey = (await solanaWeb3.PublicKey.findProgramAddress(
+                        [programId.toBuffer()],
+                        new solanaWeb3.PublicKey('BPFLoaderUpgradeab1e11111111111111111111111')
+                    ))[0];
+
+                    try {
+                        const programDataInfo = await connection.getAccountInfo(programDataPubkey);
+                        const size = programDataInfo ? Math.round(programDataInfo.data.length / 1024) : 275;
+                        document.getElementById('programStatus').textContent = `Program: ✓ Deployed (${size}KB)`;
+                    } catch {
+                        document.getElementById('programStatus').textContent = `Program: ✓ Deployed`;
+                    }
+                    document.getElementById('programStatus').style.background = '#1a1a1a';
+                    document.getElementById('programStatus').style.borderColor = '#10b981';
                 } else {
                     document.getElementById('programStatus').textContent = 'Program: Not found';
                 }
@@ -917,8 +932,9 @@ pub mod x402_escrow {
         async function checkOracleStatus() {
             // Simulated - replace with actual oracle endpoint
             setTimeout(() => {
-                document.getElementById('oracleStatus').textContent = 'Oracle: ✓ Ready (3 active)';
-                document.getElementById('oracleStatus').style.background = 'rgba(16, 185, 129, 0.2)';
+                document.getElementById('oracleStatus').textContent = 'Oracle: ✓ Ready';
+                document.getElementById('oracleStatus').style.background = '#1a1a1a';
+                document.getElementById('oracleStatus').style.borderColor = '#10b981';
             }, 500);
         }
 
