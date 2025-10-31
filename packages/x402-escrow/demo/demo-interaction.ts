@@ -9,7 +9,7 @@ import { PublicKey, Keypair, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web
 import { X402Escrow } from '../target/types/x402_escrow';
 
 // Program ID on devnet
-const PROGRAM_ID = new PublicKey('BtSoJmuFZCq8DmWbesuAbu7E6KJijeSeLLBUWTKC6x4P');
+const PROGRAM_ID = new PublicKey('AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR');
 
 // Demo configuration
 const DEMO_AMOUNT = 0.1 * LAMPORTS_PER_SOL; // 0.1 SOL

@@ -9,23 +9,12 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-// Simple Ed25519 keypair generation
-function generateKeypair() {
-  // Generate 32 random bytes for the secret key
-  const secretKey = crypto.randomBytes(32);
+// Use @solana/web3.js for proper keypair generation
+const { Keypair } = require('@solana/web3.js');
 
-  // For simplicity, we'll just use the secret key directly
-  // In production, this would derive the public key properly
-  // For now, create a 64-byte array (32 secret + 32 placeholder)
-  const fullKeypair = new Uint8Array(64);
-  fullKeypair.set(secretKey, 0);
-  fullKeypair.set(crypto.randomBytes(32), 32); // placeholder for public key
-
-  return Array.from(fullKeypair);
-}
-
-// Generate keypair
-const keypair = generateKeypair();
+// Generate proper Ed25519 keypair
+const keypair = Keypair.generate();
+const secretKeyArray = Array.from(keypair.secretKey);
 
 // Create .solana directory
 const walletDir = path.join(__dirname, '..', '.solana');
@@ -35,13 +24,14 @@ if (!fs.existsSync(walletDir)) {
 
 // Save keypair
 const walletPath = path.join(walletDir, 'x402-devnet-wallet.json');
-fs.writeFileSync(walletPath, JSON.stringify(keypair));
+fs.writeFileSync(walletPath, JSON.stringify(secretKeyArray));
 
 console.log('='.repeat(70));
 console.log(' Solana Devnet Wallet Created!');
 console.log('='.repeat(70));
 console.log('');
 console.log('📁 Keypair saved to:', walletPath);
+console.log('🔑 Public Key:', keypair.publicKey.toBase58());
 console.log('');
 console.log('  IMPORTANT: Keep this keypair SECRET!');
 console.log('   This file contains your private key.');
