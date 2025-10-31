@@ -64,7 +64,7 @@ Standard x402 payments are irreversible. x402Resolve adds quality guarantees thr
 
 x402Resolve addresses five critical trust questions for autonomous agent commerce:
 
-### 1. How Do We Trust Agents?
+### 1. How do we trust agents?
 
 **On-Chain Audit Trail**: Every transaction recorded immutably on Solana
 - Payment, dispute, quality score, and refund all publicly verifiable
@@ -99,7 +99,7 @@ x402Resolve addresses five critical trust questions for autonomous agent commerc
 - Social: 50 tx/hour, 500 tx/day
 - KYC: Unlimited access
 
-### 2. What's the Scope of Work?
+### 2. What's the scope of work?
 
 **Query-Based Specification**: Clear definition of expected data
 - Query string defines semantic expectations
@@ -130,7 +130,7 @@ const payment = await client.pay({
 - Provider commits to requirements
 - Reduces disputes from misalignment
 
-### 3. What Happens When They Mess Up?
+### 3. What happens when they mess up?
 
 **Automated Dispute Resolution**: Zero manual intervention required
 - Quality check fails → Dispute filed automatically
@@ -158,7 +158,7 @@ const payment = await client.pay({
 - Reputation impact tracked on-chain
 - Poor quality count monitoring
 
-### 4. Who Gives Them Reputation, Credit, or Refunds?
+### 4. Who gives them reputation, credit, or refunds?
 
 **Automated Verifier Oracle**: Objective quality assessment
 - Multi-factor algorithm (semantic + completeness + freshness)
@@ -171,7 +171,7 @@ const payment = await client.pay({
 - Transparent and verifiable
 - Permanent blockchain record
 
-### 5. How Do We Stop Them From Being Exploited?
+### 5. How do we stop them from being exploited?
 
 **Time-Lock Protection**: Prevents indefinite escrow
 - Maximum 7-day escrow duration

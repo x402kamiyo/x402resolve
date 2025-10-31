@@ -11,7 +11,7 @@ x402Resolve implements a comprehensive trust system for autonomous agent commerc
 
 ---
 
-## 1. How Do We Trust Them (Agents)?
+## 1. How do we trust them (agents)?
 
 ### On-Chain Audit Trail
 
@@ -114,7 +114,7 @@ Agent: 7tewg...1b2b
 
 ---
 
-## 2. What's the Scope of Work?
+## 2. What's the scope of work?
 
 ### Query-Based Specification
 
@@ -196,7 +196,7 @@ if (!validation.feasible) {
 
 ---
 
-## 3. What Happens When They Mess Up?
+## 3. What happens when they mess up?
 
 ### Automated Dispute Resolution
 
@@ -273,7 +273,7 @@ const appeal = await client.escalateDispute({
 
 ---
 
-## 4. Who Gives Them Reputation, Credit, or Refunds?
+## 4. Who gives them reputation, credit, or refunds?
 
 ### Automated Verifier Oracle
 
@@ -392,7 +392,7 @@ Future enhancement for trusted agents:
 
 ---
 
-## 5. How Do We Stop Them From Being Exploited?
+## 5. How do we stop them from being exploited?
 
 ### Time-Lock Protection
 
