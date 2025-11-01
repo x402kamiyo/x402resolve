@@ -1,685 +1,435 @@
-# KAMIYO MCP Server with x402Resolve
+# KAMIYO MCP Server
 
-> Model Context Protocol server for AI agents to access crypto exploit intelligence with automated dispute resolution
+Model Context Protocol server for AI agents to access crypto exploit intelligence with automated dispute resolution.
 
-**Solana x402 Hackathon Submission** 
+## Overview
 
-This MCP server enables AI agents (especially Claude Desktop) to search $2.1B+ in tracked crypto exploits and file automated disputes for poor data quality.
+Provides AI agents (Claude Desktop, etc.) access to KAMIYO's exploit database ($2.1B+ tracked) with x402Resolve integration for automated quality disputes.
 
-## 📁 Project Structure
+## Features
 
-```
-kamiyo/
-├── mcp/                          # MCP server implementation
-│   ├── __init__.py              # Package initialization
-│   ├── config.py                # Configuration management
-│   ├── server.py                # Main MCP server (Phase 1 )
-│   ├── tools/                   # MCP tool implementations
-│   │   └── __init__.py
-│   ├── auth/                    # Authentication & subscriptions
-│   │   └── __init__.py
-│   └── utils/                   # Shared utilities
-│       └── __init__.py
-├── requirements-mcp.txt         # MCP-specific dependencies
-└── scripts/mcp/
-    ├── test_local.sh            # Local testing script
-    └── validate_structure.py   # Structure validation
-```
+- 5 production MCP tools
+- Automated dispute filing for poor data quality
+- Tiered access control (Free/Personal/Team/Enterprise)
+- stdio and SSE transport support
+- JWT authentication
+- Rate limiting per subscription tier
 
-##  Phase 1 Deliverables (COMPLETE)
-
-###  1. MCP Directory Structure
-- Created `/mcp` with subdirectories: `tools/`, `auth/`, `utils/`
-- All `__init__.py` files in place
-- Proper Python package structure
-
-###  2. Dependencies (requirements-mcp.txt)
-```
-fastmcp>=0.2.0          # MCP SDK for Python
-pydantic>=2.5.0         # Data validation
-pyjwt>=2.8.0            # JWT authentication
-stripe>=7.0.0           # Subscription management
-python-dotenv>=1.0.0    # Environment config
-httpx>=0.25.0           # Async HTTP client
-structlog>=24.1.0       # Structured logging
-```
-
-###  3. Configuration Management (mcp/config.py)
-- Environment-based configuration
-- Production validation
-- Subscription tier settings
-- Rate limiting configuration
-- Feature flags
-
-**Key Settings:**
-- `MCP_JWT_SECRET`: JWT secret for token signing
-- `KAMIYO_API_URL`: KAMIYO API endpoint
-- `STRIPE_SECRET_KEY`: Stripe integration
-- `DATABASE_URL`: Database connection
-- Rate limits per tier (Personal/Team/Enterprise)
-
-###  4. Basic MCP Server (mcp/server.py)
-- FastMCP-based server implementation
-- Startup/shutdown handlers
-- Error handling
-- Production configuration validation
-
-**Implemented Tool:**
-- `health_check`: Server health status (no auth required)
-
-**Features:**
-- stdio transport (Claude Desktop)
-- SSE transport support (web agents)
-- Graceful startup/shutdown
-- Database connection testing
-- API connection testing
-
-###  5. Testing Infrastructure
-- `scripts/mcp/test_local.sh`: Automated local testing
-- `scripts/mcp/validate_structure.py`: Structure validation
-- Executable permissions set
-
-## 📦 Installation
+## Installation
 
 ### Prerequisites
-- Python 3.11+ (required)
-- KAMIYO API running (for integration tests)
+
+- Python 3.9+
 - PostgreSQL or SQLite database
+- KAMIYO API access
 
-### Quick Start
+### Install Dependencies
 
-1. **Install MCP dependencies:**
 ```bash
-pip3.11 install -r requirements-mcp.txt
+pip install -r requirements.txt
 ```
 
-2. **Install main KAMIYO dependencies:**
+### Environment Configuration
+
+Create `.env` file:
+
 ```bash
-pip3.11 install -r requirements.txt
+# Required
+KAMIYO_API_URL=https://api.kamiyo.ai
+MCP_JWT_SECRET=your_jwt_secret
+DATABASE_URL=postgresql://user:pass@localhost/kamiyo
+
+# Optional
+STRIPE_SECRET_KEY=your_stripe_key
+LOG_LEVEL=INFO
+ENABLE_CACHE=true
 ```
 
-3. **Set environment variables:**
-```bash
-# Development
-export ENVIRONMENT="development"
-export MCP_JWT_SECRET="dev_jwt_secret_change_in_production"
-export KAMIYO_API_URL="http://localhost:8000"
+## Running the Server
 
-# Production (example)
-export ENVIRONMENT="production"
-export MCP_JWT_SECRET="<generate-secure-secret>"
-export KAMIYO_API_URL="https://api.kamiyo.ai"
-export STRIPE_SECRET_KEY="sk_live_..."
-export DATABASE_URL="postgresql://..."
-```
-
-4. **Validate structure:**
-```bash
-python3.11 scripts/mcp/validate_structure.py
-```
-
-5. **Test server startup:**
-```bash
-python3.11 -m mcp.server --help
-```
-
-## 🧪 Testing
-
-### Validate Structure
-```bash
-python3.11 scripts/mcp/validate_structure.py
-```
-
-Checks:
--  Directory structure
--  Required files
--  Python modules
--  File permissions
-
-### Test Health Check Tool
-```bash
-# Start server (stdio mode for Claude Desktop)
-python3.11 -m mcp.server
-
-# Or SSE mode for web agents
-python3.11 -m mcp.server --transport sse --host 127.0.0.1 --port 8002
-```
-
-### Automated Testing
-```bash
-./scripts/mcp/test_local.sh
-```
-
-This script:
-1. Checks Python 3.11+
-2. Creates/activates venv
-3. Installs dependencies
-4. Starts MCP server
-5. Tests health_check tool
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `ENVIRONMENT` | No | `development` | Environment mode |
-| `MCP_SERVER_NAME` | No | `kamiyo-security` | Server name |
-| `MCP_SERVER_VERSION` | No | `1.0.0` | Server version |
-| `MCP_JWT_SECRET` | Yes (prod) | dev secret | JWT signing secret |
-| `MCP_TOKEN_EXPIRY_DAYS` | No | `365` | Token expiration |
-| `KAMIYO_API_URL` | No | localhost | KAMIYO API URL |
-| `STRIPE_SECRET_KEY` | No | - | Stripe API key |
-| `DATABASE_URL` | Yes (prod) | sqlite | Database URL |
-| `X402_VERIFIER_URL` | No | localhost:8001 | x402 Verifier Oracle URL |
-| `X402_ESCROW_PROGRAM_ID` | Yes (prod) | - | Solana escrow program ID |
-| `SOLANA_RPC_URL` | No | devnet | Solana RPC endpoint |
-
-### Rate Limiting
-
-| Tier | RPM | Daily Limit |
-|------|-----|-------------|
-| Personal | 30 | 1,000 |
-| Team | 100 | 10,000 |
-| Enterprise | 500 | 100,000 |
-
-Configured via environment variables:
-- `RATE_LIMIT_PERSONAL_RPM`, `RATE_LIMIT_PERSONAL_DAILY`
-- `RATE_LIMIT_TEAM_RPM`, `RATE_LIMIT_TEAM_DAILY`
-- `RATE_LIMIT_ENTERPRISE_RPM`, `RATE_LIMIT_ENTERPRISE_DAILY`
-
-### Feature Flags
-
-- `ENABLE_WALLET_MONITORING` (default: true)
-- `ENABLE_ADVANCED_ANALYTICS` (default: true)
-- `ENABLE_REAL_TIME_ALERTS` (default: true)
-
-## 🔌 MCP Server Usage
-
-### Command Line
+### Local Development
 
 ```bash
-# Help
-python3.11 -m mcp.server --help
-
-# stdio transport (Claude Desktop)
-python3.11 -m mcp.server --transport stdio
-
-# SSE transport (web agents)
-python3.11 -m mcp.server --transport sse --host 0.0.0.0 --port 8002
-
-# With authentication token (testing)
-python3.11 -m mcp.server --token <your-jwt-token>
+python server.py
 ```
 
 ### Claude Desktop Integration
 
-1. Install MCP server (see Installation above)
+Add to Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
 
-2. Configure Claude Desktop:
 ```json
-// ~/.config/claude/mcp_config.json
 {
   "mcpServers": {
     "kamiyo-security": {
-      "command": "python3.11",
-      "args": [
-        "/path/to/kamiyo/mcp/server.py",
-        "--token",
-        "YOUR_MCP_TOKEN_HERE"
-      ],
+      "command": "python3",
+      "args": ["/absolute/path/to/packages/mcp-server/server.py"],
       "env": {
-        "KAMIYO_API_URL": "https://api.kamiyo.ai"
+        "KAMIYO_API_URL": "https://api.kamiyo.ai",
+        "MCP_JWT_SECRET": "your_jwt_secret",
+        "DATABASE_URL": "postgresql://user:pass@localhost/kamiyo"
       }
     }
   }
 }
 ```
 
-3. Restart Claude Desktop
+Restart Claude Desktop to load the server.
 
-4. Test with: "Check KAMIYO MCP server health"
+## Available Tools
 
-## 🛠 Available Tools
+### 1. health_check
 
-### 1. health_check (Phase 1)
-**No authentication required**
+Check server status and connectivity.
 
-Check MCP server health and status.
+**Parameters**: None
 
-**Returns:**
-```json
-{
-  "status": "healthy",
-  "version": "1.0.0",
-  "uptime_seconds": 3600,
-  "server_name": "kamiyo-security",
-  "environment": "production",
-  "subscription_service": "operational",
-  "api_connection": "connected",
-  "database": "connected",
-  "timestamp": "2025-10-28T21:00:00"
-}
+**Returns**: Server version, database status, API status
+
+**Example**:
+```
+Use the health_check tool
 ```
 
----
+### 2. search_crypto_exploits
 
-### 2. search_crypto_exploits (Phase 2) ✨
-**Tier-based access: Free (10 results, 24h delay) | Personal (50 results) | Team (200 results) | Enterprise (1000 results)**
+Query KAMIYO exploit database by protocol, chain, date range, or impact.
 
-Search cryptocurrency exploit database with subscription-tier-based feature gating.
+**Parameters**:
+- `protocol` (optional): Protocol name (e.g., "Uniswap")
+- `chain` (optional): Blockchain (e.g., "Ethereum")
+- `date_from` (optional): Start date (YYYY-MM-DD)
+- `date_to` (optional): End date (YYYY-MM-DD)
+- `min_amount_usd` (optional): Minimum loss amount
 
-**Parameters:**
-- `query` (required): Search term (protocol name, vulnerability type, chain)
-- `limit` (optional, default: 10): Maximum results to return (capped by tier)
-- `since` (optional): ISO 8601 date filter (e.g., "2024-01-01T00:00:00Z")
-- `chain` (optional): Filter by blockchain (Ethereum, BSC, Polygon, etc.)
-- `subscription_tier` (internal): User's subscription tier
+**Returns**: List of exploits with transaction hashes, amounts, timestamps
 
-**Example Usage:**
+**Example**:
+```
+Search for Uniswap exploits on Ethereum with minimum $1M loss
+```
+
+### 3. assess_defi_protocol_risk
+
+Analyze security risk of a DeFi protocol.
+
+**Parameters**:
+- `protocol`: Protocol name
+- `chain` (optional): Blockchain network
+
+**Returns**: Risk score (0-100), exploit history, security analysis
+
+**Example**:
+```
+Assess risk for Curve Finance on Ethereum
+```
+
+### 4. monitor_wallet
+
+Check if wallet has exposure to compromised protocols.
+
+**Parameters**:
+- `wallet_address`: Wallet address to check
+- `chain` (optional): Blockchain network
+
+**Returns**: Exposed protocols, risk level, recommended actions
+
+**Example**:
+```
+Monitor wallet 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+```
+
+### 5. file_dispute
+
+Submit quality dispute for API response with x402Resolve integration.
+
+**Parameters**:
+- `transaction_id`: Solana transaction ID
+- `original_query`: Expected data query
+- `data_received`: Actual API response
+- `issue_type`: Quality issue (incomplete/inaccurate/outdated)
+- `expected_criteria`: Quality requirements
+
+**Returns**: Dispute ID, quality score, refund percentage
+
+**Example**:
+```
+File dispute for transaction tx_abc123 due to incomplete data
+```
+
+## Subscription Tiers
+
+### Free Tier
+- 10 requests/hour
+- 100 requests/day
+- Basic exploit search
+- No dispute filing
+
+### Personal ($49/month)
+- 100 requests/hour
+- 10,000 requests/day
+- All tools enabled
+- Automated dispute filing
+- Email support
+
+### Team ($299/month)
+- 500 requests/hour
+- 100,000 requests/day
+- Priority API access
+- Dedicated support channel
+- Custom integrations
+
+### Enterprise (Custom)
+- Unlimited requests
+- SLA guarantees
+- On-premise deployment
+- Custom tools
+- 24/7 support
+
+## Rate Limiting
+
+Enforced per subscription tier:
+
 ```python
-# Search for Uniswap exploits
-result = await search_crypto_exploits(
-    query="Uniswap",
-    limit=20,
-    chain="Ethereum"
-)
-```
-
-**Returns:**
-```json
-{
-  "exploits": [
-    {
-      "id": 123,
-      "tx_hash": "0x...",
-      "chain": "Ethereum",
-      "protocol": "Uniswap V2",
-      "amount_usd": 1500000.0,
-      "timestamp": "2024-01-15T10:30:00Z",
-      "source": "BlockSec",
-      "category": "Flash Loan Attack",
-      "description": "..."
-    }
-  ],
-  "metadata": {
-    "total_returned": 10,
-    "total_matching": 45,
-    "search_time_ms": 42
-  },
-  "tier_info": {
-    "tier": "personal",
-    "max_results": 50,
-    "data_delay_hours": 0
-  },
-  "sources": ["BlockSec", "Rekt", "DeFiLlama"]
+RATE_LIMITS = {
+    "free": {"per_hour": 10, "per_day": 100},
+    "personal": {"per_hour": 100, "per_day": 10000},
+    "team": {"per_hour": 500, "per_day": 100000},
+    "enterprise": {"per_hour": None, "per_day": None}
 }
 ```
 
----
+## Authentication
 
-### 3. assess_defi_protocol_risk (Phase 2) ✨
-**Tier-based features: Personal (basic) | Team (+ exploit summary) | Enterprise (+ recommendations)**
+JWT-based authentication for tool access (except health_check).
 
-Assess security risk for DeFi protocols based on historical exploit data.
+**Token Structure**:
+```json
+{
+  "sub": "user_id",
+  "tier": "personal",
+  "exp": 1234567890
+}
+```
 
-**Parameters:**
-- `protocol_name` (required): Protocol to assess (e.g., "Uniswap", "Curve")
-- `chain` (optional): Filter by blockchain
-- `time_window_days` (optional, default: 90): Days of history to analyze (1-365)
-- `subscription_tier` (internal): User's subscription tier
+## Error Handling
 
-**Risk Levels:**
-- `low` (0-29): Minimal risk, good security track record
-- `medium` (30-59): Moderate risk, some concerns
-- `high` (60-84): Significant risk, multiple issues
-- `critical` (85-100): Severe risk, urgent action required
+All tools return structured errors:
 
-**Example Usage:**
+```json
+{
+  "error": "error_code",
+  "message": "Human-readable error message",
+  "details": {}
+}
+```
+
+**Common Error Codes**:
+- `auth_required`: Missing or invalid JWT token
+- `rate_limit_exceeded`: Tier rate limit reached
+- `invalid_params`: Invalid tool parameters
+- `api_error`: KAMIYO API error
+- `database_error`: Database connection issue
+
+## Development
+
+### Project Structure
+
+```
+packages/mcp-server/
+├── server.py                 # Main MCP server
+├── config.py                 # Configuration management
+├── tools/
+│   ├── exploits.py          # Exploit search tool
+│   ├── risk.py              # Risk assessment tool
+│   ├── monitoring.py        # Wallet monitoring tool
+│   └── dispute.py           # Dispute filing tool
+├── auth/
+│   ├── jwt_handler.py       # JWT auth
+│   └── subscription.py      # Subscription management
+├── requirements.txt         # Dependencies
+└── README.md               # This file
+```
+
+### Adding New Tools
+
+1. Create tool implementation in `tools/`
+2. Define parameters using Pydantic models
+3. Implement tool logic with error handling
+4. Register tool in `server.py`
+5. Add tests
+6. Update documentation
+
+**Example**:
 ```python
-# Basic risk assessment
-result = await assess_defi_protocol_risk(
-    protocol_name="Curve",
-    chain="Ethereum",
-    time_window_days=180
-)
+from fastmcp import FastMCP
+
+mcp = FastMCP("kamiyo-security")
+
+@mcp.tool()
+async def my_new_tool(param: str) -> dict:
+    """Tool description"""
+    # Implementation
+    return {"result": "data"}
 ```
 
-**Returns (Personal tier):**
-```json
-{
-  "protocol": "Curve",
-  "risk_score": 45,
-  "risk_level": "medium",
-  "analysis_period_days": 90,
-  "assessed_at": "2025-10-28T21:00:00Z"
-}
-```
+### Testing
 
-**Returns (Team tier adds):**
-```json
-{
-  "exploit_count": 3,
-  "total_loss_usd": 2500000.0,
-  "last_exploit_date": "2024-12-20",
-  "recent_exploits": [...]
-}
-```
-
-**Returns (Enterprise tier adds):**
-```json
-{
-  "risk_factors": {
-    "exploit_frequency_score": 20,
-    "severity_score": 15,
-    "recency_score": 8,
-    "maturity_score": 2
-  },
-  "recommendations": [
-    "Monitor protocol closely for unusual activity",
-    "Review recent exploit patterns..."
-  ],
-  "audit_status": "medium_priority",
-  "comparison_to_peers": {
-    "percentile": 65,
-    "message": "Better than most similar protocols"
-  }
-}
-```
-
----
-
-### 4. monitor_wallet (Phase 2) ✨
-**Team+ Premium Feature Required**
-
-Check if wallet has interacted with exploited protocols.
-
-**Parameters:**
-- `wallet_address` (required): Ethereum/EVM (0x...) or Solana address
-- `chain` (optional, default: "ethereum"): Blockchain to scan
-- `lookback_days` (optional, default: 90): Days to check (1-365)
-
-**Access Control:**
-- Returns upgrade prompt for Free/Personal tiers
-- Full analysis for Team/Enterprise tiers
-
-**Example Usage:**
-```python
-# Check Ethereum wallet
-result = await monitor_wallet(
-    wallet_address="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
-    chain="ethereum",
-    lookback_days=90
-)
-```
-
-**Returns (Team+ tier):**
-```json
-{
-  "wallet_address": "0x742d35...",
-  "chain": "ethereum",
-  "scan_date": "2025-10-28T21:00:00Z",
-  "exploits_checked": 45,
-  "interactions_found": [
-    {
-      "protocol": "Curve Finance",
-      "chain": "Ethereum",
-      "wallet_interaction_count": 3,
-      "last_interaction": "2024-10-15T12:00:00Z",
-      "amount_usd": 2500.0,
-      "status": "at_risk"
-    }
-  ],
-  "risk_assessment": {
-    "risk_level": "medium",
-    "score": 42.5,
-    "total_at_risk_usd": 5000.0,
-    "recommendations": [
-      "Review all active positions with exploited protocols",
-      "Consider reducing exposure..."
-    ]
-  }
-}
-```
-
-**Returns (Free/Personal tier):**
-```json
-{
-  "error": "premium_feature_required",
-  "required_tier": "team",
-  "upgrade_url": "https://kamiyo.ai/pricing",
-  "feature_benefits": [
-    "Monitor wallet interactions",
-    "Get risk scores and recommendations",
-    "Track exposure across chains"
-  ],
-  "upgrade_required": true
-}
-```
-
----
-
-### 5. file_dispute ✨ **NEW - x402Resolve Integration**
-**Available to all tiers**
-
-File a dispute for poor data quality with automated resolution via x402Resolve protocol on Solana.
-
-**Parameters:**
-- `transaction_id` (required): KAMIYO transaction ID for the disputed data
-- `reason` (required): Detailed reason for dispute (e.g., "Data incomplete", "Source unreliable")
-- `expected_quality` (optional, 0-100): Expected quality score for the data
-- `evidence` (optional): Additional evidence supporting the dispute
-
-**Quality Scoring:**
-The x402 Verifier Oracle automatically scores data quality using:
-- **Semantic Coherence** (40%): How well the data matches the query
-- **Completeness** (40%): Presence of required fields (tx_hash, amount, source)
-- **Freshness** (20%): Recency of the data
-
-**Automated Refunds:**
-Based on quality score, automatic refunds are processed:
-- 90-100: No refund (high quality)
-- 70-89: 25% refund
-- 50-69: 50% refund
-- 30-49: 75% refund
-- 0-29: 100% refund (very poor quality)
-
-**Example Usage:**
-```python
-# File dispute for incomplete data
-result = await file_dispute(
-    transaction_id="tx_kamiyo_abc123",
-    reason="Missing source attribution and transaction hash",
-    expected_quality=80,
-    evidence="Query for 'Uniswap exploits' returned generic descriptions without verifiable blockchain data"
-)
-```
-
-**Returns (Dispute Filed):**
-```json
-{
-  "dispute_id": "dispute_x402_xyz789",
-  "transaction_id": "tx_kamiyo_abc123",
-  "status": "pending_verification",
-  "filed_at": "2025-10-30T15:30:00Z",
-  "escrow_address": "Escrow1x402PDAAccount...",
-  "verifier_oracle": "https://verifier.x402resolve.com",
-  "estimated_resolution_time": "24-48 hours",
-  "solana_tx": "5KQx...",
-  "next_steps": [
-    "x402 Verifier Oracle will analyze data quality within 24h",
-    "Quality score will determine refund amount (0-100%)",
-    "Refund automatically processed to your wallet if score < 90"
-  ]
-}
-```
-
-**Returns (Resolution Complete):**
-```json
-{
-  "dispute_id": "dispute_x402_xyz789",
-  "status": "resolved",
-  "quality_score": 45,
-  "quality_assessment": {
-    "semantic_coherence": 0.6,
-    "completeness": 0.4,
-    "freshness": 0.35,
-    "overall": 0.45
-  },
-  "refund_amount_usd": 7.50,
-  "refund_percentage": 75,
-  "resolution_time": "18 hours",
-  "solana_refund_tx": "7LPz...",
-  "verifier_signature": "0x1a2b3c...",
-  "resolution_notes": "Data missing required blockchain verification. Partial refund issued."
-}
-```
-
-**Dispute Lifecycle:**
-1. **Filed**: Dispute submitted to x402Resolve escrow
-2. **Pending Verification**: x402 Verifier Oracle analyzing data
-3. **Verified**: Quality score calculated (0-100)
-4. **Resolved**: Refund processed automatically based on score
-5. **Completed**: Dispute closed, funds distributed
-
-**Blockchain Integration:**
-- Escrow handled by Solana smart contract (x402-escrow program)
-- Time-locked payments (24-48h dispute window)
-- Cryptographic proof of quality assessment
-- Immutable dispute history on-chain
-
-**Benefits:**
-- Automated quality enforcement
-- No manual review needed
-- Transparent scoring algorithm
-- Fast resolution (24-48h)
-- Fair refund based on objective metrics
-
-## 🔐 Security
-
-### Production Deployment Checks
-
-The server validates configuration on startup in production:
-
--  `MCP_JWT_SECRET` must not be default value
--  `STRIPE_SECRET_KEY` must not use test keys
--  Database connection must be available
--  API connection must be reachable
-
-### Error Handling
-
-- Graceful degradation if API unavailable
-- Database connection retry logic
-- Comprehensive error logging
-- Production-safe error messages
-
-##  Monitoring
-
-### Startup Checks
-- Database connectivity
-- API connectivity
-- Configuration validation
-- Environment verification
-
-### Health Status
-- `healthy`: All systems operational
-- `degraded`: Some systems unavailable
-- `unhealthy`: Critical systems down
-
-##  Phase 2: Core MCP Tools (COMPLETE)
-
-### Days 3-4: Core MCP Tools
-- [] `search_crypto_exploits`: Search exploit database with tier-based limits
-- [] `assess_defi_protocol_risk`: DeFi protocol risk assessment
-- [] `monitor_wallet`: Wallet monitoring (Team+ only)
-
-### Days 5-6: Authentication & Subscriptions
-- [ ] JWT token generation/verification
-- [ ] Stripe webhook integration
-- [ ] Subscription-based feature gating
-- [ ] Usage tracking
-- [ ] Rate limiting implementation
-
-### Days 7-8: Claude Desktop Integration
-- [ ] Installation script
-- [ ] User documentation
-- [ ] Testing suite
-- [ ] Integration validation
-
-## 📝 Development Notes
-
-### Code Patterns
-- Follows existing KAMIYO API patterns
-- Uses Python 3.11+ type hints
-- Async/await for I/O operations
-- Structured logging with context
-- Environment-based configuration
-
-### Dependencies
-- Wraps existing KAMIYO API (no duplication)
-- Reuses database module from `database/`
-- Integrates with existing auth from `api/auth_helpers.py`
-- Compatible with x402 payment system
-
-### Testing Strategy
-- Structure validation before runtime
-- Configuration validation on startup
-- Health checks for dependencies
-- Integration tests with existing API
-- Manual testing with Claude Desktop
-
-## 📖 Documentation
-
-- Phase 1 Plan: `/MCP_DEVELOPMENT_PLAN.md`
-- This README: `/mcp/README.md`
-- Test Scripts: `/scripts/mcp/`
-- Configuration: `mcp/config.py` docstrings
-- Server: `mcp/server.py` docstrings
-
-## 🐛 Troubleshooting
-
-### "fastmcp not installed"
 ```bash
-pip3.11 install -r requirements-mcp.txt
+# Run server locally
+python server.py
+
+# Test with MCP inspector
+npx @modelcontextprotocol/inspector python server.py
+
+# Integration tests
+pytest tests/
 ```
 
-### "MCP_JWT_SECRET must be set"
+## Security
+
+### Best Practices
+
+- Store JWT secrets in environment variables (never commit)
+- Use HTTPS in production
+- Rotate JWT secrets regularly
+- Implement request logging for auditing
+- Validate all user inputs
+- Rate limit by IP for DoS protection
+
+### Reporting Security Issues
+
+Email: security@kamiyo.ai
+
+Do not create public GitHub issues for security vulnerabilities.
+
+## Deployment
+
+### Production Checklist
+
+- [ ] Set strong JWT secret (min 32 characters)
+- [ ] Configure production database
+- [ ] Enable HTTPS
+- [ ] Set up monitoring/alerting
+- [ ] Configure log aggregation
+- [ ] Enable rate limiting
+- [ ] Set up backup strategy
+- [ ] Test failover scenarios
+
+### Docker Deployment
+
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["python", "server.py"]
+```
+
+### Systemd Service
+
+```ini
+[Unit]
+Description=KAMIYO MCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=kamiyo
+WorkingDirectory=/opt/kamiyo/mcp-server
+EnvironmentFile=/opt/kamiyo/.env
+ExecStart=/usr/bin/python3 /opt/kamiyo/mcp-server/server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## Monitoring
+
+### Health Check Endpoint
+
 ```bash
-export MCP_JWT_SECRET="your-secure-secret-here"
+# Check server health
+curl http://localhost:3000/health
 ```
 
-### "Database connection failed"
-```bash
-# Check database is running
-# Verify DATABASE_URL is set correctly
-export DATABASE_URL="postgresql://user:pass@localhost:5432/kamiyo"
+### Metrics
+
+Server exposes metrics for:
+- Request count per tool
+- Error rates
+- Response times
+- Active connections
+- Rate limit hits
+
+### Logging
+
+Structured JSON logging with configurable levels:
+
+```json
+{
+  "timestamp": "2025-01-15T10:30:00Z",
+  "level": "INFO",
+  "tool": "search_crypto_exploits",
+  "user_id": "user_123",
+  "duration_ms": 245,
+  "status": "success"
+}
 ```
 
-### "API connection failed"
-```bash
-# Check KAMIYO API is running
-# Verify KAMIYO_API_URL is correct
-export KAMIYO_API_URL="http://localhost:8000"
-```
+## Troubleshooting
 
-##  Phase 1 Status: COMPLETE
+### Server Won't Start
 
-**Completed:**
--  MCP directory structure
--  Configuration management
--  Basic MCP server
--  Health check tool
--  Testing infrastructure
--  Documentation
+1. Check Python version (3.9+ required)
+2. Verify all environment variables set
+3. Test database connectivity
+4. Check log files for errors
 
-**Ready for Phase 2:**
-- Core tool implementations
-- Authentication system
-- Subscription management
-- Claude Desktop integration
+### Tools Not Appearing in Claude
 
----
+1. Verify server running (`ps aux | grep server.py`)
+2. Check Claude Desktop config path
+3. Restart Claude Desktop completely
+4. Review MCP server logs
 
-**Version:** 1.0.0
-**Status:** Phase 1 Complete
-**Last Updated:** 2025-10-28
+### Rate Limit Issues
+
+1. Check current tier: `health_check` tool shows tier info
+2. Upgrade subscription if needed
+3. Implement client-side caching
+4. Review API usage patterns
+
+## Performance
+
+### Optimization Tips
+
+- Enable response caching for frequently accessed data
+- Use connection pooling for database
+- Implement request batching where possible
+- Monitor and optimize slow queries
+- Set appropriate timeout values
+
+### Benchmarks
+
+Typical response times (P95):
+- `health_check`: <50ms
+- `search_crypto_exploits`: <200ms
+- `assess_defi_protocol_risk`: <500ms
+- `monitor_wallet`: <300ms
+- `file_dispute`: <1000ms
+
+## License
+
+MIT
+
+## Links
+
+- KAMIYO Website: https://kamiyo.ai
+- MCP Specification: https://modelcontextprotocol.io
+- x402Resolve: https://github.com/x402kamiyo/x402resolve
+- Support: hello@kamiyo.ai
