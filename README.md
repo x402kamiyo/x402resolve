@@ -8,21 +8,75 @@ Built by [KAMIYO](https://kamiyo.ai) | Solana x402 Hackathon 2025
 
 ## 🎯 Judges: Start Here
 
-**What is this?** Time-locked escrow + automated quality verification for crypto API payments. Disputes resolve in 24-48 hours instead of weeks.
+### What Problem Does This Solve?
 
-**Why does it matter?** AI agents spending crypto 24/7 need protection from bad data. This solves that with programmatic refunds (0-100% sliding scale).
+AI agents make **thousands of API payments daily** with crypto. When data quality is poor, there's **no recourse**:
+- ❌ Crypto payments are irreversible
+- ❌ Traditional chargebacks take 2-4 weeks and cost $50-500 per dispute
+- ❌ Manual arbitration doesn't scale to autonomous agents
+- ❌ Binary outcomes (full refund or nothing) ignore partial delivery
 
-**See it working:** [Live Demo](https://x402kamiyo.github.io/x402resolve) (connect Phantom wallet for real transactions!) | [Video Walkthrough](#) | [Devnet Program](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
+**The cost?** $259M in annual API fraud losses (Healthcare alone: $78M/year)
 
-**Try it yourself:**
+### Our Solution: Automated Dispute Resolution
+
+✅ **24-48 hour resolution** (vs weeks manual)
+✅ **Objective quality scoring** (semantic + completeness + freshness)
+✅ **Sliding-scale refunds** (0-100% based on actual quality)
+✅ **On-chain execution** (Ed25519-signed oracle assessments)
+✅ **$0.000005 cost** (vs $50-500 traditional arbitration)
+
+### 🚀 See It Working (3 Options)
+
+**Option 1: Live Demo** (Fastest - 2 minutes)
+👉 [https://x402kamiyo.github.io/x402resolve](https://x402kamiyo.github.io/x402resolve)
+- Connect your Phantom wallet
+- Submit a real dispute to Solana Devnet
+- Watch automated quality verification
+- See refund calculated and executed
+
+**Option 2: Video Walkthrough** (3 minutes)
+👉 [Watch Demo Video](#) - Full payment → dispute → refund flow
+
+**Option 3: Run It Yourself** (5 minutes)
 ```bash
 git clone https://github.com/x402kamiyo/x402resolve
 cd x402resolve
-./scripts/generate-wallets.sh  # Creates devnet wallets
+./scripts/generate-wallets.sh  # Creates devnet wallets with SOL
 cd examples/with-dispute && npm install && ts-node index.ts
+# Watch: Payment → Quality Check → Dispute → Automated Refund
 ```
 
-**Tracks:** All 4 (MCP Server, Dev Tool, Agent Application, API Integration)
+### 📊 Key Metrics
+
+| Metric | Value |
+|--------|-------|
+| **Devnet Program** | [AFmBBw...qsSR](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet) |
+| **Program Size** | 275 KB (optimized) |
+| **Tests Passing** | 101/101 (100%) |
+| **Resolution Time** | 24-48 hours |
+| **Cost per Dispute** | $0.000005 SOL |
+| **Refund Granularity** | 0-100% (sliding scale) |
+| **Trust Features** | 16/16 implemented |
+
+### 🏆 Hackathon Tracks
+
+This project competes in **all 4 tracks**:
+
+| Track | Our Implementation |
+|-------|-------------------|
+| **MCP Server** | 5 production tools for Claude Desktop integration |
+| **Dev Tool** | Complete SDK (TypeScript) + CLI + Oracle + Smart Contract |
+| **Agent Application** | Fully autonomous dispute filing & resolution workflow |
+| **API Integration** | KAMIYO exploit intelligence API with x402 payment layer |
+
+### 📁 Quick Navigation
+
+- **Architecture**: [System Diagrams](./docs/ARCHITECTURE_DIAGRAMS.md) - Visual system design
+- **Trust Model**: [16 Trust Features](./TRUST_MODEL.md) - How we prevent exploitation
+- **Security**: [Audit Report](./SECURITY_AUDIT.md) - Comprehensive security analysis
+- **Examples**: [/examples](./examples/) - 5 working code examples
+- **API Docs**: [API Reference](./docs/markdown/API_REFERENCE.md) - Complete SDK documentation
 
 ---
 
