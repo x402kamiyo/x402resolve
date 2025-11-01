@@ -409,6 +409,82 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .wallet-connect-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .wallet-connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .wallet-connect-btn:disabled {
+            background: #333;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .wallet-connected {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .wallet-info {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-left: 10px;
+            font-size: 0.85rem;
+        }
+
+        .explorer-link {
+            display: inline-block;
+            background: rgba(0, 217, 255, 0.1);
+            color: #00d9ff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .explorer-link:hover {
+            background: rgba(0, 217, 255, 0.2);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -429,6 +505,9 @@
                 <span class="status-item" id="programStatus">Program: Loading...</span>
                 <span class="status-item" id="oracleStatus">Oracle: Checking...</span>
                 <span class="status-item" id="networkStatus">Network: Connecting...</span>
+                <button id="walletBtn" class="wallet-connect-btn" onclick="connectWallet()">
+                    Connect Wallet
+                </button>
             </div>
         </div>
 
@@ -1049,18 +1128,83 @@ pub mod x402_escrow {
             btn.disabled = true;
             btn.textContent = 'Submitting to Solana...';
 
-            // Generate transaction ID
-            const txId = 'tx_' + Math.random().toString(36).substring(2, 15);
-            document.getElementById('transactionId').value = txId;
-
             // Show timeline
             document.getElementById('statusDisplay').style.display = 'none';
             document.getElementById('timelineDisplay').style.display = 'block';
             document.getElementById('resultsDisplay').style.display = 'none';
 
-            // Step 1: Submit to Solana
+            let txId = 'tx_' + Math.random().toString(36).substring(2, 15);
+            let realTransaction = false;
+
+            // Step 1: Submit to Solana (real transaction if wallet connected)
             document.getElementById('step1').classList.add('active');
-            document.getElementById('step1-detail').textContent = `TX: ${txId}`;
+
+            if (walletConnected && walletPublicKey) {
+                try {
+                    showStatus('Creating escrow transaction...', 'info');
+
+                    const connection = new solanaWeb3.Connection('https://api.devnet.solana.com');
+                    const escrowAmount = parseFloat(document.getElementById('escrowAmount').value);
+                    const lamports = escrowAmount * solanaWeb3.LAMPORTS_PER_SOL;
+
+                    // Create a simple transfer transaction as a demo
+                    // In production, this would call the actual x402 escrow program
+                    const programId = new solanaWeb3.PublicKey('AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR');
+
+                    const transaction = new solanaWeb3.Transaction().add(
+                        solanaWeb3.SystemProgram.transfer({
+                            fromPubkey: walletPublicKey,
+                            toPubkey: programId,
+                            lamports: Math.floor(lamports)
+                        })
+                    );
+
+                    // Get recent blockhash
+                    const { blockhash } = await connection.getLatestBlockhash();
+                    transaction.recentBlockhash = blockhash;
+                    transaction.feePayer = walletPublicKey;
+
+                    // Sign and send transaction
+                    btn.textContent = 'Sign transaction in wallet...';
+                    const signed = await walletProvider.signAndSendTransaction(transaction);
+                    txId = signed.signature || signed;
+                    realTransaction = true;
+
+                    // Wait for confirmation
+                    btn.textContent = 'Confirming transaction...';
+                    await connection.confirmTransaction(txId);
+
+                    document.getElementById('step1-detail').innerHTML = `
+                        TX: ${txId.substring(0, 8)}...${txId.substring(txId.length - 8)}
+                        <br><a href="https://explorer.solana.com/tx/${txId}?cluster=devnet"
+                           target="_blank" class="explorer-link" style="margin-top: 5px;">
+                           View on Explorer
+                        </a>
+                    `;
+                    showStatus('Transaction confirmed!', 'success');
+
+                } catch (err) {
+                    console.error('Transaction failed:', err);
+                    if (err.message && err.message.includes('User rejected')) {
+                        showStatus('Transaction cancelled', 'error');
+                    } else {
+                        showStatus('Transaction failed - using simulation', 'error');
+                    }
+                    // Fall back to simulation
+                    txId = 'tx_' + Math.random().toString(36).substring(2, 15);
+                    document.getElementById('step1-detail').textContent = `TX: ${txId} (simulated)`;
+                }
+            } else {
+                // Simulation mode
+                document.getElementById('step1-detail').innerHTML = `
+                    TX: ${txId} (simulated)
+                    <br><span style="color: #f59e0b; font-size: 0.85rem;">
+                        Connect wallet for real transactions
+                    </span>
+                `;
+            }
+
+            document.getElementById('transactionId').value = txId;
             await sleep(2000);
 
             // Step 2: Oracle analysis
@@ -1131,13 +1275,31 @@ pub mod x402_escrow {
                         <div style="font-size: 3rem; font-weight: bold; margin: 15px 0; color: #fff;">${refundAmount} SOL</div>
                         <div style="font-size: 1.1rem; color: #ccc;">${refundPct}% of ${escrowAmount} SOL escrow</div>
                         <div style="margin-top: 15px; padding: 10px; background: #0a0a0a; border-radius: 8px; font-size: 0.9rem; font-family: monospace; color: #999;">
-                            Solana TX: ${txId}
+                            ${realTransaction ?
+                                `Solana TX: ${txId.substring(0, 8)}...${txId.substring(txId.length - 8)}` :
+                                `Simulated TX: ${txId}`
+                            }
                         </div>
+                        ${realTransaction ? `
+                            <a href="https://explorer.solana.com/tx/${txId}?cluster=devnet"
+                               target="_blank" class="explorer-link" style="margin-top: 15px;">
+                               View Transaction on Solana Explorer →
+                            </a>
+                        ` : ''}
                     </div>
                 ` : `
                     <div style="text-align: center; padding: 30px; background: #000; border-radius: 12px; margin-top: 20px; border: 2px solid #00d9ff;">
                         <h3 style="color: #00d9ff; margin-bottom: 10px; font-size: 1.5rem;">No Refund Needed</h3>
                         <p style="color: #ccc; font-size: 1.1rem;">Data quality meets standards (score ≥ 80)</p>
+                        ${realTransaction ? `
+                            <div style="margin-top: 15px; padding: 10px; background: #0a0a0a; border-radius: 8px; font-size: 0.9rem; font-family: monospace; color: #999;">
+                                Solana TX: ${txId.substring(0, 8)}...${txId.substring(txId.length - 8)}
+                            </div>
+                            <a href="https://explorer.solana.com/tx/${txId}?cluster=devnet"
+                               target="_blank" class="explorer-link" style="margin-top: 15px;">
+                               View Transaction on Solana Explorer →
+                            </a>
+                        ` : ''}
                     </div>
                 `}
 
@@ -1352,6 +1514,103 @@ pub mod x402_escrow {
                     event.target.textContent = 'Copy';
                 }, 2000);
             });
+        }
+
+        // Wallet connection state
+        let walletConnected = false;
+        let walletPublicKey = null;
+        let walletProvider = null;
+
+        async function connectWallet() {
+            const btn = document.getElementById('walletBtn');
+
+            if (walletConnected) {
+                // Disconnect
+                walletConnected = false;
+                walletPublicKey = null;
+                walletProvider = null;
+                btn.textContent = 'Connect Wallet';
+                btn.classList.remove('wallet-connected');
+                showStatus('Wallet disconnected', 'info');
+                return;
+            }
+
+            try {
+                // Check for Phantom or Solflare
+                if (window.solana && window.solana.isPhantom) {
+                    walletProvider = window.solana;
+                } else if (window.solflare && window.solflare.isSolflare) {
+                    walletProvider = window.solflare;
+                } else {
+                    showStatus('Please install Phantom wallet from phantom.app', 'error');
+                    window.open('https://phantom.app/', '_blank');
+                    return;
+                }
+
+                // Connect to wallet
+                showStatus('Connecting to wallet...', 'info');
+                const resp = await walletProvider.connect();
+                walletPublicKey = resp.publicKey;
+                walletConnected = true;
+
+                // Update button UI
+                const shortAddress = walletPublicKey.toString().substring(0, 4) + '...' +
+                                    walletPublicKey.toString().substring(walletPublicKey.toString().length - 4);
+                btn.textContent = `✓ ${shortAddress}`;
+                btn.classList.add('wallet-connected');
+
+                showStatus(`Wallet connected: ${shortAddress}`, 'success');
+
+                // Fetch and display balance
+                try {
+                    const connection = new solanaWeb3.Connection('https://api.devnet.solana.com');
+                    const balance = await connection.getBalance(walletPublicKey);
+                    const solBalance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
+                    showStatus(`Balance: ${solBalance} SOL (Devnet)`, 'info');
+                } catch (err) {
+                    console.error('Failed to fetch balance:', err);
+                }
+
+            } catch (err) {
+                console.error('Wallet connection failed:', err);
+                if (err.message.includes('User rejected')) {
+                    showStatus('Wallet connection rejected', 'error');
+                } else {
+                    showStatus('Failed to connect wallet', 'error');
+                }
+            }
+        }
+
+        function showStatus(message, type = 'info') {
+            // Remove existing status messages
+            const existing = document.querySelector('.wallet-status-message');
+            if (existing) existing.remove();
+
+            // Create new status message
+            const status = document.createElement('div');
+            status.className = `wallet-status-message wallet-status-${type}`;
+            status.textContent = message;
+            status.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#00d9ff'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+
+            document.body.appendChild(status);
+
+            // Auto-remove after 4 seconds
+            setTimeout(() => {
+                status.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => status.remove(), 300);
+            }, 4000);
         }
 
         function sleep(ms) {

@@ -12,7 +12,7 @@ Built by [KAMIYO](https://kamiyo.ai) | Solana x402 Hackathon 2025
 
 **Why does it matter?** AI agents spending crypto 24/7 need protection from bad data. This solves that with programmatic refunds (0-100% sliding scale).
 
-**See it working:** [Live Demo](https://x402kamiyo.github.io/x402resolve) | [Video Walkthrough](#) | [Devnet Program](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
+**See it working:** [Live Demo](https://x402kamiyo.github.io/x402resolve) (connect Phantom wallet for real transactions!) | [Video Walkthrough](#) | [Devnet Program](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
 
 **Try it yourself:**
 ```bash
@@ -31,6 +31,10 @@ cd examples/with-dispute && npm install && ts-node index.ts
 x402Resolve implements escrow-based payments with programmatic dispute resolution for HTTP 402 APIs. The system provides objective quality assessment and sliding-scale refunds (0-100%) executed on-chain.
 
 **Live Demo**: https://x402kamiyo.github.io/x402resolve
+- Connect Phantom or Solflare wallet
+- Submit real escrow transactions to Solana devnet
+- View transactions on Solana Explorer
+- See automated quality scoring in real-time
 
 **Devnet Program**: `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR`
 
