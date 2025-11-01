@@ -2,312 +2,667 @@
 
 Common issues and solutions for x402Resolve.
 
+## Table of Contents
+
+- [Installation Issues](#installation-issues)
+- [Wallet & Connection Issues](#wallet--connection-issues)
+- [Payment & Escrow Issues](#payment--escrow-issues)
+- [Oracle & Verification Issues](#oracle--verification-issues)
+- [Example Code Issues](#example-code-issues)
+- [MCP Server Issues](#mcp-server-issues)
+- [General Debugging](#general-debugging)
+
+---
+
 ## Installation Issues
 
-### Solana CLI Not Found
+### Issue: `npm install` fails
 
-**Error**: `solana: command not found`
+**Symptoms:**
+```
+npm ERR! code ERESOLVE
+npm ERR! ERESOLVE unable to resolve dependency tree
+```
 
-**Solution**:
+**Solutions:**
+
+1. **Use correct Node version:**
+```bash
+node --version  # Should be 18.x or higher
+nvm install 18
+nvm use 18
+```
+
+2. **Clear npm cache:**
+```bash
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
+```
+
+3. **Use legacy peer deps:**
+```bash
+npm install --legacy-peer-deps
+```
+
+### Issue: Anchor build fails
+
+**Symptoms:**
+```
+error: package `solana-program v1.14.0` cannot be built
+```
+
+**Solutions:**
+
+1. **Check Anchor version:**
+```bash
+anchor --version  # Should be 0.28.0 or higher
+```
+
+2. **Install Solana CLI:**
 ```bash
 sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
-export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+solana --version  # Should be 1.14.0 or higher
 ```
 
-### Anchor Build Fails
-
-**Error**: `anchor: command not found`
-
-**Solution**:
+3. **Set to devnet:**
 ```bash
-cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked
+solana config set --url devnet
 ```
 
-### Python Dependencies Missing
+### Issue: Python dependencies fail
 
-**Error**: `ModuleNotFoundError: No module named 'sentence_transformers'`
+**Symptoms:**
+```
+ERROR: Could not find a version that satisfies the requirement sentence-transformers
+```
 
-**Solution**:
+**Solutions:**
+
+1. **Use Python 3.9+:**
+```bash
+python --version  # Should be 3.9 or higher
+```
+
+2. **Create virtual environment:**
+```bash
+cd packages/x402-verifier
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+3. **Install specific versions:**
+```bash
+pip install sentence-transformers==2.2.2
+pip install fastapi==0.104.1
+```
+
+---
+
+## Wallet & Connection Issues
+
+### Issue: Phantom wallet connection fails
+
+**Symptoms:**
+```
+Wallet connection failed: Unexpected error
+```
+
+**Solutions:**
+
+1. **Check wallet is installed:**
+   - Visit https://phantom.app/
+   - Install browser extension
+   - Create or import wallet
+
+2. **Refresh the page:**
+   - Hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
+   - Clear browser cache
+   - Try incognito/private mode
+
+3. **Check Phantom permissions:**
+   - Open Phantom settings
+   - Go to "Trusted Apps"
+   - Make sure site is not blocked
+
+4. **Update Phantom:**
+   - Check for extension updates
+   - Restart browser after update
+
+### Issue: Insufficient funds error
+
+**Symptoms:**
+```
+Error: failed to send transaction: insufficient funds for rent
+```
+
+**Solutions:**
+
+1. **Get devnet SOL:**
+```bash
+solana airdrop 2 YOUR_WALLET_ADDRESS --url devnet
+```
+
+2. **Use faucet:**
+   - Visit https://faucet.solana.com/
+   - Enter your wallet address
+   - Request devnet SOL
+
+3. **Check balance:**
+```bash
+solana balance YOUR_WALLET_ADDRESS --url devnet
+```
+
+### Issue: RPC connection timeout
+
+**Symptoms:**
+```
+FetchError: request to https://api.devnet.solana.com failed
+```
+
+**Solutions:**
+
+1. **Try different RPC:**
+```typescript
+const connection = new Connection('https://api.devnet.solana.com');
+// OR
+const connection = new Connection('https://rpc.ankr.com/solana_devnet');
+```
+
+2. **Increase timeout:**
+```typescript
+const connection = new Connection(rpcUrl, {
+  commitment: 'confirmed',
+  confirmTransactionInitialTimeout: 60000
+});
+```
+
+3. **Check network status:**
+   - Visit https://status.solana.com/
+   - Verify devnet is operational
+
+---
+
+## Payment & Escrow Issues
+
+### Issue: Escrow creation fails
+
+**Symptoms:**
+```
+Error: Escrow account already exists
+```
+
+**Solutions:**
+
+1. **Use unique transaction ID:**
+```typescript
+const transactionId = `tx_${Date.now()}_${Math.random()}`;
+```
+
+2. **Check escrow doesn't exist:**
+```typescript
+const [escrowPda] = await PublicKey.findProgramAddress(
+  [Buffer.from('escrow'), Buffer.from(transactionId)],
+  programId
+);
+
+const accountInfo = await connection.getAccountInfo(escrowPda);
+if (accountInfo) {
+  console.log('Escrow already exists');
+}
+```
+
+3. **Use different wallet:**
+   - Generate new wallet for testing
+   - Or use different transaction ID
+
+### Issue: Funds not released
+
+**Symptoms:**
+```
+Error: dispute window not expired
+```
+
+**Solutions:**
+
+1. **Wait for dispute window:**
+   - Default: 24 hours (86400 seconds)
+   - Check escrow data for exact time
+
+2. **Check escrow status:**
+```typescript
+const escrowData = await escrowClient.getEscrowData(escrowPda);
+console.log('Created at:', new Date(escrowData.createdAt * 1000));
+console.log('Can release at:', new Date((escrowData.createdAt + 86400) * 1000));
+```
+
+3. **For testing, use shorter window:**
+```typescript
+await escrowClient.initializeEscrow({
+  // ...
+  disputeWindowSeconds: 60  // 1 minute for testing
+});
+```
+
+### Issue: Refund calculation wrong
+
+**Symptoms:**
+```
+Expected 35% refund, got 0%
+```
+
+**Solutions:**
+
+1. **Check quality score:**
+```typescript
+// Refund only if score < 80
+if (qualityScore >= 80) refund = 0%;
+else if (qualityScore >= 50) refund = variable;
+else refund = 100%;
+```
+
+2. **Verify oracle signature:**
+   - Signature must be valid Ed25519
+   - Must match verifier public key
+
+3. **Check escrow amount:**
+```bash
+solana account ESCROW_PDA --url devnet
+```
+
+---
+
+## Oracle & Verification Issues
+
+### Issue: Verifier not starting
+
+**Symptoms:**
+```
+ModuleNotFoundError: No module named 'sentence_transformers'
+```
+
+**Solutions:**
+
+1. **Install dependencies:**
 ```bash
 cd packages/x402-verifier
 pip install -r requirements.txt
 ```
 
-## Wallet Issues
-
-### Insufficient Funds
-
-**Error**: `Error: insufficient funds for transaction`
-
-**Solution - Request Devnet SOL**:
-```bash
-solana airdrop 2 <YOUR_WALLET_ADDRESS> --url devnet
+2. **Download models:**
+```python
+# First run downloads ~500MB model
+python verifier.py
+# Wait for "Model loaded successfully"
 ```
 
-If airdrop fails (rate limited):
-- Wait 5 minutes and retry
-- Use [Solana Faucet](https://faucet.solana.com/)
-- Ask in #faucet on Solana Discord
-
-### Wallet Generation Fails
-
-**Error**: Permission denied or file not found
-
-**Solution**:
+3. **Check port availability:**
 ```bash
-chmod +x scripts/generate-wallets.sh
-./scripts/generate-wallets.sh
+lsof -i :8000  # Check if port 8000 is in use
+# If in use, kill process or use different port
+python verifier.py --port 8001
 ```
 
-## Example Execution Issues
+### Issue: Quality score always 0
 
-### TypeScript Compilation Error
+**Symptoms:**
+```json
+{
+  "quality_score": 0,
+  "breakdown": {
+    "semantic_similarity": 0.0,
+    "completeness_score": 0.0,
+    "freshness_score": 0.0
+  }
+}
+```
 
-**Error**: `Cannot find module '@x402resolve/sdk'`
+**Solutions:**
 
-**Solution**:
+1. **Check input data format:**
+```python
+# Data should be array of objects
+data = [
+  {"tx_hash": "0x123...", "amount_usd": 1000000},
+  {"tx_hash": "0x456...", "amount_usd": 500000}
+]
+```
+
+2. **Verify expected criteria:**
+```python
+expected_criteria = {
+  "min_records": 5,
+  "required_fields": ["tx_hash", "amount_usd"],
+  "max_age_days": 30
+}
+```
+
+3. **Check model loading:**
 ```bash
-# Build SDK first
+# Look for this in logs:
+# "Model loaded successfully: sentence-transformers/all-MiniLM-L6-V2"
+```
+
+### Issue: Signature verification fails
+
+**Symptoms:**
+```
+Error: Ed25519 signature verification failed
+```
+
+**Solutions:**
+
+1. **Check verifier key exists:**
+```bash
+ls packages/x402-verifier/.verifier_key
+```
+
+2. **Regenerate key if missing:**
+```bash
+cd packages/x402-verifier
+rm .verifier_key
+python verifier.py  # Will generate new key
+```
+
+3. **Verify public key matches:**
+```typescript
+const verifierPubkey = new PublicKey('YOUR_VERIFIER_PUBKEY');
+// Must match verifier's public key
+```
+
+---
+
+## Example Code Issues
+
+### Issue: Example not found
+
+**Symptoms:**
+```
+bash: cd: examples/basic-payment: No such file or directory
+```
+
+**Solutions:**
+
+1. **Clone repository:**
+```bash
+git clone https://github.com/x402kamiyo/x402resolve
+cd x402resolve
+```
+
+2. **List available examples:**
+```bash
+ls examples/
+# Should show: basic-payment, with-dispute, complete-flow, etc.
+```
+
+3. **Check you're in right directory:**
+```bash
+pwd  # Should end with /x402resolve
+```
+
+### Issue: TypeScript compilation errors
+
+**Symptoms:**
+```
+error TS2307: Cannot find module '@kamiyo/x402-sdk'
+```
+
+**Solutions:**
+
+1. **Build SDK first:**
+```bash
 cd packages/x402-sdk
 npm install
 npm run build
-
-# Then run example
-cd ../../examples/with-dispute
-npm install
-npm start
 ```
 
-### Environment Variables Missing
+2. **Link SDK locally:**
+```bash
+cd packages/x402-sdk
+npm link
 
-**Error**: `API_WALLET_PUBKEY environment variable required`
+cd ../../examples/basic-payment
+npm link @kamiyo/x402-sdk
+```
 
-**Solution**:
+3. **Or install directly:**
+```bash
+cd examples/basic-payment
+npm install ../../packages/x402-sdk
+```
+
+### Issue: Environment variables not loaded
+
+**Symptoms:**
+```
+Error: VERIFIER_URL is not defined
+```
+
+**Solutions:**
+
+1. **Create .env file:**
 ```bash
 cd examples/with-dispute
 cp .env.example .env
-# Edit .env with your wallet addresses
-export API_WALLET_PUBKEY=$(solana-keygen pubkey ../../wallets/api-wallet.json)
 ```
 
-### Verifier Oracle Not Running
+2. **Edit .env with your values:**
+```env
+VERIFIER_URL=http://localhost:8000
+API_URL=https://api.kamiyo.ai
+SOLANA_RPC_URL=https://api.devnet.solana.com
+```
 
-**Error**: `Cannot connect to verifier oracle at http://localhost:8000`
+3. **Load .env in code:**
+```typescript
+import dotenv from 'dotenv';
+dotenv.config();
 
-**Solution - Start Verifier**:
+const verifierUrl = process.env.VERIFIER_URL;
+```
+
+---
+
+## MCP Server Issues
+
+### Issue: Claude Desktop doesn't see tools
+
+**Symptoms:**
+- MCP server starts but Claude shows no tools
+- "No tools available" message
+
+**Solutions:**
+
+1. **Check MCP config:**
+```json
+// ~/Library/Application Support/Claude/claude_desktop_config.json (Mac)
+// %APPDATA%\Claude\claude_desktop_config.json (Windows)
+{
+  "mcpServers": {
+    "x402resolve": {
+      "command": "python",
+      "args": ["/absolute/path/to/packages/mcp-server/server.py"]
+    }
+  }
+}
+```
+
+2. **Use absolute paths:**
+```json
+{
+  "mcpServers": {
+    "x402resolve": {
+      "command": "/usr/local/bin/python3",
+      "args": ["/Users/you/x402resolve/packages/mcp-server/server.py"]
+    }
+  }
+}
+```
+
+3. **Restart Claude Desktop:**
+   - Completely quit Claude Desktop
+   - Restart application
+   - Check server logs
+
+4. **Check server logs:**
+```bash
+# Mac
+tail -f ~/Library/Logs/Claude/mcp-server-x402resolve.log
+
+# Windows
+type %APPDATA%\Claude\Logs\mcp-server-x402resolve.log
+```
+
+### Issue: MCP tools fail with errors
+
+**Symptoms:**
+```
+Error: Connection refused to http://localhost:8000
+```
+
+**Solutions:**
+
+1. **Start verifier oracle:**
 ```bash
 cd packages/x402-verifier
 python verifier.py
 ```
 
-Should see: `Uvicorn running on http://127.0.0.1:8000`
-
-## Solana Program Issues
-
-### Program Not Found
-
-**Error**: `Program AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR not found`
-
-**Solution**: Verify program is deployed to devnet:
+2. **Check verifier is running:**
 ```bash
-solana program show AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR --url devnet
+curl http://localhost:8000/health
+# Should return: {"status":"healthy"}
 ```
 
-If not found, the program may need redeployment. Contact maintainers.
-
-### Transaction Simulation Failed
-
-**Error**: `Transaction simulation failed: Blockhash not found`
-
-**Solution**: RPC node is out of sync. Retry or switch RPC:
-```bash
-export SOLANA_RPC_URL=https://api.devnet.solana.com
+3. **Update MCP server config:**
+```python
+# In server.py
+VERIFIER_URL = os.getenv('VERIFIER_URL', 'http://localhost:8000')
 ```
 
-## MCP Server Issues
+---
 
-### Tools Not Appearing in Claude
+## General Debugging
 
-**Error**: MCP tools don't show up in Claude Desktop
+### Enable Debug Logging
 
-**Solution**:
-1. Check config path is correct (absolute, not relative)
-2. Verify config file syntax is valid JSON
-3. Restart Claude Desktop completely
-4. Check Developer Tools console (View → Developer → Toggle Developer Tools)
-
-**Config location**:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-- Linux: `~/.config/Claude/claude_desktop_config.json`
-
-### MCP Server Won't Start
-
-**Error**: Import errors or module not found
-
-**Solution**:
-```bash
-cd packages/mcp-server
-pip install -r requirements.txt --force-reinstall
-python server.py  # Test directly
-```
-
-### Database Connection Error
-
-**Error**: `Database connection failed`
-
-**Solution**: MCP server works with or without database. Set minimal config:
-```bash
-export DATABASE_URL=sqlite:///./kamiyo.db
-```
-
-## Live Demo Issues
-
-### Wallet Won't Connect
-
-**Error**: Phantom wallet not detected
-
-**Solution**:
-1. Install [Phantom](https://phantom.app/)
-2. Switch network to Devnet in Phantom settings
-3. Refresh page
-4. Click "Connect Wallet" again
-
-### Transaction Fails in Demo
-
-**Error**: Transaction rejected or fails
-
-**Solution**:
-1. Ensure wallet has devnet SOL (request airdrop in Phantom)
-2. Check wallet is on Devnet (not Mainnet)
-3. Try reducing escrow amount to 0.001 SOL
-4. Check browser console for detailed errors (F12)
-
-### Demo Shows "Simulated" Transactions
-
-**Behavior**: All transactions show "(simulated)"
-
-**Solution**: This is expected if wallet not connected. Connect Phantom wallet for real transactions.
-
-## Test Failures
-
-### SDK Tests Fail
-
-**Error**: Jest tests timeout or fail
-
-**Solution**:
-```bash
-cd packages/x402-sdk
-npm install
-npm test -- --maxWorkers=1
-```
-
-### Python Tests Fail
-
-**Error**: Pytest assertion failures
-
-**Solution**: Most failures are threshold tuning, not real bugs:
-```bash
-cd packages/x402-verifier
-pytest -v  # See which tests fail
-pytest tests/test_verifier.py::test_specific_test -v  # Run specific test
-```
-
-### Rust Tests Fail
-
-**Error**: Anchor test failures
-
-**Solution**:
-```bash
-cd packages/x402-escrow
-anchor clean
-anchor build
-anchor test
-```
-
-## Network Issues
-
-### RPC Rate Limiting
-
-**Error**: `429 Too Many Requests`
-
-**Solution**: Use dedicated RPC or add delays:
-```bash
-# Use different RPC
-export SOLANA_RPC_URL=https://api.devnet.solana.com
-
-# Or use rate-limited retries (SDK does this automatically)
-```
-
-### Connection Timeout
-
-**Error**: Network timeouts when connecting to Solana
-
-**Solution**:
-1. Check internet connection
-2. Try different RPC endpoint
-3. Increase timeout in SDK config:
+**SDK:**
 ```typescript
+import { KamiyoClient } from '@kamiyo/x402-sdk';
+
 const client = new KamiyoClient({
-  timeout: 60000  // 60 seconds
+  apiUrl: 'https://api.kamiyo.ai',
+  debug: true  // Enables console logging
 });
 ```
 
-## Build Issues
-
-### Anchor Build Fails
-
-**Error**: `cargo build failed`
-
-**Solution**:
+**Verifier:**
 ```bash
-cd packages/x402-escrow
-cargo clean
-anchor clean
-anchor build --verbose  # See detailed errors
+python verifier.py --log-level DEBUG
 ```
 
-### TypeScript Build Fails
+**Solana:**
+```bash
+export RUST_LOG=debug
+anchor test
+```
 
-**Error**: Type errors in SDK
+### Check Transaction on Explorer
 
-**Solution**:
+```typescript
+console.log(`View transaction: https://explorer.solana.com/tx/${txSignature}?cluster=devnet`);
+```
+
+### Inspect Account Data
+
+```bash
+solana account ACCOUNT_ADDRESS --url devnet --output json
+```
+
+### Test Individual Components
+
+**1. Test SDK:**
 ```bash
 cd packages/x402-sdk
-rm -rf node_modules package-lock.json
-npm install
-npm run build
+npm test
 ```
 
-## Still Having Issues?
+**2. Test Verifier:**
+```bash
+cd packages/x402-verifier
+pytest test_verifier.py -v
+```
 
-1. **Check GitHub Issues**: https://github.com/x402kamiyo/x402resolve/issues
-2. **Review Examples**: Working examples in `/examples` directory
-3. **Check Logs**: Enable debug logging:
-   ```bash
-   export LOG_LEVEL=debug
-   ```
+**3. Test Smart Contract:**
+```bash
+cd packages/x402-escrow
+anchor test
+```
 
-## Quick Diagnostics
+---
 
-Run this to check system setup:
+## Getting Help
+
+If you're still stuck:
+
+1. **Check existing issues:**
+   - https://github.com/x402kamiyo/x402resolve/issues
+
+2. **Create new issue:**
+   - Include error messages
+   - Include your environment (OS, Node version, etc.)
+   - Include steps to reproduce
+
+3. **Contact support:**
+   - Email: support@kamiyo.ai
+   - Include transaction IDs and account addresses
+
+---
+
+## Quick Diagnostic Commands
+
+Run these to diagnose issues:
 
 ```bash
-echo "=== System Check ==="
+# Check all versions
 node --version
-python3 --version
-solana --version
+npm --version
+python --version
 anchor --version
+solana --version
 
-echo "=== Wallet Check ==="
-ls -la wallets/
+# Check Solana connection
+solana config get
+solana balance --url devnet
 
-echo "=== Dependencies Check ==="
-cd packages/x402-sdk && npm list --depth=0
-cd ../x402-verifier && pip list | grep -E "(sentence|sklearn|fastapi)"
+# Check if services are running
+curl http://localhost:8000/health  # Verifier
+lsof -i :8000  # Check port
 
-echo "=== Network Check ==="
-solana cluster-version --url devnet
+# Verify project structure
+ls -la packages/
+ls -la examples/
+
+# Run all tests
+cd packages/x402-sdk && npm test
+cd ../x402-verifier && pytest
+cd ../x402-escrow && anchor test
 ```
 
-All checks should pass for full functionality.
+---
+
+## Common Fixes Checklist
+
+Before creating an issue, try these:
+
+- [ ] Run `npm install` in all package directories
+- [ ] Rebuild SDK: `cd packages/x402-sdk && npm run build`
+- [ ] Get fresh devnet SOL: `solana airdrop 2`
+- [ ] Restart verifier: `python packages/x402-verifier/verifier.py`
+- [ ] Clear browser cache and retry
+- [ ] Check you're on devnet: `solana config get`
+- [ ] Verify all services are running (verifier, MCP server)
+- [ ] Use absolute paths in config files
+- [ ] Restart Claude Desktop (for MCP issues)
+- [ ] Check firewall isn't blocking ports 8000, 8080
