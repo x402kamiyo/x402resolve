@@ -128,7 +128,7 @@ class QualityVerificationResponse(BaseModel):
     signature: str  # Ed25519 signature for Solana verification
 
 
-class VerifierOracle:
+class Shinpan:
     """
     x402 Verifier Oracle - Programmatic quality assessment
 
@@ -319,7 +319,7 @@ class VerifierOracle:
 
 
 # Global oracle instance
-oracle = VerifierOracle()
+oracle = Shinpan()
 
 
 @app.get("/")

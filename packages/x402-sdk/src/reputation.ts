@@ -25,7 +25,7 @@ export interface VerificationLevel {
   dailyLimit: number;
 }
 
-export class ReputationManager {
+export class Hyoban {
   constructor(
     private connection: Connection,
     private program: Program,
