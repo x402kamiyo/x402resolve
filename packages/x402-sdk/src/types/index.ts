@@ -3,6 +3,7 @@
  */
 
 import { PublicKey, Transaction } from '@solana/web3.js';
+import { RetryConfig } from '../retry-handler';
 
 export type Chain = 'solana' | 'ethereum' | 'base';
 
@@ -13,6 +14,7 @@ export interface KamiyoClientConfig {
   enablex402Resolve?: boolean;
   walletPublicKey?: string | PublicKey;
   rpcUrl?: string;
+  retryConfig?: Partial<RetryConfig>;
 }
 
 export interface AccessToken {
