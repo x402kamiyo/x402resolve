@@ -1614,19 +1614,36 @@ pub mod x402_escrow {
                 walletConnected = false;
                 walletPublicKey = null;
                 walletProvider = null;
-                btn.textContent = 'Connect Wallet';
+                btn.innerHTML = '<img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
                 btn.classList.remove('wallet-connected');
                 showStatus('Wallet disconnected', 'info');
                 return;
             }
 
             try {
-                // Check for Phantom or Solflare
-                if (window.solana && window.solana.isPhantom) {
-                    walletProvider = window.solana;
-                } else if (window.solflare && window.solflare.isSolflare) {
-                    walletProvider = window.solflare;
-                } else {
+                // Wait for wallet to be ready
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                // Check for Phantom
+                const getProvider = () => {
+                    if ('phantom' in window) {
+                        const provider = window.phantom?.solana;
+                        if (provider?.isPhantom) {
+                            return provider;
+                        }
+                    }
+                    if ('solana' in window) {
+                        const provider = window.solana;
+                        if (provider?.isPhantom) {
+                            return provider;
+                        }
+                    }
+                    return null;
+                };
+
+                walletProvider = getProvider();
+
+                if (!walletProvider) {
                     showStatus('Please install Phantom wallet from phantom.app', 'error');
                     window.open('https://phantom.app/', '_blank');
                     return;
@@ -1634,14 +1651,22 @@ pub mod x402_escrow {
 
                 // Connect to wallet
                 showStatus('Connecting to wallet...', 'info');
-                const resp = await walletProvider.connect({ onlyIfTrusted: false });
-                walletPublicKey = resp.publicKey;
+
+                try {
+                    const resp = await walletProvider.connect();
+                    walletPublicKey = resp.publicKey;
+                } catch (connectErr) {
+                    // If connect() fails, try request method
+                    const resp = await walletProvider.request({ method: 'connect' });
+                    walletPublicKey = new solanaWeb3.PublicKey(resp.publicKey);
+                }
+
                 walletConnected = true;
 
                 // Update button UI
                 const shortAddress = walletPublicKey.toString().substring(0, 4) + '...' +
                                     walletPublicKey.toString().substring(walletPublicKey.toString().length - 4);
-                btn.textContent = `✓ ${shortAddress}`;
+                btn.innerHTML = `<img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">✓ ${shortAddress}`;
                 btn.classList.add('wallet-connected');
 
                 showStatus(`Wallet connected: ${shortAddress}`, 'success');
@@ -1658,13 +1683,14 @@ pub mod x402_escrow {
 
             } catch (err) {
                 console.error('Wallet connection failed:', err);
-                if (err.message && (err.message.includes('User rejected') || err.message.includes('rejected'))) {
+                if (err.message && (err.message.includes('User rejected') || err.message.includes('rejected') || err.message.includes('User cancelled'))) {
                     showStatus('Wallet connection rejected', 'error');
-                } else if (err.code === 4001 || err.code === -32603) {
+                } else if (err.code === 4001 || err.code === -32603 || err.code === 4100) {
                     showStatus('Wallet connection cancelled', 'error');
                 } else {
-                    showStatus('Failed to connect wallet. Please try again.', 'error');
+                    showStatus('Failed to connect wallet. Please refresh and try again.', 'error');
                 }
+                btn.innerHTML = '<img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
             }
         }
 
