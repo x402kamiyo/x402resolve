@@ -58,7 +58,7 @@ export class ReputationManager {
   async getReputation(entity: PublicKey): Promise<EntityReputation | null> {
     try {
       const [repPDA] = this.getReputationPDA(entity);
-      const account = await this.program.account.entityReputation.fetch(repPDA);
+      const account = await (this.program.account as any).entityReputation.fetch(repPDA);
       
       return {
         entity: account.entity,
@@ -113,7 +113,7 @@ export class ReputationManager {
   async canPerformAction(entity: PublicKey): Promise<boolean> {
     try {
       const [rateLimiterPDA] = this.getRateLimiterPDA(entity);
-      const rateLimiter = await this.program.account.rateLimiter.fetch(rateLimiterPDA);
+      const rateLimiter = await (this.program.account as any).rateLimiter.fetch(rateLimiterPDA);
       
       const level = this.getVerificationLevelLimits(
         rateLimiter.verificationLevel.basic ? 'Basic' :
