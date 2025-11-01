@@ -51,8 +51,8 @@ def load_verifier_key():
         return nacl.signing.SigningKey(key_bytes)
     else:
         # Generate temporary key (development only)
-        logger.warning("⚠️  Generating temporary verifier key - DO NOT USE IN PRODUCTION")
-        logger.warning("⚠️  Set VERIFIER_PRIVATE_KEY_HEX environment variable for production")
+        logger.warning("WARNING: Generating temporary verifier key - DO NOT USE IN PRODUCTION")
+        logger.warning("WARNING: Set VERIFIER_PRIVATE_KEY_HEX environment variable for production")
         return nacl.signing.SigningKey.generate()
 
 VERIFIER_PRIVATE_KEY = load_verifier_key()
