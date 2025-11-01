@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>x402Resolve - Live Demo | Solana x402 Hackathon 2025</title>
-    <link rel="icon" type="image/jpeg" href="icon.jpg">
+    <link rel="icon" type="image/jpeg" href="../media/icon.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -577,7 +577,7 @@
             <div class="header-top">
                 <div class="header-left">
                     <a href="https://kamiyo.ai" target="_blank">
-                        <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 175px; height: auto;">
+                        <img src="../media/kamiyo_logomark.svg" alt="KAMIYO" style="width: 175px; height: auto;">
                     </a>
                 </div>
                 <div class="header-center">
@@ -586,7 +586,7 @@
                 </div>
                 <div class="header-right">
                     <button id="walletBtn" class="wallet-connect-btn" onclick="connectWallet()">
-                        <img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">
+                        <img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">
                         Connect Wallet
                     </button>
                 </div>
@@ -1614,7 +1614,7 @@ pub mod x402_escrow {
                 walletConnected = false;
                 walletPublicKey = null;
                 walletProvider = null;
-                btn.innerHTML = '<img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
+                btn.innerHTML = '<img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
                 btn.classList.remove('wallet-connected');
                 showStatus('Wallet disconnected', 'info');
                 return;
@@ -1664,7 +1664,7 @@ pub mod x402_escrow {
                 // Update button UI
                 const shortAddress = walletPublicKey.toString().substring(0, 4) + '...' +
                                     walletPublicKey.toString().substring(walletPublicKey.toString().length - 4);
-                btn.innerHTML = `<img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">✓ ${shortAddress}`;
+                btn.innerHTML = `<img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">✓ ${shortAddress}`;
                 btn.classList.add('wallet-connected');
 
                 showStatus(`Wallet connected: ${shortAddress}`, 'success');
@@ -1688,7 +1688,7 @@ pub mod x402_escrow {
                 } else {
                     showStatus('Failed to connect wallet. Please refresh and try again.', 'error');
                 }
-                btn.innerHTML = '<img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
+                btn.innerHTML = '<img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
             }
         }
 
@@ -1732,7 +1732,7 @@ pub mod x402_escrow {
     <footer style="text-align: center; padding: 60px 20px 40px; border-top: 1px solid #222; margin-top: 80px;">
         <div style="margin-bottom: 20px; text-align: center;">
             <a href="https://kamiyo.ai" target="_blank" style="display: inline-block;">
-                <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 300px; height: auto;">
+                <img src="../media/kamiyo_logomark.svg" alt="KAMIYO" style="width: 300px; height: auto;">
             </a>
         </div>
         <p style="color: #666; font-size: 0.875rem; margin-bottom: 8px;">
