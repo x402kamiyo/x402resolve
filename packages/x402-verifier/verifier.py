@@ -38,22 +38,44 @@ import os
 
 def load_verifier_key():
     """
-    Load verifier key from environment or generate for development.
+    Load verifier key from environment, file, or generate for development.
 
-    Production setup:
-    export VERIFIER_PRIVATE_KEY_HEX="<64-char-hex-string>"
+    Priority:
+    1. VERIFIER_PRIVATE_KEY_HEX environment variable (production)
+    2. .verifier_key file (persisted for development)
+    3. Generate new key and save to file (first run)
     """
     key_hex = os.getenv("VERIFIER_PRIVATE_KEY_HEX")
+    key_file = os.path.join(os.path.dirname(__file__), '.verifier_key')
+
     if key_hex:
         # Load from environment (production)
-        logger.info("Loading verifier key from environment")
+        logger.info("Loading verifier key from environment variable")
+        key_bytes = bytes.fromhex(key_hex)
+        return nacl.signing.SigningKey(key_bytes)
+    elif os.path.exists(key_file):
+        # Load from persisted file (development)
+        logger.info(f"Loading verifier key from {key_file}")
+        with open(key_file, 'r') as f:
+            key_hex = f.read().strip()
         key_bytes = bytes.fromhex(key_hex)
         return nacl.signing.SigningKey(key_bytes)
     else:
-        # Generate temporary key (development only)
-        logger.warning("WARNING: Generating temporary verifier key - DO NOT USE IN PRODUCTION")
-        logger.warning("WARNING: Set VERIFIER_PRIVATE_KEY_HEX environment variable for production")
-        return nacl.signing.SigningKey.generate()
+        # Generate and persist new key (first run)
+        logger.warning("No verifier key found - generating new key")
+        logger.info(f"Saving key to {key_file} for persistence")
+        signing_key = nacl.signing.SigningKey.generate()
+        key_hex = signing_key.encode(encoder=nacl.encoding.HexEncoder).decode('ascii')
+
+        # Save to file with restricted permissions
+        with open(key_file, 'w') as f:
+            f.write(key_hex)
+        os.chmod(key_file, 0o600)  # Read/write for owner only
+
+        logger.info(f"Public key: {signing_key.verify_key.encode(encoder=nacl.encoding.HexEncoder).decode('ascii')}")
+        logger.warning("For production, set VERIFIER_PRIVATE_KEY_HEX environment variable")
+
+        return signing_key
 
 VERIFIER_PRIVATE_KEY = load_verifier_key()
 VERIFIER_PUBLIC_KEY = VERIFIER_PRIVATE_KEY.verify_key
