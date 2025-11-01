@@ -111,11 +111,13 @@ export class KamiyoClient {
       );
     }
 
+    const walletPublicKey = this.walletPublicKey;
+
     return this.retryHandler.execute(async () => {
       try {
         // Request escrow account creation
         const response = await this.httpClient.post('/escrow/create', {
-          agent: this.walletPublicKey.toBase58(),
+          agent: walletPublicKey.toBase58(),
           api: params.recipient,
           amount: params.amount,
           metadata: params.metadata,
