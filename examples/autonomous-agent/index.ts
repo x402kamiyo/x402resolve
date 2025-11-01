@@ -1,14 +1,12 @@
 /**
  * Autonomous Agent Example
  *
- * This example demonstrates a fully autonomous AI agent that:
- * 1. Monitors for data needs
- * 2. Makes automated API payments
- * 3. Verifies data quality
- * 4. Automatically files disputes if quality is poor
- * 5. Makes accept/reject decisions without human intervention
- *
- * For Solana x402 Hackathon 2025 - Best Agent Application Track
+ * Demonstrates autonomous agent that:
+ * - Monitors data needs
+ * - Creates escrow payments
+ * - Verifies data quality
+ * - Files disputes when quality fails
+ * - Makes accept/reject decisions autonomously
  */
 
 import { Connection, Keypair, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';

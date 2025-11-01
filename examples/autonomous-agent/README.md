@@ -8,12 +8,12 @@ Fully autonomous AI agent that makes payments, verifies data quality, and files 
 
 This example shows a complete autonomous agent that:
 
-1. ✅ **Makes independent decisions** about when to make payments
-2. ✅ **Determines what data to query** based on its goals
-3. ✅ **Verifies data quality automatically** using objective metrics
-4. ✅ **Files disputes autonomously** when quality is poor
-5. ✅ **Makes accept/reject decisions** without human oversight
-6. ✅ **Manages its own budget** and spending limits
+1.  **Makes independent decisions** about when to make payments
+2.  **Determines what data to query** based on its goals
+3.  **Verifies data quality automatically** using objective metrics
+4.  **Files disputes autonomously** when quality is poor
+5.  **Makes accept/reject decisions** without human oversight
+6.  **Manages its own budget** and spending limits
 
 ## Key Features
 

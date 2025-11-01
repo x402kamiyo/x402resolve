@@ -10,7 +10,7 @@ import { KamiyoClient, X402Error } from '@kamiyo/x402-sdk';
 
 async function main() {
   console.log('='.repeat(70));
-  console.log('💰 x402 Basic Payment Example');
+  console.log(' x402 Basic Payment Example');
   console.log('='.repeat(70));
   console.log();
 
@@ -23,7 +23,7 @@ async function main() {
 
   try {
     // Step 1: Pay for API access
-    console.log('📤 Step 1: Paying for API access...');
+    console.log(' Step 1: Paying for API access...');
     console.log('-'.repeat(70));
 
     const recipientAddress = process.env.API_WALLET_PUBKEY;
@@ -40,7 +40,7 @@ async function main() {
       }
     });
 
-    console.log(' Payment successful!');
+    console.log('Payment successful!');
     console.log(`   Transaction ID: ${payment.transactionId}`);
     console.log(`   Access Token: ${payment.token.substring(0, 32)}...`);
     console.log(`   Expires: ${new Date(payment.expiresAt).toLocaleString()}`);
@@ -64,7 +64,7 @@ async function main() {
     console.log();
 
     console.log('='.repeat(70));
-    console.log(' Example complete!');
+    console.log('Example complete!');
     console.log('='.repeat(70));
 
   } catch (error) {

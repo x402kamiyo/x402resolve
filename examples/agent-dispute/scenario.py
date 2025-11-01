@@ -89,7 +89,7 @@ async def main():
     print()
 
     # Step 2: File dispute with x402 Verifier Oracle
-    print("📝 Step 2: Filing dispute with x402 Verifier Oracle")
+    print("Step Step 2: Filing dispute with x402 Verifier Oracle")
     print("-" * 70)
 
     start_time = time.time()
@@ -135,7 +135,7 @@ async def main():
     print()
 
     # Step 4: Calculate refund amounts
-    print("💰 Step 4: Calculating Refund")
+    print("Refund Step 4: Calculating Refund")
     print("-" * 70)
     PAYMENT_AMOUNT = 0.01  # SOL
 
@@ -155,11 +155,11 @@ async def main():
     print(f"Fairness: {result['quality_score']:.0f}% quality → {100 - result['refund_percentage']:.0f}% payment")
     print()
 
-    print("🎉 x402Resolve: Automated conflict resolution complete!")
+    print("Success x402Resolve: Automated conflict resolution complete!")
     print()
 
     # Show what would happen on-chain
-    print("📡 Next Steps (On-Chain):")
+    print("Next Next Steps (On-Chain):")
     print("-" * 70)
     print("1. Verifier signature submitted to Solana escrow program")
     print(f"   Signature: {result['signature'][:32]}...")

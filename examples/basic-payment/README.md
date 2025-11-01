@@ -48,17 +48,17 @@ ts-node index.ts
 
 ```
 ======================================================================
-💰 x402 Basic Payment Example
+ x402 Basic Payment Example
 ======================================================================
 
-📤 Step 1: Paying for API access...
+ Step 1: Paying for API access...
 ----------------------------------------------------------------------
  Payment successful!
    Transaction ID: tx_abc123def456
    Access Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
    Expires: 1/15/2025, 3:30:00 PM
 
-🔍 Step 2: Querying API...
+ Step 2: Querying API...
 ----------------------------------------------------------------------
  Received 5 recent exploits:
    1. Curve Finance - $61,700,000
