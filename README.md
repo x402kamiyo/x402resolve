@@ -54,7 +54,7 @@ const dispute = await client.dispute({
 
 ## Demo
 
-**Video Demo**: [Watch on YouTube](https://youtube.com/watch?v=VIDEO_ID_HERE)
+**Video Demo**: [Watch Demo Video](https://x402kamiyo.github.io/x402resolve/demo-video.mp4)
 
 **Live Demo**: https://x402kamiyo.github.io/x402resolve
 
