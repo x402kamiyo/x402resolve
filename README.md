@@ -200,7 +200,6 @@ cd examples/with-dispute && ts-node index.ts
 
 ## Links
 
-- Website: https://kamiyo.ai
 - GitHub: https://github.com/x402kamiyo/x402resolve
 - Demo: https://x402kamiyo.github.io/x402resolve
 
