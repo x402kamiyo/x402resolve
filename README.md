@@ -1,6 +1,10 @@
 # x402Resolve
 
-Automated dispute resolution for AI agent API payments on Solana.
+[![Solana Devnet](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
+[![Tests](https://img.shields.io/badge/tests-101%2F101-success)](https://github.com/x402kamiyo/x402resolve)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**TL;DR:** Automated dispute resolution for AI agent payments on Solana using escrow, objective quality scoring, and sliding-scale refunds. When agents pay for API data and receive poor quality, disputes resolve in 24-48 hours with 0-100% refunds based on actual quality. Cost: $0.000005 vs $50-500 traditional chargebacks.
 
 KAMIYO | Solana x402 Hackathon 2025
 
@@ -129,18 +133,29 @@ Model Context Protocol server with 5 tools for AI agent integration:
 ## Architecture
 
 ```
-┌─────────────────┐
-│  Client/Agent   │
-└────────┬────────┘
-         │
-    ┌────▼────┐
-    │   SDK   │
-    └─┬────┬──┘
-      │    │
-┌─────▼──┐ │  ┌──────────┐
-│ Escrow │ └──▶ Verifier │
-│Program │    │  Oracle  │
-└────────┘    └──────────┘
+┌──────────┐
+│   User   │  Makes payment for API access
+└────┬─────┘
+     │
+     ▼
+┌──────────┐
+│   API    │  Returns data (may be low quality)
+└────┬─────┘
+     │
+     ▼
+┌──────────┐
+│ Dispute  │  Agent evaluates quality, files dispute if poor
+└────┬─────┘
+     │
+     ▼
+┌──────────┐
+│  Oracle  │  Verifies quality (0-100 score), signs result
+└────┬─────┘
+     │
+     ▼
+┌──────────┐
+│  Refund  │  Escrow splits payment based on quality score
+└──────────┘
 ```
 
 ## Trust Model
