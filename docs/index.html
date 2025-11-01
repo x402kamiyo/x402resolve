@@ -111,8 +111,8 @@
         }
 
         .status-item {
-            background: #000;
-            border: 1px solid #222;
+            background: transparent;
+            border: none;
             padding: 12px 20px;
             border-radius: 6px;
             font-size: 0.875rem;
@@ -565,7 +565,7 @@
             <div class="header-top">
                 <div class="header-left">
                     <a href="https://kamiyo.ai" target="_blank">
-                        <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 180px; height: auto;">
+                        <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 150px; height: auto;">
                     </a>
                 </div>
                 <div class="header-center">
@@ -1023,9 +1023,7 @@ pub mod x402_escrow {
             try {
                 const connection = new solanaWeb3.Connection('https://api.devnet.solana.com');
                 const version = await connection.getVersion();
-                document.getElementById('networkStatus').innerHTML = `Network: <span style="color: #00d9ff;">✓</span> Devnet`;
-                document.getElementById('networkStatus').style.background = '#1a1a1a';
-                document.getElementById('networkStatus').style.borderColor = '#333';
+                document.getElementById('networkStatus').innerHTML = `Network:&nbsp;&nbsp;<span style="color: #00d9ff;">✓</span> Devnet`;
             } catch (error) {
                 document.getElementById('networkStatus').textContent = 'Network: ✗ Offline';
                 document.getElementById('networkStatus').style.background = '#1a1a1a';
@@ -1049,12 +1047,10 @@ pub mod x402_escrow {
                     try {
                         const programDataInfo = await connection.getAccountInfo(programDataPubkey);
                         const size = programDataInfo ? Math.round(programDataInfo.data.length / 1024) : 275;
-                        document.getElementById('programStatus').innerHTML = `Program: <span style="color: #00d9ff;">✓</span> Deployed (${size}KB)`;
+                        document.getElementById('programStatus').innerHTML = `Program:&nbsp;&nbsp;<span style="color: #00d9ff;">✓</span> Deployed (${size}KB)`;
                     } catch {
-                        document.getElementById('programStatus').innerHTML = `Program: <span style="color: #00d9ff;">✓</span> Deployed`;
+                        document.getElementById('programStatus').innerHTML = `Program:&nbsp;&nbsp;<span style="color: #00d9ff;">✓</span> Deployed`;
                     }
-                    document.getElementById('programStatus').style.background = '#1a1a1a';
-                    document.getElementById('programStatus').style.borderColor = '#333';
                 } else {
                     document.getElementById('programStatus').textContent = 'Program: Not found';
                 }
@@ -1066,9 +1062,7 @@ pub mod x402_escrow {
         async function checkOracleStatus() {
             // Simulated - replace with actual oracle endpoint
             setTimeout(() => {
-                document.getElementById('oracleStatus').innerHTML = 'Oracle: <span style="color: #00d9ff;">✓</span> Ready';
-                document.getElementById('oracleStatus').style.background = '#1a1a1a';
-                document.getElementById('oracleStatus').style.borderColor = '#333';
+                document.getElementById('oracleStatus').innerHTML = 'Oracle:&nbsp;&nbsp;<span style="color: #00d9ff;">✓</span> Ready';
             }, 500);
         }
 
