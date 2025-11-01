@@ -22,6 +22,21 @@ Agent → Pay 0.01 SOL → API
     Query API
 ```
 
+## Setup
+
+1. Generate wallets (from repository root):
+```bash
+cd ../..
+./scripts/generate-wallets.sh
+cd examples/basic-payment
+```
+
+2. Set environment variables:
+```bash
+export API_WALLET_PUBKEY=$(solana-keygen pubkey ../../wallets/api-wallet.json)
+export KAMIYO_API_URL=https://api.kamiyo.ai
+```
+
 ## Run
 
 ```bash

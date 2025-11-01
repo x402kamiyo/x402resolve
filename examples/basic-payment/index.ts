@@ -16,7 +16,7 @@ async function main() {
 
   // Initialize client WITHOUT x402Resolve
   const client = new KamiyoClient({
-    apiUrl: 'https://api.kamiyo.io',
+    apiUrl: process.env.KAMIYO_API_URL || 'https://api.kamiyo.ai',
     chain: 'solana',
     enablex402Resolve: false  // No escrow, instant release
   });
@@ -26,9 +26,14 @@ async function main() {
     console.log('📤 Step 1: Paying for API access...');
     console.log('-'.repeat(70));
 
+    const recipientAddress = process.env.API_WALLET_PUBKEY;
+    if (!recipientAddress) {
+      throw new Error('API_WALLET_PUBKEY environment variable required');
+    }
+
     const payment = await client.pay({
       amount: 0.01,  // 0.01 SOL
-      recipient: 'API_WALLET_ADDRESS_HERE',
+      recipient: recipientAddress,
       metadata: {
         purpose: 'exploit_data_access',
         plan: 'basic'
