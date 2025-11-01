@@ -2,7 +2,7 @@
 
 Automated dispute resolution for AI agent API payments on Solana.
 
-KAMIYO (神代) | Solana x402 Hackathon 2025
+KAMIYO | Solana x402 Hackathon 2025
 
 ## Problem
 
