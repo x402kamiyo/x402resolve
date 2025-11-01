@@ -69,20 +69,21 @@
         .header p {
             font-size: 1rem;
             color: #888;
-            max-width: 600px;
-            margin: 0 auto;
         }
 
         .live-badge {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             background: #000;
             border: 1px solid #333;
-            padding: 8px 16px;
+            padding: 12px 20px;
             border-radius: 6px;
             font-size: 0.875rem;
-            margin: 15px auto;
+            flex: 1;
+            min-height: 48px;
+            max-width: 250px;
         }
 
         .live-dot {
@@ -104,15 +105,24 @@
             gap: 12px;
             flex-wrap: wrap;
             margin-top: 15px;
+            max-width: 1050px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .status-item {
             background: #000;
             border: 1px solid #222;
-            padding: 6px 14px;
+            padding: 12px 20px;
             border-radius: 6px;
             font-size: 0.875rem;
             color: #888;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-height: 48px;
+            max-width: 250px;
         }
 
         .tabs {
@@ -569,7 +579,7 @@
                     </button>
                 </div>
             </div>
-            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            <div class="network-status">
                 <div class="live-badge">
                     <span class="live-dot"></span>
                     <span>LIVE ON DEVNET</span>
