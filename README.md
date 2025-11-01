@@ -198,11 +198,6 @@ cd examples/with-dispute && ts-node index.ts
 - [MCP Integration](./MCP_INTEGRATION_GUIDE.md)
 - [Troubleshooting](./TROUBLESHOOTING.md)
 
-## Links
-
-- GitHub: https://github.com/x402kamiyo/x402resolve
-- Demo: https://x402kamiyo.github.io/x402resolve
-
 ## License
 
 MIT
