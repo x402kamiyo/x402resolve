@@ -188,6 +188,22 @@ x402Resolve - Solana x402 Hackathon 2025
 }
 ```
 
+## Agent Architecture
+
+The autonomous agent uses KAMIYO-themed components inspired by Japanese creation mythology:
+
+- **Musubi** (結び) - "Creative Force/Binding"
+  - The decision-making intelligence
+  - Evaluates data quality and determines actions
+  - Embodies the creative force that binds decisions to outcomes
+
+- **Kotowari** (理) - "Logic/Principle"
+  - The action execution layer
+  - Implements reasoned principles through API calls
+  - Handles payments, disputes, and data verification
+
+This naming reflects KAMIYO (神代 - "Age of the Gods") while maintaining technical clarity.
+
 ## Agent Intelligence Features
 
 ### 1. Budget Management
@@ -309,7 +325,7 @@ async analyzeData(data: any, query: string) {
 ### Add More Intelligence
 
 ```typescript
-class AdvancedBrain extends AgentBrain {
+class AdvancedMusubi extends Musubi {
   // Learn from past disputes
   learnFromHistory() {
     const successfulProviders = this.getProvidersWithLowDisputeRate();

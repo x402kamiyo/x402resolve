@@ -96,10 +96,10 @@ function log(level: 'INFO' | 'WARN' | 'ERROR', message: string, data?: any) {
 }
 
 // ============================================================================
-// Agent Intelligence - Decision Making
+// Agent Intelligence - Decision Making (Musubi: Creative Force)
 // ============================================================================
 
-class AgentBrain {
+class Musubi {
   /**
    * Decide if payment is needed based on agent's current state and goals
    */
@@ -223,18 +223,18 @@ class AgentBrain {
 }
 
 // ============================================================================
-// Agent Actions
+// Agent Actions (Kotowari: Logic & Principle)
 // ============================================================================
 
-class AgentActions {
+class Kotowari {
   private connection: Connection;
   private wallet: Keypair;
-  private brain: AgentBrain;
+  private brain: Musubi;
 
   constructor(connection: Connection, wallet: Keypair) {
     this.connection = connection;
     this.wallet = wallet;
-    this.brain = new AgentBrain();
+    this.brain = new Musubi();
   }
 
   /**
@@ -522,7 +522,7 @@ async function main() {
   }
 
   // Create agent
-  const agent = new AgentActions(connection, wallet);
+  const agent = new Kotowari(connection, wallet);
 
   // Run multiple cycles for demonstration
   const numCycles = 5;
