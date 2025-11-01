@@ -2,12 +2,33 @@
 
 Model Context Protocol server for AI agents to access crypto exploit intelligence with automated dispute resolution.
 
+## Quick Start (2 minutes)
+
+```bash
+# 1. Install dependencies
+cd packages/mcp-server
+pip install -r requirements.txt
+
+# 2. Configure Claude Desktop
+# Edit ~/Library/Application Support/Claude/claude_desktop_config.json:
+{
+  "mcpServers": {
+    "kamiyo": {
+      "command": "python3",
+      "args": ["/path/to/x402resolve/packages/mcp-server/server.py"]
+    }
+  }
+}
+
+# 3. Restart Claude Desktop
+# Tools appear automatically in Claude
+```
+
 ## Overview
 
 Provides AI agents (Claude Desktop, etc.) access to KAMIYO's exploit database ($2.1B+ tracked) with x402Resolve integration for automated quality disputes.
 
-## Features
-
+**Features**:
 - 5 production MCP tools
 - Automated dispute filing for poor data quality
 - Tiered access control (Free/Personal/Team/Enterprise)
