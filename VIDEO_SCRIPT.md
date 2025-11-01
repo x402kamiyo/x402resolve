@@ -1,5 +1,5 @@
 # x402Resolve - Video Demo Script
-**Duration: 4 minutes**
+**Duration: 3 minutes**
 **Target: Solana x402 Hackathon Judges**
 
 ---
