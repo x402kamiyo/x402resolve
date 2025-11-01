@@ -25,6 +25,7 @@ except ImportError:
 
 from mcp.config import get_mcp_config
 from mcp.tools import check_wallet_interactions, search_exploits, assess_protocol_risk
+from database import get_db
 
 # Configure logging
 logging.basicConfig(
@@ -35,6 +36,34 @@ logger = logging.getLogger(__name__)
 
 # Load configuration
 config = get_mcp_config()
+
+# Get database instance
+db = get_db()
+
+
+def get_user_tier(user_id: Optional[str] = None) -> str:
+    """
+    Get user subscription tier from database.
+
+    In production, user_id would come from MCP authentication context.
+    For now, we use a default user or provided ID.
+
+    Args:
+        user_id: User identifier (optional, defaults to 'mcp_user')
+
+    Returns:
+        User tier: 'free', 'personal', 'team', or 'enterprise'
+    """
+    if not user_id:
+        user_id = os.getenv("MCP_USER_ID", "mcp_user")
+
+    try:
+        tier = db.get_user_tier(user_id)
+        logger.debug(f"User {user_id} has tier: {tier}")
+        return tier
+    except Exception as e:
+        logger.warning(f"Failed to get user tier for {user_id}: {e}")
+        return "free"
 
 # Initialize MCP server
 mcp = FastMCP(
@@ -172,8 +201,8 @@ async def search_crypto_exploits(
         # Filter by chain
         search_crypto_exploits("DeFi", chain="Ethereum", limit=50)
     """
-    # TODO: Get user tier from MCP authentication context
-    user_tier = subscription_tier or "free"
+    # Get user tier from database or parameter
+    user_tier = subscription_tier or get_user_tier()
 
     # Call the implementation
     result = search_exploits(
@@ -245,8 +274,8 @@ async def assess_defi_protocol_risk(
         # Enterprise analysis with full recommendations
         assess_defi_protocol_risk("Aave", subscription_tier="enterprise")
     """
-    # TODO: Get user tier from MCP authentication context
-    user_tier = subscription_tier or "personal"
+    # Get user tier from database or parameter
+    user_tier = subscription_tier or get_user_tier()
 
     # Call the implementation
     result = assess_protocol_risk(
@@ -293,9 +322,11 @@ async def monitor_wallet(
         # Check on different chain with custom lookback
         monitor_wallet("0xABC...", chain="polygon", lookback_days=180)
     """
-    # TODO: Get user tier from MCP authentication context
-    # For now, we'll pass None which will require upgrade
-    user_tier = None  # Will be set from auth context
+    # Get user tier from database (wallet monitoring requires paid tier)
+    user_tier = get_user_tier()
+    if user_tier == "free":
+        # Free tier doesn't have access to wallet monitoring
+        user_tier = None
 
     # Call the implementation
     result = await check_wallet_interactions(
