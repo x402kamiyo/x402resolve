@@ -133,29 +133,41 @@ Model Context Protocol server with 5 tools for AI agent integration:
 ## Architecture
 
 ```
-┌──────────┐
-│   User   │  Makes payment for API access
-└────┬─────┘
-     │
-     ▼
-┌──────────┐
-│   API    │  Returns data (may be low quality)
-└────┬─────┘
-     │
-     ▼
-┌──────────┐
-│ Dispute  │  Agent evaluates quality, files dispute if poor
-└────┬─────┘
-     │
-     ▼
-┌──────────┐
-│  Oracle  │  Verifies quality (0-100 score), signs result
-└────┬─────┘
-     │
-     ▼
-┌──────────┐
-│  Refund  │  Escrow splits payment based on quality score
-└──────────┘
+CLIENT          SDK         ESCROW        API       VERIFIER
+  │              │             │            │            │
+  ├─Pay 0.01 SOL─▶            │            │            │
+  │              ├─Create──────▶           │            │
+  │              │  Escrow     │            │            │
+  │              ◀─Created─────┤            │            │
+  │              │             │            │            │
+  │              ├─Request data─────────────▶           │
+  │              ◀─Data─────────────────────┤            │
+  │              │             │            │            │
+  │         ┌────┴────┐        │            │            │
+  │         │ Quality │        │            │            │
+  │         │  Check  │        │            │            │
+  │         └────┬────┘        │            │            │
+  │              │             │            │            │
+  │         ╔════╧════╗        │            │            │
+  │         ║  FAIL   ║        │            │            │
+  │         ╚════╤════╝        │            │            │
+  │              │             │            │            │
+  │              ├─File dispute────────────────────────▶ │
+  │              │             │            │  ┌─────────┴────────┐
+  │              │             │            │  │ Score: 65/100    │
+  │              │             │            │  │ Refund: 35%      │
+  │              │             │            │  └─────────┬────────┘
+  │              │             │            │            │
+  │              │             ◀──Sign assessment────────┤
+  │              │             │            │            │
+  │              │          ┌──┴───┐        │            │
+  │              │          │Split │        │            │
+  │              │          └──┬───┘        │            │
+  │              │             │            │            │
+  │    ◀─────────────Refund────┤            │            │
+  │   0.0035 SOL  │      35%   │            │            │
+  │              │             ├──Pay───────▶           │
+  │              │             │ 0.0065 SOL │            │
 ```
 
 ## Trust Model
