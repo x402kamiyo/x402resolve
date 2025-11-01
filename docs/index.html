@@ -411,21 +411,26 @@
         }
 
         .wallet-connect-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #AB9FF2;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 16px 32px;
+            border-radius: 48px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
             margin-left: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 200px;
         }
 
         .wallet-connect-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            background: #9B8FE2;
+            transform: scale(1.02);
         }
 
         .wallet-connect-btn:disabled {
@@ -435,7 +440,11 @@
         }
 
         .wallet-connected {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: #10b981;
+        }
+
+        .wallet-connected:hover {
+            background: #059669;
         }
 
         .wallet-info {
