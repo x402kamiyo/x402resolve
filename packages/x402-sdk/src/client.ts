@@ -21,7 +21,7 @@ import {
   VerifierResponse,
   X402Error,
 } from './types';
-import { RetryHandler, RetryConfig, DEFAULT_RETRY_CONFIG } from './retry-handler';
+import { Tsudzuki, TsudzukiConfig, DEFAULT_TSUDZUKI_CONFIG } from './retry-handler';
 
 export class KamiyoClient {
   private apiUrl: string;
@@ -31,7 +31,7 @@ export class KamiyoClient {
   private walletPublicKey?: PublicKey;
   private connection?: Connection;
   private httpClient: AxiosInstance;
-  private retryHandler: RetryHandler;
+  private retryHandler: Tsudzuki;
 
   constructor(config: KamiyoClientConfig) {
     this.apiUrl = config.apiUrl;
@@ -40,7 +40,7 @@ export class KamiyoClient {
     this.enablex402Resolve = config.enablex402Resolve ?? true;
 
     // Initialize retry handler
-    this.retryHandler = new RetryHandler(config.retryConfig || DEFAULT_RETRY_CONFIG);
+    this.retryHandler = new Tsudzuki(config.retryConfig || DEFAULT_TSUDZUKI_CONFIG);
 
     // Initialize Solana connection if chain is Solana
     if (config.chain === 'solana') {

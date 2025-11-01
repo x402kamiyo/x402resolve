@@ -1,9 +1,9 @@
 /**
- * Transaction Retry Handler
+ * Tsudzuki (続き - "Continuation/Persistence")
  * Handles transient errors and retries with exponential backoff
  */
 
-export interface RetryConfig {
+export interface TsudzukiConfig {
   maxRetries: number;
   initialDelay: number; // milliseconds
   maxDelay: number; // milliseconds
@@ -11,7 +11,7 @@ export interface RetryConfig {
   retryableErrors: string[];
 }
 
-export const DEFAULT_RETRY_CONFIG: RetryConfig = {
+export const DEFAULT_TSUDZUKI_CONFIG: TsudzukiConfig = {
   maxRetries: 3,
   initialDelay: 1000, // 1 second
   maxDelay: 30000, // 30 seconds
@@ -28,11 +28,11 @@ export const DEFAULT_RETRY_CONFIG: RetryConfig = {
   ],
 };
 
-export class RetryHandler {
-  private config: RetryConfig;
+export class Tsudzuki {
+  private config: TsudzukiConfig;
 
-  constructor(config: Partial<RetryConfig> = {}) {
-    this.config = { ...DEFAULT_RETRY_CONFIG, ...config };
+  constructor(config: Partial<TsudzukiConfig> = {}) {
+    this.config = { ...DEFAULT_TSUDZUKI_CONFIG, ...config };
   }
 
   /**
@@ -126,10 +126,10 @@ export class RetryHandler {
  * Retry wrapper for common operations
  */
 export class RetryableOperations {
-  private retryHandler: RetryHandler;
+  private retryHandler: Tsudzuki;
 
-  constructor(config: Partial<RetryConfig> = {}) {
-    this.retryHandler = new RetryHandler(config);
+  constructor(config: Partial<TsudzukiConfig> = {}) {
+    this.retryHandler = new Tsudzuki(config);
   }
 
   /**
@@ -165,7 +165,7 @@ export class RetryableOperations {
   /**
    * Get retry handler
    */
-  getRetryHandler(): RetryHandler {
+  getTsudzuki(): Tsudzuki {
     return this.retryHandler;
   }
 }
@@ -173,7 +173,7 @@ export class RetryableOperations {
 /**
  * Circuit breaker for preventing repeated failures
  */
-export class CircuitBreaker {
+export class Mamori {
   private failureCount: number = 0;
   private successCount: number = 0;
   private state: 'closed' | 'open' | 'half-open' = 'closed';
@@ -257,19 +257,19 @@ export class CircuitBreaker {
  * Transaction batch handler with retry
  */
 export class BatchHandler {
-  private retryHandler: RetryHandler;
-  private circuitBreaker: CircuitBreaker;
+  private retryHandler: Tsudzuki;
+  private circuitBreaker: Mamori;
 
   constructor(
-    retryConfig: Partial<RetryConfig> = {},
+    retryConfig: Partial<TsudzukiConfig> = {},
     circuitBreakerConfig?: {
       failureThreshold?: number;
       successThreshold?: number;
       timeout?: number;
     }
   ) {
-    this.retryHandler = new RetryHandler(retryConfig);
-    this.circuitBreaker = new CircuitBreaker(
+    this.retryHandler = new Tsudzuki(retryConfig);
+    this.circuitBreaker = new Mamori(
       circuitBreakerConfig?.failureThreshold,
       circuitBreakerConfig?.successThreshold,
       circuitBreakerConfig?.timeout
@@ -343,14 +343,14 @@ export class BatchHandler {
   /**
    * Get circuit breaker state
    */
-  getCircuitBreakerState(): string {
+  getMamoriState(): string {
     return this.circuitBreaker.getState();
   }
 
   /**
    * Reset circuit breaker
    */
-  resetCircuitBreaker(): void {
+  resetMamori(): void {
     this.circuitBreaker.reset();
   }
 }
