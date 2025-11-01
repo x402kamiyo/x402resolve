@@ -223,6 +223,15 @@ pub mod x402_escrow {
         );
         anchor_lang::system_program::transfer(cpi_context, amount)?;
 
+        // Verify escrow account is rent-exempt after transfer
+        let rent = Rent::get()?;
+        let escrow_lamports = ctx.accounts.escrow.to_account_info().lamports();
+        let min_rent = rent.minimum_balance(8 + Escrow::INIT_SPACE);
+        require!(
+            escrow_lamports >= min_rent,
+            EscrowError::InsufficientRentReserve
+        );
+
         let expires_at = clock.unix_timestamp + time_lock;
         msg!("Escrow initialized: {} SOL locked", amount as f64 / 1_000_000_000.0);
         msg!("Expires at: {}", expires_at);
@@ -909,4 +918,7 @@ pub enum EscrowError {
 
     #[msg("Arithmetic overflow in calculation")]
     ArithmeticOverflow,
+
+    #[msg("Insufficient rent reserve in escrow account")]
+    InsufficientRentReserve,
 }

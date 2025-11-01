@@ -8,13 +8,16 @@ import logging
 import hashlib
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 import nacl.signing
 import nacl.encoding
+from collections import defaultdict
+import time
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,9 +31,61 @@ app = FastAPI(
 # Load sentence transformer model for semantic similarity
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-# Verifier signing key (in production, load from secure vault)
-VERIFIER_PRIVATE_KEY = nacl.signing.SigningKey.generate()
+# Verifier signing key
+# Production: Load from environment variable or secure vault (AWS KMS, HashiCorp Vault)
+# Development: Generate temporary key (WARNING: Will change on restart)
+import os
+
+def load_verifier_key():
+    """
+    Load verifier key from environment or generate for development.
+
+    Production setup:
+    export VERIFIER_PRIVATE_KEY_HEX="<64-char-hex-string>"
+    """
+    key_hex = os.getenv("VERIFIER_PRIVATE_KEY_HEX")
+    if key_hex:
+        # Load from environment (production)
+        logger.info("Loading verifier key from environment")
+        key_bytes = bytes.fromhex(key_hex)
+        return nacl.signing.SigningKey(key_bytes)
+    else:
+        # Generate temporary key (development only)
+        logger.warning("⚠️  Generating temporary verifier key - DO NOT USE IN PRODUCTION")
+        logger.warning("⚠️  Set VERIFIER_PRIVATE_KEY_HEX environment variable for production")
+        return nacl.signing.SigningKey.generate()
+
+VERIFIER_PRIVATE_KEY = load_verifier_key()
 VERIFIER_PUBLIC_KEY = VERIFIER_PRIVATE_KEY.verify_key
+
+# Rate limiting storage
+rate_limit_store: Dict[str, List[float]] = defaultdict(list)
+RATE_LIMIT_WINDOW = 60  # 1 minute
+RATE_LIMIT_MAX_REQUESTS = 10  # 10 requests per minute per IP
+
+
+def check_rate_limit(ip: str) -> bool:
+    """
+    Check if IP has exceeded rate limit.
+
+    Returns True if request is allowed, False if rate limited.
+    """
+    now = time.time()
+    window_start = now - RATE_LIMIT_WINDOW
+
+    # Clean old requests
+    rate_limit_store[ip] = [
+        req_time for req_time in rate_limit_store[ip]
+        if req_time > window_start
+    ]
+
+    # Check limit
+    if len(rate_limit_store[ip]) >= RATE_LIMIT_MAX_REQUESTS:
+        return False
+
+    # Record request
+    rate_limit_store[ip].append(now)
+    return True
 
 
 class QualityVerificationRequest(BaseModel):
@@ -269,7 +324,7 @@ async def root():
 
 
 @app.post("/verify-quality", response_model=QualityVerificationResponse)
-async def verify_quality(request: QualityVerificationRequest):
+async def verify_quality(request: QualityVerificationRequest, req: Request):
     """
     Verify data quality and recommend refund
 
@@ -281,6 +336,14 @@ async def verify_quality(request: QualityVerificationRequest):
     3. Sign result with verifier's private key
     4. Return score + signature for Solana escrow
     """
+    # Rate limiting
+    client_ip = req.client.host if req.client else "unknown"
+    if not check_rate_limit(client_ip):
+        raise HTTPException(
+            status_code=429,
+            detail=f"Rate limit exceeded. Max {RATE_LIMIT_MAX_REQUESTS} requests per {RATE_LIMIT_WINDOW}s"
+        )
+
     try:
         logger.info(f"Verifying quality for transaction: {request.transaction_id}")
 
