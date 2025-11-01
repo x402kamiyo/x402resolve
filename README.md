@@ -1,7 +1,7 @@
 # x402Resolve
 
 [![Solana Devnet](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
-[![Tests](https://img.shields.io/badge/tests-101%2F101-success)](https://github.com/x402kamiyo/x402resolve)
+[![Tests](https://img.shields.io/badge/tests-90%2B-success)](https://github.com/x402kamiyo/x402resolve)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **TL;DR:** Automated dispute resolution for AI agent payments on Solana using escrow, objective quality scoring, and sliding-scale refunds. When agents pay for API data and receive poor quality, disputes resolve in 24-48 hours with 0-100% refunds based on actual quality. Cost: $0.000005 vs $50-500 traditional chargebacks.
@@ -21,7 +21,7 @@ Annual fraud losses: $259M
 ## Solution
 
 Automated dispute resolution with on-chain escrow and objective quality verification:
-- 24-hour dispute window with time-locked escrow
+- 48-hour dispute window with time-locked escrow
 - Multi-factor quality scoring (semantic, completeness, freshness)
 - Sliding-scale refunds (0-100% based on actual quality)
 - Ed25519-signed oracle assessments verified on-chain
@@ -64,8 +64,8 @@ Connect Phantom wallet and submit real disputes to Solana devnet.
 |--------|-------|
 | Devnet Program | [AFmBBw...qsSR](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet) |
 | Program Size | 275 KB |
-| Tests | 101/101 passing |
-| Resolution Time | 24-48 hours |
+| Tests | 90+ passing |
+| Dispute Window | 48 hours |
 | Cost per Dispute | $0.000005 SOL |
 | Refund Granularity | 0-100% sliding scale |
 
@@ -100,7 +100,7 @@ Rust/Anchor smart contract with time-locked PDA escrow.
 **Security:**
 - Ed25519 signature verification
 - PDA-based (deterministic, no private keys)
-- 7-day maximum time-lock
+- 30-day maximum time-lock
 - Checked arithmetic
 
 ### Verifier Oracle
