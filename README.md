@@ -2,7 +2,9 @@
 
 **Automated dispute resolution for AI agent API payments on Solana**
 
-Built by [KAMIYO](https://kamiyo.ai) | Solana x402 Hackathon 2025
+Built by [KAMIYO](https://kamiyo.ai) (神代 - "Age of the Gods") | Solana x402 Hackathon 2025
+
+*Architecture inspired by Japanese creation mythology: Musubi (結び - binding force), Kotowari (理 - logic), Tsudzuki (続き - persistence), Mamori (守り - protection), Hyoban (評判 - reputation), Shinpan (審判 - judgment)*
 
 ---
 
