@@ -37,10 +37,10 @@ We currently do not have a formal bug bounty program, but we:
 
 ## Supported Versions
 
-| Version | Supported          | Status        |
-| ------- | ------------------ | ------------- |
-| 1.0.x   | :white_check_mark: | Current       |
-| < 1.0   | :x:                | Development   |
+| Version | Supported | Status        |
+| ------- | --------- | ------------- |
+| 1.0.x   | Yes       | Current       |
+| < 1.0   | No        | Development   |
 
 ## Security Features
 
