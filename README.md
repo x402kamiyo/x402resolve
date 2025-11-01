@@ -52,9 +52,11 @@ const dispute = await client.dispute({
 });
 ```
 
-## Live Demo
+## Demo
 
-https://x402kamiyo.github.io/x402resolve
+**Video Demo**: [Watch on YouTube](https://youtube.com/watch?v=VIDEO_ID_HERE)
+
+**Live Demo**: https://x402kamiyo.github.io/x402resolve
 
 Connect Phantom wallet and submit real disputes to Solana devnet.
 
