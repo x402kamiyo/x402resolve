@@ -68,7 +68,7 @@ export VERIFIER_URL=http://localhost:8000
 ts-node index.ts
 ```
 
-## Option 3: SDK Integration (3 lines)
+## Option 3: SDK Integration
 
 ```typescript
 import { KamiyoClient } from '@kamiyo/x402-sdk';
@@ -153,12 +153,10 @@ pip install sentence-transformers scikit-learn fastapi uvicorn pynacl
 
 ## What's Next?
 
-- 📺 Watch the [Video Walkthrough](#) (4 min)
-- 📖 Read the [Full Documentation](./README.md)
-- 🔍 Explore the [Live Demo](https://x402kamiyo.github.io/x402resolve)
-- 🏗️ Check the [Architecture Diagrams](./docs/ARCHITECTURE_DIAGRAMS.md)
-- 🧪 Review the [Test Results](./packages/x402-sdk/coverage/)
-- 🔐 Read the [Security Audit](./SECURITY_AUDIT.md)
+- [Full Documentation](./README.md)
+- [Live Demo](https://x402kamiyo.github.io/x402resolve)
+- [Architecture Diagrams](./docs/ARCHITECTURE_DIAGRAMS.md)
+- [Security Audit](./SECURITY_AUDIT.md)
 
 ## Support
 

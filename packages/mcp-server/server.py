@@ -462,16 +462,7 @@ async def file_dispute(
 
 @mcp.on_startup()
 async def startup():
-    """
-    Initialize server resources on startup
-
-    This function is called when the MCP server starts up.
-    It performs initialization tasks like:
-    - Recording startup time
-    - Validating configuration
-    - Testing database connection
-    - Testing API connection
-    """
+    """Initialize server: validate config, test connections"""
     global server_start_time
     server_start_time = datetime.now()
 
@@ -521,12 +512,7 @@ async def startup():
 
 @mcp.on_shutdown()
 async def shutdown():
-    """
-    Clean up resources on shutdown
-
-    This function is called when the MCP server is shutting down.
-    It performs cleanup tasks like closing connections.
-    """
+    """Clean up resources on shutdown"""
     logger.info("KAMIYO MCP Server shutting down...")
 
     # Add any cleanup tasks here (database connections, etc.)

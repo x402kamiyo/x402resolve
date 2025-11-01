@@ -143,11 +143,7 @@ class VerifierOracle:
         self.signing_key = VERIFIER_PRIVATE_KEY
 
     def calculate_semantic_similarity(self, query: str, data: str) -> float:
-        """
-        Calculate cosine similarity between query and data
-
-        Returns: 0.0-1.0 (higher = more similar)
-        """
+        """Calculate cosine similarity between query and data (0.0-1.0)"""
         try:
             # Generate embeddings
             query_embedding = self.model.encode([query])[0]
@@ -203,13 +199,7 @@ class VerifierOracle:
         return completeness
 
     def calculate_freshness(self, data: Dict) -> float:
-        """
-        Calculate data freshness
-
-        For security/exploit data, checks timestamp recency
-
-        Returns: 0.0-1.0 (higher = fresher)
-        """
+        """Calculate data freshness based on timestamps (0.0-1.0)"""
         try:
             # Extract timestamps from data
             timestamps = []
