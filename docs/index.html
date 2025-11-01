@@ -414,7 +414,7 @@
             background: #AB9FF2;
             color: white;
             border: none;
-            padding: 16px 32px;
+            padding: 12px 24px;
             border-radius: 48px;
             font-weight: 600;
             cursor: pointer;
@@ -425,7 +425,12 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            min-width: 200px;
+            width: auto;
+        }
+
+        .wallet-connect-btn img {
+            width: 24px;
+            height: 24px;
         }
 
         .wallet-connect-btn:hover {
@@ -501,7 +506,7 @@
         <div class="header">
             <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px;">
                 <a href="https://kamiyo.ai" target="_blank">
-                    <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 120px; height: auto;">
+                    <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 300px; height: auto;">
                 </a>
             </div>
             <h1 style="margin: 0 0 10px 0; font-weight: 600;">x402Resolve</h1>
@@ -515,6 +520,7 @@
                 <span class="status-item" id="oracleStatus">Oracle: Checking...</span>
                 <span class="status-item" id="networkStatus">Network: Connecting...</span>
                 <button id="walletBtn" class="wallet-connect-btn" onclick="connectWallet()">
+                    <img src="Phantom-Icon_Transparent_White.svg" alt="Phantom">
                     Connect Wallet
                 </button>
             </div>
@@ -1630,7 +1636,7 @@ pub mod x402_escrow {
     <footer style="text-align: center; padding: 60px 20px 40px; border-top: 1px solid #222; margin-top: 80px;">
         <div style="margin-bottom: 20px; text-align: center;">
             <a href="https://kamiyo.ai" target="_blank" style="display: inline-block;">
-                <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 120px; height: auto;">
+                <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 300px; height: auto;">
             </a>
         </div>
         <p style="color: #666; font-size: 0.875rem; margin-bottom: 8px;">
