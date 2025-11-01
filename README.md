@@ -1,8 +1,30 @@
 # x402Resolve
 
-Automated dispute resolution system for x402 payment APIs on Solana.
+**Automated dispute resolution for AI agent API payments on Solana**
 
-Built by [KAMIYO](https://kamiyo.ai)
+Built by [KAMIYO](https://kamiyo.ai) | Solana x402 Hackathon 2025
+
+---
+
+## 🎯 Judges: Start Here
+
+**What is this?** Time-locked escrow + automated quality verification for crypto API payments. Disputes resolve in 24-48 hours instead of weeks.
+
+**Why does it matter?** AI agents spending crypto 24/7 need protection from bad data. This solves that with programmatic refunds (0-100% sliding scale).
+
+**See it working:** [Live Demo](https://x402kamiyo.github.io/x402resolve) | [Video Walkthrough](#) | [Devnet Program](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
+
+**Try it yourself:**
+```bash
+git clone https://github.com/x402kamiyo/x402resolve
+cd x402resolve
+./scripts/generate-wallets.sh  # Creates devnet wallets
+cd examples/with-dispute && npm install && ts-node index.ts
+```
+
+**Tracks:** All 4 (MCP Server, Dev Tool, Agent Application, API Integration)
+
+---
 
 ## Overview
 
@@ -10,7 +32,7 @@ x402Resolve implements escrow-based payments with programmatic dispute resolutio
 
 **Live Demo**: https://x402kamiyo.github.io/x402resolve
 
-**Devnet Program**: `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR` ([Explorer](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet))
+**Devnet Program**: `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR`
 
 ## Problem
 
