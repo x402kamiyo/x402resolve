@@ -420,13 +420,8 @@ ts-node index.ts
 
 ## Deployment
 
-### Devnet (Current)
+### Devnet
 Program ID: `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR`
-
-### Mainnet
-See [Mainnet Deployment Guide](./docs/markdown/MAINNET_DEPLOYMENT.md)
-
-Estimated cost: 2-3 SOL (one-time)
 
 ## Documentation
 
