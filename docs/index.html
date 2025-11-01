@@ -1652,15 +1652,13 @@ pub mod x402_escrow {
                 // Connect to wallet
                 showStatus('Connecting to wallet...', 'info');
 
-                try {
-                    const resp = await walletProvider.connect();
-                    walletPublicKey = resp.publicKey;
-                } catch (connectErr) {
-                    // If connect() fails, try request method
-                    const resp = await walletProvider.request({ method: 'connect' });
-                    walletPublicKey = new solanaWeb3.PublicKey(resp.publicKey);
+                // Disconnect first if already connected
+                if (walletProvider.isConnected) {
+                    await walletProvider.disconnect();
                 }
 
+                const resp = await walletProvider.connect();
+                walletPublicKey = resp.publicKey;
                 walletConnected = true;
 
                 // Update button UI
