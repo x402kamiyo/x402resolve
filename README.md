@@ -38,13 +38,22 @@ x402Resolve implements escrow-based payments with programmatic dispute resolutio
 
 **Devnet Program**: `AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR`
 
-## Problem
+## The Problem
 
-Cryptocurrency payments for APIs are irreversible with no quality guarantees. Traditional chargebacks require weeks of manual arbitration.
+AI agents make thousands of API payments daily with cryptocurrency. When data quality is poor, there's no recourse:
+- Crypto payments are irreversible
+- Traditional chargebacks take 2-4 weeks and cost $50-500 per dispute
+- Manual arbitration doesn't scale to autonomous agents
+- Binary outcomes (full refund or nothing) ignore partial delivery
 
-## Solution
+## The Solution
 
-Time-locked Solana escrow combined with automated quality verification enables fair refunds within 24-48 hours without manual intervention.
+x402Resolve automates dispute resolution using on-chain escrow and programmatic quality verification:
+- **24-hour dispute window**: Time-locked escrow prevents instant release
+- **Objective quality scoring**: Semantic similarity, completeness, freshness (0-100)
+- **Sliding-scale refunds**: Fair compensation based on actual quality (not binary)
+- **On-chain execution**: Ed25519-signed oracle assessments verified by Solana program
+- **Cost**: $0.000005 SOL vs $50-500 traditional arbitration
 
 **Key Components**:
 - Multi-factor quality algorithm (semantic similarity 40%, completeness 40%, freshness 20%)
@@ -490,9 +499,18 @@ For security issues, email: security@kamiyo.ai
 
 MIT
 
+## Documentation
+
+- [Quick Start Guide](./QUICKSTART.md) - Get running in 5 minutes
+- [MCP Integration Demo](./MCP_DEMO.md) - Claude Desktop setup and examples
+- [Troubleshooting](./TROUBLESHOOTING.md) - Common issues and solutions
+- [Security Audit](./SECURITY_AUDIT.md) - Comprehensive security analysis
+- [Trust Model](./TRUST_MODEL.md) - Multi-oracle consensus design
+- [Architecture](./docs/ARCHITECTURE_DIAGRAMS.md) - System design diagrams
+
 ## Links
 
 - Website: https://kamiyo.ai
 - GitHub: https://github.com/x402kamiyo/x402resolve
-- Demo: https://x402kamiyo.github.io/x402resolve
-- Devnet Explorer: https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet
+- Live Demo: https://x402kamiyo.github.io/x402resolve
+- Devnet Program: https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet
