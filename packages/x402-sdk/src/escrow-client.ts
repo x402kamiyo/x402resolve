@@ -46,7 +46,8 @@ export class EscrowClient {
       config.wallet,
       AnchorProvider.defaultOptions()
     );
-    this.program = new Program(idl as X402Escrow, config.programId, this.provider);
+    this.program = new Program(idl as X402Escrow, this.provider);
+    // Note: programId is derived from IDL, or we can override if needed
   }
 
   /**
@@ -65,7 +66,7 @@ export class EscrowClient {
   async createEscrow(params: CreateEscrowParams): Promise<string> {
     const [escrowPda] = this.deriveEscrowAddress(params.transactionId);
 
-    const tx = await this.program.methods
+    const tx: string = await (this.program.methods as any)
       .initializeEscrow(params.amount, params.timeLock, params.transactionId)
       .accounts({
         escrow: escrowPda,
@@ -85,7 +86,7 @@ export class EscrowClient {
     const [escrowPda] = this.deriveEscrowAddress(transactionId);
     const escrow = await this.getEscrow(transactionId);
 
-    const tx = await this.program.methods
+    const tx: string = await (this.program.methods as any)
       .releaseFunds()
       .accounts({
         escrow: escrowPda,
@@ -104,7 +105,7 @@ export class EscrowClient {
   async markDisputed(transactionId: string): Promise<string> {
     const [escrowPda] = this.deriveEscrowAddress(transactionId);
 
-    const tx = await this.program.methods
+    const tx: string = await (this.program.methods as any)
       .markDisputed()
       .accounts({
         escrow: escrowPda,
@@ -128,7 +129,7 @@ export class EscrowClient {
     const [escrowPda] = this.deriveEscrowAddress(transactionId);
     const escrow = await this.getEscrow(transactionId);
 
-    const tx = await this.program.methods
+    const tx: string = await (this.program.methods as any)
       .resolveDispute(qualityScore, refundPercentage, signature)
       .accounts({
         escrow: escrowPda,
@@ -147,7 +148,7 @@ export class EscrowClient {
    */
   async getEscrow(transactionId: string): Promise<EscrowAccount> {
     const [escrowPda] = this.deriveEscrowAddress(transactionId);
-    return await this.program.account.escrow.fetch(escrowPda);
+    return await (this.program.account as any).escrow.fetch(escrowPda);
   }
 
   /**
@@ -249,7 +250,7 @@ export class EscrowClient {
    * Get all escrows for an agent
    */
   async getAgentEscrows(agentPublicKey: PublicKey): Promise<EscrowAccount[]> {
-    const escrows = await this.program.account.escrow.all([
+    const escrows = await (this.program.account as any).escrow.all([
       {
         memcmp: {
           offset: 8, // Discriminator
