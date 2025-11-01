@@ -1634,7 +1634,7 @@ pub mod x402_escrow {
 
                 // Connect to wallet
                 showStatus('Connecting to wallet...', 'info');
-                const resp = await walletProvider.connect();
+                const resp = await walletProvider.connect({ onlyIfTrusted: false });
                 walletPublicKey = resp.publicKey;
                 walletConnected = true;
 
@@ -1658,10 +1658,12 @@ pub mod x402_escrow {
 
             } catch (err) {
                 console.error('Wallet connection failed:', err);
-                if (err.message.includes('User rejected')) {
+                if (err.message && (err.message.includes('User rejected') || err.message.includes('rejected'))) {
                     showStatus('Wallet connection rejected', 'error');
+                } else if (err.code === 4001 || err.code === -32603) {
+                    showStatus('Wallet connection cancelled', 'error');
                 } else {
-                    showStatus('Failed to connect wallet', 'error');
+                    showStatus('Failed to connect wallet. Please try again.', 'error');
                 }
             }
         }
