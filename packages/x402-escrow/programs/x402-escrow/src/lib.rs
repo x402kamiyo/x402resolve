@@ -417,7 +417,61 @@ pub mod x402_escrow {
         escrow.quality_score = Some(quality_score);
         escrow.refund_percentage = Some(refund_percentage);
 
+        // Update agent reputation
+        let agent_reputation = &mut ctx.accounts.agent_reputation;
+        let clock = Clock::get()?;
+
+        agent_reputation.total_transactions = agent_reputation.total_transactions.saturating_add(1);
+
+        // Update average quality received by agent
+        let total_quality = agent_reputation.average_quality_received as u64
+            * (agent_reputation.total_transactions.saturating_sub(1)) as u64
+            + quality_score as u64;
+        agent_reputation.average_quality_received =
+            (total_quality / agent_reputation.total_transactions as u64) as u8;
+
+        // Categorize dispute outcome for agent
+        if refund_percentage >= 75 {
+            agent_reputation.disputes_won = agent_reputation.disputes_won.saturating_add(1);
+        } else if refund_percentage >= 25 {
+            agent_reputation.disputes_partial = agent_reputation.disputes_partial.saturating_add(1);
+        } else {
+            agent_reputation.disputes_lost = agent_reputation.disputes_lost.saturating_add(1);
+        }
+
+        // Recalculate agent reputation score
+        agent_reputation.reputation_score = calculate_reputation_score(agent_reputation);
+        agent_reputation.last_updated = clock.unix_timestamp;
+
+        // Update API reputation (inverse of agent outcome)
+        let api_reputation = &mut ctx.accounts.api_reputation;
+        api_reputation.total_transactions = api_reputation.total_transactions.saturating_add(1);
+
+        // Quality delivered by API (inverse of refund percentage)
+        let quality_delivered = 100 - refund_percentage;
+        let total_quality_api = api_reputation.average_quality_received as u64
+            * (api_reputation.total_transactions.saturating_sub(1)) as u64
+            + quality_delivered as u64;
+        api_reputation.average_quality_received =
+            (total_quality_api / api_reputation.total_transactions as u64) as u8;
+
+        // Categorize for API (inverse)
+        if refund_percentage <= 25 {
+            // API provided good quality
+            api_reputation.disputes_won = api_reputation.disputes_won.saturating_add(1);
+        } else if refund_percentage <= 75 {
+            api_reputation.disputes_partial = api_reputation.disputes_partial.saturating_add(1);
+        } else {
+            // API provided poor quality
+            api_reputation.disputes_lost = api_reputation.disputes_lost.saturating_add(1);
+        }
+
+        api_reputation.reputation_score = calculate_reputation_score(api_reputation);
+        api_reputation.last_updated = clock.unix_timestamp;
+
         msg!("Dispute resolved!");
+        msg!("Agent reputation: {}", agent_reputation.reputation_score);
+        msg!("API reputation: {}", api_reputation.reputation_score);
 
         emit!(DisputeResolved {
             escrow: escrow.key(),
@@ -692,6 +746,20 @@ pub struct ResolveDispute<'info> {
     /// CHECK: Instructions sysvar for Ed25519 signature verification
     #[account(address = INSTRUCTIONS_ID)]
     pub instructions_sysvar: AccountInfo<'info>,
+
+    #[account(
+        mut,
+        seeds = [b"reputation", agent.key().as_ref()],
+        bump = agent_reputation.bump
+    )]
+    pub agent_reputation: Account<'info, EntityReputation>,
+
+    #[account(
+        mut,
+        seeds = [b"reputation", api.key().as_ref()],
+        bump = api_reputation.bump
+    )]
+    pub api_reputation: Account<'info, EntityReputation>,
 
     pub system_program: Program<'info, System>,
 }
