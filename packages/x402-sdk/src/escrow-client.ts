@@ -6,7 +6,9 @@
 import * as anchor from '@coral-xyz/anchor';
 import { Program, AnchorProvider, Idl } from '@coral-xyz/anchor';
 import { PublicKey, Keypair, SystemProgram, Connection, Transaction } from '@solana/web3.js';
-import type { X402Escrow } from '../types/x402_escrow';
+import IDL from '../types/x402_escrow.json';
+
+type X402Escrow = any; // Type will be inferred from IDL
 
 export interface EscrowConfig {
   programId: PublicKey;
@@ -256,7 +258,7 @@ export class EscrowClient {
       },
     ]);
 
-    return escrows.map((e) => e.account as EscrowAccount);
+    return escrows.map((e: any) => e.account as EscrowAccount);
   }
 
   /**
