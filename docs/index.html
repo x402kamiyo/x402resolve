@@ -263,11 +263,22 @@
             font-weight: 700;
             cursor: pointer;
             width: 100%;
+            transition: all 0.2s;
         }
 
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        .btn-magenta-outline {
+            background: transparent !important;
+            color: #ff00ff !important;
+            border: 1px solid #ff00ff !important;
+        }
+
+        .btn-magenta-outline:hover:not(:disabled) {
+            background: rgba(255, 0, 255, 0.1) !important;
         }
 
         a {
@@ -565,7 +576,7 @@
             <div class="header-top">
                 <div class="header-left">
                     <a href="https://kamiyo.ai" target="_blank">
-                        <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 150px; height: auto;">
+                        <img src="kamiyo_logomark.svg" alt="KAMIYO" style="width: 165px; height: auto;">
                     </a>
                 </div>
                 <div class="header-center">
@@ -634,7 +645,7 @@
                             <input type="number" id="escrowAmount" value="0.01" step="0.001" min="0.001" max="10">
                         </div>
 
-                        <button type="submit" id="submitBtn">
+                        <button type="submit" id="submitBtn" class="btn-magenta-outline">
                             Submit to Solana Devnet
                         </button>
                     </form>
@@ -804,7 +815,7 @@
                     </p>
                 </div>
 
-                <button onclick="runMultiOracle()" id="oracleBtn">
+                <button onclick="runMultiOracle()" id="oracleBtn" class="btn-magenta-outline">
                     Run Multi-Oracle Simulation
                 </button>
 
