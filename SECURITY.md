@@ -231,16 +231,16 @@ We currently do not have a formal bug bounty program, but we:
 ### Completed Audits
 
 - **Internal Security Review** (November 2024)
-  - Smart contract code review
-  - Oracle implementation review
-  - Security architecture assessment
-  - See [SECURITY_AUDIT.md](./SECURITY_AUDIT.md)
+  - Smart contract code review: PASSED
+  - Oracle implementation review: PASSED
+  - Security architecture assessment: PASSED
+  - Status: 0 critical, 0 high, 2 medium fixed, 5 low
+  - Full report: [docs/security/SECURITY_AUDIT_REPORT.md](./docs/security/SECURITY_AUDIT_REPORT.md)
 
 ### Planned Audits
 
 - External smart contract audit (pre-mainnet)
 - Penetration testing (Q1 2025)
-- Third-party code review (Q2 2025)
 
 ## Security Updates
 
