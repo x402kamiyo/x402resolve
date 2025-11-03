@@ -107,10 +107,10 @@ const dispute = await client.dispute({
 });
 ```
 
-**[Screen: Switchboard oracle network visualization]**
+**[Screen: x402 Verifier Oracle API visualization]**
 
 **Voiceover**:
-> "Instead of a centralized server, x402Resolve uses Switchboard - a decentralized oracle network."
+> "The dispute triggers the x402 Verifier Oracle - an open-source quality assessment service."
 
 **[Screen: Quality scoring breakdown]**
 - Semantic Similarity: 0.62/1.0 (40% weight)
@@ -119,22 +119,23 @@ const dispute = await client.dispute({
 - **Final Quality Score: 58/100**
 
 **Voiceover**:
-> "Switchboard nodes independently compute a quality score using semantic analysis, completeness checks, and freshness metrics."
+> "The verifier computes a quality score using semantic analysis, completeness checks, and freshness metrics. The algorithm is fully open-source and auditable."
 
 ---
 
 ### [2:20-2:50] The Solution: Automatic Resolution (30 seconds)
 
-**[Screen: Escrow program verifying Switchboard result]**
+**[Screen: Escrow program verifying oracle signature]**
 
 **Voiceover**:
-> "Step 3: The Solana escrow program verifies the Switchboard attestation on-chain."
+> "Step 3: The Solana escrow program verifies the Ed25519 signature from the verifier oracle."
 
 ```rust
-// Verify Switchboard oracle result (on-chain)
+// Verify oracle signature (on-chain)
+let message = format!("{}:{}", transaction_id, quality_score);
 require!(
-    switchboard_function.owner == switchboard_on_demand::ID,
-    "Invalid oracle"
+    verify_ed25519_signature(message, signature, verifier_pubkey),
+    "Invalid signature"
 );
 
 // Calculate refund split
@@ -164,12 +165,12 @@ let refund_percentage = if quality_score >= 80 { 0 }
 **[Screen: Key metrics animated on screen]**
 
 **Voiceover**:
-> "x402Resolve: Enabling trustless commerce for the AI agent economy."
+> "x402Resolve: Enabling automated dispute resolution for the AI agent economy."
 
 **[Screen: Final metrics slide]**
-- ✅ 99% Trustless via Switchboard
-- ✅ $0.000005 cost per dispute
-- ✅ 48-hour resolution
+- ✅ Fully automated via Solana smart contracts
+- ✅ $0.000005 cost per dispute (99% cheaper)
+- ✅ 48-hour resolution (85% faster)
 - ✅ 0-100% sliding-scale refunds
 - ✅ $259M addressable market
 
@@ -179,10 +180,10 @@ let refund_percentage = if quality_score >= 80 { 0 }
 - GitHub: github.com/x402kamiyo/x402resolve
 - Live Demo: x402kamiyo.github.io/x402resolve
 - Docs: Full technical details
-- Built on Solana | Powered by Switchboard
+- Built on Solana | Open Source
 
 **Voiceover**:
-> "Try the live demo at x402kamiyo.github.io/x402resolve. Built on Solana, powered by Switchboard."
+> "Try the live demo at x402kamiyo.github.io/x402resolve. Built on Solana, fully open source."
 
 **[Fade to black]**
 
@@ -196,7 +197,7 @@ let refund_percentage = if quality_score >= 80 { 0 }
    - Escrow PDA creation transaction
    - Dispute marking transaction
    - Refund split transaction
-3. **Switchboard Dashboard** (if available): Oracle network processing request
+3. **Verifier Oracle**: FastAPI `/verify-quality` endpoint response showing quality scoring
 
 ### Animations
 1. **Agent + API Flow**: Simple stick figure/icon animation
@@ -227,7 +228,7 @@ let refund_percentage = if quality_score >= 80 { 0 }
 
 ### Technical Accuracy
 - Show real Solana devnet transactions
-- Use actual Switchboard function output
+- Use actual verifier oracle output
 - Display real quality scores from test data
 
 ---
@@ -241,7 +242,7 @@ let refund_percentage = if quality_score >= 80 { 0 }
 1. **[0:00-0:30]** Introduction + problem statement
 2. **[0:30-1:00]** Show SDK code + run payment creation
 3. **[1:00-1:30]** Demonstrate bad data scenario
-4. **[1:30-2:00]** File dispute, watch Switchboard process
+4. **[1:30-2:00]** File dispute, watch verifier oracle process
 5. **[2:00-2:30]** Show refund transaction on Solana Explorer
 6. **[2:30-3:00]** Recap metrics + Q&A setup
 
@@ -285,10 +286,10 @@ let refund_percentage = if quality_score >= 80 { 0 }
 ## Success Metrics
 
 Video effectiveness measured by:
-- ✅ Judges understand "99% trustless" claim
-- ✅ Clear visual proof of Switchboard integration
+- ✅ Judges understand automated dispute resolution
+- ✅ Clear visual proof of quality scoring algorithm
 - ✅ End-to-end flow demonstrated without confusion
-- ✅ Key metrics (cost, time, trustlessness) communicated
+- ✅ Key metrics (cost, time, automation) communicated
 - ✅ Call to action clear (try demo, read docs)
 
-**Goal**: Judges can verify trustlessness claims and see Switchboard integration working end-to-end.
+**Goal**: Judges can verify quality scoring algorithm and see automated dispute resolution working end-to-end.

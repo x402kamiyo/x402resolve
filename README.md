@@ -1,22 +1,23 @@
-# x402Resolve: Trustless Dispute Layer for x402 Agents
+# x402Resolve: Automated Dispute Resolution for AI Agent Payments
 
 [![Solana Devnet](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://explorer.solana.com/address/AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR?cluster=devnet)
-[![Switchboard](https://img.shields.io/badge/Switchboard-Oracle-00D4FF)](https://switchboard.xyz)
 [![Tests](https://img.shields.io/badge/tests-90%2B-success)](https://github.com/x402kamiyo/x402resolve)
-[![Trustless](https://img.shields.io/badge/trustless-99%25-brightgreen)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## 99% Trustless Resolutions at $0.000005 Cost
+## Automated Dispute Resolution at $0.000005 Cost
 
-**TL;DR:** Trustless dispute resolution for AI agent payments on Solana. When agents pay for API data and receive poor quality, disputes resolve automatically in 24-48 hours with 0-100% sliding-scale refunds based on decentralized quality verification via Switchboard oracles.
+**TL;DR:** Automated dispute resolution for AI agent payments on Solana using escrow, objective quality scoring, and sliding-scale refunds. When agents pay for API data and receive poor quality, disputes resolve in 24-48 hours with 0-100% refunds based on actual quality. Cost: $0.000005 vs $50-500 traditional chargebacks.
 
-**Key Metrics:**
-- **99% trustless** via Switchboard oracle network
+**Current Implementation:**
+- **Fully automated** via Solana smart contracts + Python verifier oracle
 - **$0.000005 per dispute** (99% cheaper than traditional $50-500)
 - **48-hour resolution** (85% faster than 2-4 week arbitration)
 - **0-100% sliding-scale refunds** (fair partial compensation)
+- **Ed25519 signed** oracle assessments verified on-chain
 
-KAMIYO | Solana x402 Hackathon 2025 | [Switchboard Bounty Candidate](#switchboard-integration)
+**Roadmap:** Decentralized oracle integration via Switchboard ([technical plan](./docs/roadmap/SWITCHBOARD_INTEGRATION.md))
+
+KAMIYO | Solana x402 Hackathon 2025
 
 ## Problem
 
@@ -30,13 +31,16 @@ Annual fraud losses: $259M
 
 ## Solution
 
-Trustless dispute resolution powered by Switchboard oracles on Solana:
-- **Decentralized quality verification** via Switchboard Functions (no central authority)
-- **48-hour dispute window** with time-locked PDA escrow
+Automated dispute resolution with on-chain escrow and objective quality verification:
+- **48-hour dispute window** with time-locked PDA escrow (trustless Solana program)
 - **Multi-factor quality scoring** (semantic similarity, completeness, freshness)
 - **Sliding-scale refunds** (0-100% based on objective quality score)
-- **On-chain verification** of Switchboard oracle attestations
+- **Ed25519-signed oracle assessments** verified on-chain
+- **Automated execution** via Solana Anchor smart contracts
 - **Cost**: 0.000005 SOL per dispute vs $50-500 traditional chargebacks
+
+**Current Architecture:** Python verifier oracle + Solana escrow program
+**Roadmap:** Full decentralization via Switchboard oracle network ([details](./docs/roadmap/SWITCHBOARD_INTEGRATION.md))
 
 ## Quick Start
 
@@ -183,49 +187,59 @@ CLIENT          SDK         ESCROW        API       VERIFIER
   │              │             │ 0.0065 SOL │            │
 ```
 
-## Switchboard Integration
+## Current Architecture
 
-**Achieving 99% Trustlessness via Decentralized Oracles**
+**Production Implementation:**
 
-x402Resolve uses [Switchboard](https://switchboard.xyz) oracles for trustless quality verification:
+| Component | Technology | Status |
+|-----------|-----------|--------|
+| **Escrow** | Solana Anchor Program (PDA) | ✅ Deployed to Devnet |
+| **Quality Scoring** | Python Verifier (FastAPI) | ✅ Production Ready |
+| **Verification** | Ed25519 Signature | ✅ On-chain Verification |
+| **Refund Execution** | Solana Smart Contract | ✅ Automated |
+| **SDK** | TypeScript Client | ✅ npm Package |
+| **MCP Server** | 9 Production Tools | ✅ Claude Code Integration |
 
-| Component | Implementation | Trustlessness |
-|-----------|---------------|---------------|
-| **Quality Scoring** | Switchboard Function (TypeScript) | 100% decentralized |
-| **Computation** | Off-chain Switchboard nodes | 100% verifiable |
-| **Verification** | On-chain attestation queue | 100% on-chain |
-| **Result Signing** | Switchboard oracle network | 100% cryptographic |
-| **Dispute Resolution** | Solana Anchor program | 100% trustless |
+**Quality Scoring Algorithm:**
+```python
+quality_score = (
+    semantic_similarity * 0.4 +    # Query vs data relevance
+    completeness_score * 0.4 +     # Expected criteria coverage
+    freshness_score * 0.2           # Data recency
+) * 100
+```
 
-**Switchboard Function Flow:**
-1. Agent files dispute with quality data
-2. Escrow program triggers Switchboard Function request
-3. Switchboard nodes compute quality score (semantic + completeness + freshness)
-4. Result signed and attested by Switchboard oracle network
-5. Escrow program verifies attestation and executes refund split
-
-**Key Advantages:**
-- No central authority or trusted server
-- Verifiable computation via Switchboard attestation
-- Same cost as centralized ($0.000005 per dispute)
-- Eligible for Switchboard bounty program ($5k)
-
-Full technical details: [SWITCHBOARD_INTEGRATION.md](./SWITCHBOARD_INTEGRATION.md)
+**Verifier Oracle:** FastAPI service at `packages/x402-verifier/verifier.py`
+- Semantic analysis via sentence transformers
+- Completeness checking against expected criteria
+- Freshness scoring based on timestamps
+- Ed25519 signature for on-chain verification
 
 ## Trust Model
 
-16 features addressing autonomous agent commerce:
-- On-chain audit trail
-- Switchboard oracle network verification
-- Objective quality scoring algorithm
-- Agent reputation (0-1000 on-chain)
-- Time-lock protection (48-hour dispute window)
-- Rate limiting (Sybil attack prevention)
-- Multi-oracle consensus (for high-value disputes)
+Security features in production:
+- **On-chain audit trail** (all transactions on Solana)
+- **Ed25519 cryptographic verification** (verifier signatures checked on-chain)
+- **Objective quality scoring** (open-source algorithm)
+- **Agent reputation** (0-1000 on-chain tracking)
+- **Time-lock protection** (48-hour dispute window)
+- **Rate limiting** (Sybil attack prevention)
+- **PDA escrow** (no admin keys control funds)
 
-**Trustlessness Score: 99%**
+Full details: [TRUST_MODEL.md](./TRUST_MODEL.md)
 
-Full details: [TRUST_MODEL.md](./TRUST_MODEL.md) | [Trustless Architecture](./TRUSTLESS_ARCHITECTURE.md)
+## Roadmap: Full Decentralization
+
+**Phase 2 - Switchboard Oracle Integration** ([Technical Plan](./docs/roadmap/SWITCHBOARD_INTEGRATION.md))
+
+Target: 99% trustless via decentralized oracle network
+- Replace Python verifier with Switchboard Functions
+- Multi-oracle consensus (median of 3+ independent nodes)
+- On-chain attestation verification
+- Economic security via staked oracle nodes
+- Eligible for Switchboard bounty program
+
+Timeline: Q1 2026 (post-hackathon)
 
 ## Development
 
