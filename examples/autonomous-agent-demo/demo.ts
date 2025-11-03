@@ -8,7 +8,7 @@
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { AutonomousServiceAgent } from '@x402resolve/agent-client';
 
-const ESCROW_PROGRAM_ID = new PublicKey('AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR');
+const ESCROW_PROGRAM_ID = new PublicKey('D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP');
 const connection = new Connection('https://api.devnet.solana.com');
 
 async function runSecurityIntelligenceDemo() {

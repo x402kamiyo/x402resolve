@@ -14,7 +14,7 @@ import { x402PaymentMiddleware, getEscrowInfo } from '@x402resolve/middleware';
 const app = express();
 app.use(express.json());
 
-const ESCROW_PROGRAM_ID = new PublicKey('AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR');
+const ESCROW_PROGRAM_ID = new PublicKey('D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP');
 const connection = new Connection('https://api.devnet.solana.com');
 
 // Apply x402 payment middleware to all protected endpoints

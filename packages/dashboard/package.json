@@ -1,37 +1,22 @@
 {
-  "name": "@x402resolve/dashboard",
+  "name": "x402resolve-monorepo",
   "version": "1.0.0",
-  "description": "Live dispute resolution dashboard for x402Resolve",
   "private": true,
-  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
-  },
-  "dependencies": {
-    "@kamiyo/x402-sdk": "file:../x402-sdk",
-    "@solana/web3.js": "^1.98.4",
-    "@coral-xyz/anchor": "^0.32.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "recharts": "^2.10.3",
-    "lucide-react": "^0.294.0"
+    "test": "npm run test:sdk && npm run test:middleware && npm run test:agent && npm run test:escrow",
+    "test:sdk": "cd packages/x402-sdk && npm test",
+    "test:middleware": "cd packages/x402-middleware && npm test",
+    "test:agent": "cd packages/agent-client && npm test",
+    "test:escrow": "cd packages/x402-escrow && anchor test",
+    "build": "npm run build --workspaces",
+    "build:sdk": "cd packages/x402-sdk && npm run build",
+    "build:middleware": "cd packages/x402-middleware && npm run build",
+    "build:agent": "cd packages/agent-client && npm run build"
   },
   "devDependencies": {
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.16",
-    "eslint": "^8.55.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "postcss": "^8.4.32",
-    "tailwindcss": "^3.3.6",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "typescript": "^5.5.3"
   }
 }

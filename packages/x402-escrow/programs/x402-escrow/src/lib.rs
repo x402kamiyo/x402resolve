@@ -215,6 +215,14 @@ pub mod x402_escrow {
             escrow.bump = ctx.bumps.escrow;
         }
 
+        // Verify transfer amount covers rent before executing
+        let rent = Rent::get()?;
+        let min_rent = rent.minimum_balance(8 + Escrow::INIT_SPACE);
+        require!(
+            amount >= min_rent,
+            EscrowError::InsufficientRentReserve
+        );
+
         // Transfer SOL to escrow PDA
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
@@ -224,15 +232,6 @@ pub mod x402_escrow {
             },
         );
         anchor_lang::system_program::transfer(cpi_context, amount)?;
-
-        // Verify escrow account is rent-exempt after transfer
-        let rent = Rent::get()?;
-        let escrow_lamports = ctx.accounts.escrow.to_account_info().lamports();
-        let min_rent = rent.minimum_balance(8 + Escrow::INIT_SPACE);
-        require!(
-            escrow_lamports >= min_rent,
-            EscrowError::InsufficientRentReserve
-        );
 
         let expires_at = clock.unix_timestamp + time_lock;
         msg!("Escrow initialized: {} SOL locked", amount as f64 / 1_000_000_000.0);
@@ -521,10 +520,11 @@ pub mod x402_escrow {
         let feed_data = PullFeedAccountData::parse(pull_feed.to_account_info().data.borrow())
             .map_err(|_| EscrowError::InvalidSwitchboardAttestation)?;
 
-        // Verify the attestation is recent (within last 60 seconds)
+        // Verify the attestation is recent (within last 300 seconds / 5 minutes)
+        // Increased from 60s to account for network delays and clock drift
         let clock = Clock::get()?;
         require!(
-            feed_data.result.result_timestamp + 60 >= clock.unix_timestamp,
+            feed_data.result.result_timestamp + 300 >= clock.unix_timestamp,
             EscrowError::StaleAttestation
         );
 
