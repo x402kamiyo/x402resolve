@@ -5,7 +5,7 @@ services:
     region: oregon
     plan: starter
     rootDir: examples/x402-api-server
-    buildCommand: npm install --include=dev --no-workspaces && npm run build
+    buildCommand: npm install --no-workspaces && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
