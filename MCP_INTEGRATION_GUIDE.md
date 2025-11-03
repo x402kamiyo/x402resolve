@@ -409,9 +409,9 @@ exposure to any compromised protocols on Ethereum
 [Uses monitor_wallet tool]
 
 Good news! Your wallet (0x742d...bEb) has:
-- ✅ No exposure to compromised protocols
-- ✅ No interactions with known exploited contracts
-- ✅ Zero risk detected
+- CLEAN - No exposure to compromised protocols
+- CLEAN - No interactions with known exploited contracts
+- CLEAN - Zero risk detected
 
 Your wallet is clean. Keep monitoring regularly for safety.
 ```
@@ -467,7 +467,7 @@ Let me check the security profile:
 
 **Risk Assessment for YieldFarm Pro (BSC):**
 
-⚠️ **High Risk - Score: 85/100**
+WARNING - **High Risk - Score: 85/100**
 
 **Red Flags:**
 1. No audit reports found
@@ -481,7 +481,7 @@ Let me check the security profile:
 - No timelock on admin functions
 - Liquidity can be pulled instantly
 
-**Recommendation:** ❌ **DO NOT INVEST**
+**Recommendation:** CRITICAL - **DO NOT INVEST**
 
 This protocol shows multiple signs of a potential scam. The risks
 significantly outweigh any potential returns. Consider established
@@ -683,12 +683,12 @@ Once configured, try these in Claude Desktop:
 
 ## Next Steps
 
-1. ✅ Configure Claude Desktop MCP
-2. ✅ Test all 5 tools
-3. ✅ Try example conversations
-4. 📖 Read [API Reference](./docs/markdown/API_REFERENCE.md)
-5. 🎥 Watch [Demo Video](#)
-6. 💻 Try [Code Examples](./examples/)
+1. DONE - Configure Claude Desktop MCP
+2. DONE - Test all 5 tools
+3. DONE - Try example conversations
+4. Read [API Reference](./docs/markdown/API_REFERENCE.md)
+5. Watch [Demo Video](#)
+6. Try [Code Examples](./examples/)
 
 ---
 

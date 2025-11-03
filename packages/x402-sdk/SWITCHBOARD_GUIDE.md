@@ -78,7 +78,7 @@ await escrowClient.resolveDispute(
 |---------|----------------|-------------|
 | Cost | ~$0 (after hosting) | ~$0.005 |
 | Speed | 100-500ms | 2-5 seconds |
-| Trustlessness | ❌ Centralized | ✅ Decentralized |
+| Trustlessness | NO - Centralized | YES - Decentralized |
 | Algorithm | ML embeddings | Jaccard + keywords |
 | Accuracy | 100% (baseline) | ~95% identical outcomes |
 

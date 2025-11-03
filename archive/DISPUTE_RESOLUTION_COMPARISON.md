@@ -4,14 +4,14 @@
 
 | Feature | Python Verifier (Current) | Switchboard On-Demand (New) |
 |---------|---------------------------|----------------------------|
-| **Trustlessness** | ❌ Centralized | ✅ Decentralized (multi-node) |
+| **Trustlessness** | NO - Centralized | YES - Decentralized (multi-node) |
 | **Cost per dispute** | ~$0 (after fixed hosting) | ~$0.005 |
 | **Latency** | 100-500ms | 2-5 seconds |
 | **Semantic matching** | ML embeddings (SentenceTransformer) | Jaccard + keyword heuristics |
-| **Single point of failure** | ❌ Yes | ✅ No |
-| **Oracle manipulation** | ❌ Possible (admin key) | ✅ Prevented (BFT consensus) |
-| **Solana SPL token payments** | ❌ Requires upgrade | ✅ Native support |
-| **Hackathon eligibility** | ❌ No | ✅ Yes ($5k Switchboard bounty) |
+| **Single point of failure** | NO - Yes | YES - No |
+| **Oracle manipulation** | NO - Possible (admin key) | YES - Prevented (BFT consensus) |
+| **Solana SPL token payments** | NO - Requires upgrade | YES - Native support |
+| **Hackathon eligibility** | NO - No | YES - Yes ($5k Switchboard bounty) |
 
 ## Flow Diagrams
 
@@ -45,9 +45,9 @@ Agent                    Python Verifier           Anchor Program
 ```
 
 **Vulnerabilities:**
-- ⚠️ Admin controls private key
-- ⚠️ Server downtime = disputes stuck
-- ⚠️ No on-chain proof of algorithm execution
+- WARNING - Admin controls private key
+- WARNING - Server downtime = disputes stuck
+- WARNING - No on-chain proof of algorithm execution
 
 ### Switchboard Flow (New)
 
@@ -88,10 +88,10 @@ Agent              Switchboard Network        Anchor Program
 ```
 
 **Advantages:**
-- ✅ No admin key required
-- ✅ Byzantine fault tolerance
-- ✅ Censorship resistant
-- ✅ Cryptographic proof on-chain
+- YES - No admin key required
+- YES - Byzantine fault tolerance
+- YES - Censorship resistant
+- YES - Cryptographic proof on-chain
 
 ## Algorithm Comparison
 
@@ -142,11 +142,11 @@ else:
 
 | Test Case | Python Score | Switchboard Score | Refund Match? |
 |-----------|-------------|-------------------|---------------|
-| Perfect match (Uniswap exploits) | 87/100 | 80/100 | ✅ Both 0% |
-| Poor match (wrong protocol) | 38/100 | 40/100 | ✅ Both 100% |
-| Partial match (incomplete) | 65/100 | 63/100 | ✅ Both ~20% |
-| Old data (freshness issue) | 42/100 | 43/100 | ✅ Both 100% |
-| Empty response | 25/100 | 28/100 | ✅ Both 100% |
+| Perfect match (Uniswap exploits) | 87/100 | 80/100 | MATCH - Both 0% |
+| Poor match (wrong protocol) | 38/100 | 40/100 | MATCH - Both 100% |
+| Partial match (incomplete) | 65/100 | 63/100 | MATCH - Both ~20% |
+| Old data (freshness issue) | 42/100 | 43/100 | MATCH - Both 100% |
+| Empty response | 25/100 | 28/100 | MATCH - Both 100% |
 
 **Conclusion:** Switchboard scores track Python within ±5 points, leading to identical refund outcomes in 95% of cases.
 

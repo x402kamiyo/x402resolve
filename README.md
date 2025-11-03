@@ -27,9 +27,9 @@ Extends RFC 9110's HTTP 402 Payment Required with cryptographically-verified qua
 
 | Bounty | Amount | Status | Submission Link |
 |--------|--------|--------|-----------------|
-| **Switchboard On-Demand** | $5,000 | ✅ Ready | [Submission](./docs/hackathon-submissions/SWITCHBOARD_BOUNTY_SUBMISSION.md) |
-| **CDP Embedded Wallets** | $5,000 | ✅ Ready | [Submission](./docs/hackathon-submissions/CDP_BOUNTY_SUBMISSION.md) |
-| **Best x402 Agent Application** | TBD | ✅ Ready | [This Repo](https://github.com/x402kamiyo/x402resolve) |
+| **Switchboard On-Demand** | $5,000 | READY | [Submission](./docs/hackathon-submissions/SWITCHBOARD_BOUNTY_SUBMISSION.md) |
+| **CDP Embedded Wallets** | $5,000 | READY | [Submission](./docs/hackathon-submissions/CDP_BOUNTY_SUBMISSION.md) |
+| **Best x402 Agent Application** | $10,000 | READY | [This Repo](https://github.com/x402kamiyo/x402resolve) |
 
 **Key Innovation:** First implementation of sliding-scale refunds (0-100%) for HTTP 402, reducing dispute costs by 99% while maintaining fairness.
 
