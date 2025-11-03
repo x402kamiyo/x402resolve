@@ -51,3 +51,6 @@ logs/
 # OS
 Thumbs.db
 .solana/
+
+# Files
+CLAUDE.md

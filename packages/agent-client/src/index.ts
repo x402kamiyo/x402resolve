@@ -1,4 +1,7 @@
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
+import * as anchor from '@coral-xyz/anchor';
+import { EscrowClient, EscrowUtils } from '@x402resolve/x402-sdk';
+import IDL from '../../x402-sdk/types/x402_escrow.json';
 
 export interface AgentConfig {
   keypair: Keypair;
@@ -24,7 +27,19 @@ export interface ConsumeResult<T> {
 }
 
 export class AutonomousServiceAgent {
-  constructor(private config: AgentConfig) {}
+  private escrowClient: EscrowClient;
+
+  constructor(private config: AgentConfig) {
+    const wallet = new anchor.Wallet(this.config.keypair);
+    this.escrowClient = new EscrowClient(
+      {
+        programId: this.config.programId,
+        connection: this.config.connection,
+        wallet
+      },
+      IDL as anchor.Idl
+    );
+  }
 
   async consumeAPI<T>(
     endpoint: string,
@@ -49,7 +64,15 @@ export class AutonomousServiceAgent {
 
       console.log(`[Agent] Creating escrow for ${price} SOL`);
 
-      const escrowPubkey = new PublicKey('placeholder');
+      const transactionId = EscrowUtils.generateTransactionId('agent');
+      const [escrowPubkey] = this.escrowClient.deriveEscrowAddress(transactionId);
+
+      await this.escrowClient.createEscrow({
+        amount: EscrowUtils.solToLamports(price),
+        timeLock: EscrowUtils.hoursToSeconds(24),
+        transactionId,
+        apiPublicKey: providerPubkey
+      });
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -143,7 +166,35 @@ export class AutonomousServiceAgent {
   }
 
   private checkAccuracy(received: any, query: any): number {
-    return 100;
+    const data = received.data || received;
+
+    if (!data || (Array.isArray(data) && data.length === 0)) {
+      return 0;
+    }
+
+    const target = Array.isArray(data) ? data[0] : data;
+
+    if (query.chain && target.chain && target.chain !== query.chain) {
+      return 40;
+    }
+
+    if (query.severity && target.severity && target.severity !== query.severity) {
+      return 60;
+    }
+
+    if (query.protocol_address && target.protocol_address) {
+      const queryAddr = query.protocol_address.toLowerCase();
+      const targetAddr = String(target.protocol_address).toLowerCase();
+      if (!targetAddr.includes(queryAddr.slice(0, 6))) {
+        return 50;
+      }
+    }
+
+    const hasValidValues = Object.values(target).some(v =>
+      v !== null && v !== undefined && v !== '' && v !== 0
+    );
+
+    return hasValidValues ? 100 : 30;
   }
 
   private checkFreshness(received: any): number {
