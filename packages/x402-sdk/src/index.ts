@@ -6,4 +6,11 @@
 export { KamiyoClient } from './client';
 export { Hyoban } from './reputation';
 export { EscrowClient, EscrowValidator, EscrowUtils } from './escrow-client';
+export {
+  SwitchboardClient,
+  MockSwitchboardClient,
+  SwitchboardConfig,
+  type QualityScoringParams,
+  type QualityScoringResult,
+} from './switchboard-client';
 export * from './types';

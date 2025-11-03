@@ -61,6 +61,16 @@ export class EscrowClient {
   }
 
   /**
+   * Derive reputation PDA from entity address
+   */
+  deriveReputationAddress(entity: PublicKey): [PublicKey, number] {
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from('reputation'), entity.toBuffer()],
+      this.program.programId
+    );
+  }
+
+  /**
    * Create a new escrow
    */
   async createEscrow(params: CreateEscrowParams): Promise<string> {
@@ -117,7 +127,7 @@ export class EscrowClient {
   }
 
   /**
-   * Resolve dispute with verifier signature
+   * Resolve dispute with verifier signature (Python verifier)
    */
   async resolveDispute(
     transactionId: string,
@@ -129,6 +139,10 @@ export class EscrowClient {
     const [escrowPda] = this.deriveEscrowAddress(transactionId);
     const escrow = await this.getEscrow(transactionId);
 
+    // Need to derive reputation PDAs
+    const [agentReputation] = this.deriveReputationAddress(escrow.agent);
+    const [apiReputation] = this.deriveReputationAddress(escrow.api);
+
     const tx: string = await (this.program.methods as any)
       .resolveDispute(qualityScore, refundPercentage, signature)
       .accounts({
@@ -136,6 +150,43 @@ export class EscrowClient {
         agent: escrow.agent,
         api: escrow.api,
         verifier: verifierPublicKey,
+        instructionsSysvar: anchor.web3.SYSVAR_INSTRUCTIONS_PUBKEY,
+        agentReputation: agentReputation,
+        apiReputation: apiReputation,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc();
+
+    return tx;
+  }
+
+  /**
+   * Resolve dispute with Switchboard On-Demand oracle
+   *
+   * Uses decentralized oracle network for trustless quality assessment
+   */
+  async resolveDisputeSwitchboard(
+    transactionId: string,
+    qualityScore: number,
+    refundPercentage: number,
+    switchboardAttestation: PublicKey
+  ): Promise<string> {
+    const [escrowPda] = this.deriveEscrowAddress(transactionId);
+    const escrow = await this.getEscrow(transactionId);
+
+    // Derive reputation PDAs
+    const [agentReputation] = this.deriveReputationAddress(escrow.agent);
+    const [apiReputation] = this.deriveReputationAddress(escrow.api);
+
+    const tx: string = await (this.program.methods as any)
+      .resolveDisputeSwitchboard(qualityScore, refundPercentage)
+      .accounts({
+        escrow: escrowPda,
+        agent: escrow.agent,
+        api: escrow.api,
+        switchboardFunction: switchboardAttestation,
+        agentReputation: agentReputation,
+        apiReputation: apiReputation,
         systemProgram: SystemProgram.programId,
       })
       .rpc();
