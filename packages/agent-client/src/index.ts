@@ -192,3 +192,4 @@ export class AutonomousServiceAgent {
 }
 
 export { AgentConfig, QualityResult, ConsumeResult };
+export { CDPAutonomousAgent, CDPAgentConfig, ToolCall, ReasoningResult } from './cdp-agent';
