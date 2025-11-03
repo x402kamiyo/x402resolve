@@ -44,27 +44,42 @@ Automated dispute resolution with on-chain escrow and objective quality verifica
 
 ## Quick Start
 
+### For API Providers
+
 ```typescript
-import { KamiyoClient } from '@kamiyo/x402-sdk';
+import express from 'express';
+import { x402PaymentMiddleware } from '@x402resolve/middleware';
 
-const client = new KamiyoClient({
-  apiUrl: 'https://api.kamiyo.ai',
-  enablex402Resolve: true
+const app = express();
+
+app.use('/api/*', x402PaymentMiddleware({
+  realm: 'my-api',
+  programId: ESCROW_PROGRAM_ID,
+  connection: new Connection('https://api.devnet.solana.com'),
+  price: 0.001,
+  qualityGuarantee: true
+}));
+
+app.get('/api/data', (req, res) => {
+  res.json({ data: 'Protected content' });
+});
+```
+
+### For Autonomous Agents
+
+```typescript
+import { AutonomousServiceAgent } from '@x402resolve/agent-client';
+
+const agent = new AutonomousServiceAgent({
+  keypair: agentKeypair,
+  connection,
+  programId: ESCROW_PROGRAM_ID,
+  qualityThreshold: 85,
+  maxPrice: 0.001,
+  autoDispute: true
 });
 
-// Create escrow payment
-const payment = await client.pay({
-  amount: 0.01,
-  recipient: apiWallet,
-  enableEscrow: true
-});
-
-// Dispute if quality check fails
-const dispute = await client.dispute({
-  transactionId: payment.transactionId,
-  reason: 'Incomplete data',
-  evidence: data
-});
+const result = await agent.consumeAPI(endpoint, query, schema);
 ```
 
 ## Demo

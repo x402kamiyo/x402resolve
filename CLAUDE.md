@@ -23,11 +23,13 @@ Write like an expert developer:
 - Imperative mood: "Add feature" not "Added feature"
 - Describe what and why, not how
 - No emojis or decorative elements
+- NO EMOJIS
 
 ### Code Comments
 - Explain why, not what
 - Technical rationale only
 - No obvious comments
+- NO EMOJIS
 
 ## Project: Exploit Intelligence Aggregator
 
@@ -86,3 +88,4 @@ alerts/         # Discord, Telegram, Email
 - Symbolic execution
 - Formal verification
 - Security scoring algorithms
+- Emojis
