@@ -1,9 +1,4 @@
-/**
- * Autonomous Agent Demo
- *
- * Demonstrates AI agents transacting without human intervention using
- * KAMIYO Security Intelligence API with x402Resolve quality guarantees.
- */
+// Autonomous Agent Demo - KAMIYO Security Intelligence with x402Resolve
 
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { AutonomousServiceAgent } from '@x402resolve/agent-client';

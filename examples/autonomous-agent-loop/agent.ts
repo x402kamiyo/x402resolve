@@ -1,16 +1,4 @@
-/**
- * Fully Autonomous Agent Loop
- *
- * Demonstrates complete agent autonomy with zero human intervention:
- * 1. Agent discovers x402-enabled API
- * 2. Agent negotiates price and creates escrow
- * 3. Agent consumes service with payment proof
- * 4. Agent assesses quality automatically
- * 5. Agent files dispute if quality inadequate
- * 6. Agent collects refund based on quality
- *
- * No human intervention at any step.
- */
+// Autonomous Agent Loop - Full lifecycle with zero human intervention
 
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { AutonomousServiceAgent } from '@x402resolve/agent-client';

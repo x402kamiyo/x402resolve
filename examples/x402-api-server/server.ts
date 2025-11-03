@@ -1,11 +1,4 @@
-/**
- * KAMIYO Security Intelligence API with x402Resolve Payment Protection
- *
- * Demonstrates HTTP 402 Payment Required standard with quality guarantees
- * for security intelligence queries using x402Resolve dispute resolution.
- *
- * Real-world integration: kamiyo.ai exploit database API
- */
+// KAMIYO Security Intelligence API - HTTP 402 with x402Resolve quality guarantees
 
 import express, { Request, Response } from 'express';
 import { Connection, PublicKey } from '@solana/web3.js';
