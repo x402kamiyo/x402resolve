@@ -1,35 +1,7 @@
 //! x402Resolve Escrow Program
 //!
-//! Automated dispute resolution for HTTP 402 payment-required APIs
-//! using Solana escrow and objective quality verification.
-//!
-//! # Features (16/16 - 100% Complete)
-//!
-//! ## Trust (6/6)
-//! - Ed25519 cryptographic signatures for quality assessments
-//! - On-chain reputation system with 0-1000 scoring
-//! - Graduated verification levels (Basic/Staked/Social/KYC)
-//! - Automated verifier oracle integration
-//! - Immutable on-chain audit trail
-//! - PDA-based security for escrow accounts
-//!
-//! ## Scope (4/4)
-//! - Query-based specification for expected data
-//! - Validation criteria (fields, records, age)
-//! - Objective quality scoring algorithm
-//! - Structured work agreements on-chain
-//!
-//! ## Accountability (4/4)
-//! - Automated dispute resolution (24-48h)
-//! - Sliding scale refunds (0-100% based on quality)
-//! - Provider penalty system with strikes
-//! - Dynamic dispute cost scaling (prevents abuse)
-//!
-//! ## Reputation (2/2)
-//! - On-chain execution and updates
-//! - Rate limiting per entity and timeframe
-//!
-//! Program ID: AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR (Devnet)
+//! Time-locked PDA escrow with Ed25519-verified quality assessment
+//! for HTTP 402 API dispute resolution.
 
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{
