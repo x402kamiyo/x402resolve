@@ -36,8 +36,10 @@ use anchor_lang::solana_program::{
     ed25519_program,
     sysvar::instructions::{load_instruction_at_checked, ID as INSTRUCTIONS_ID},
 };
+use switchboard_on_demand::accounts::PullFeedAccountData;
+use switchboard_on_demand::CrossbarClient;
 
-declare_id!("AFmBBw7kbrnwhhzYadAMCMh4BBBZcZdS3P7Z6vpsqsSR");
+declare_id!("D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP");
 
 // Validation constants
 const MIN_TIME_LOCK: i64 = 3600;                    // 1 hour
@@ -486,6 +488,182 @@ pub mod x402_escrow {
         Ok(())
     }
 
+    /// Resolve dispute with Switchboard On-Demand oracle
+    ///
+    /// Uses Switchboard decentralized oracle network for trustless quality assessment.
+    /// The Switchboard Function calculates quality score off-chain and produces
+    /// a cryptographically verified attestation that's validated on-chain.
+    ///
+    /// # Arguments
+    /// * `quality_score` - Quality score from Switchboard Function (0-100)
+    /// * `refund_percentage` - Refund percentage from Switchboard (0-100)
+    pub fn resolve_dispute_switchboard(
+        ctx: Context<ResolveDisputeSwitchboard>,
+        quality_score: u8,
+        refund_percentage: u8,
+    ) -> Result<()> {
+        let escrow = &mut ctx.accounts.escrow;
+
+        require!(
+            escrow.status == EscrowStatus::Active || escrow.status == EscrowStatus::Disputed,
+            EscrowError::InvalidStatus
+        );
+
+        require!(quality_score <= 100, EscrowError::InvalidQualityScore);
+        require!(refund_percentage <= 100, EscrowError::InvalidRefundPercentage);
+
+        // Verify Switchboard attestation
+        // The Switchboard Function result is stored in pull_feed account
+        // and contains the quality score signed by oracle nodes
+        let pull_feed = &ctx.accounts.switchboard_function;
+
+        // Load and verify the Switchboard attestation
+        let feed_data = PullFeedAccountData::parse(pull_feed.to_account_info().data.borrow())
+            .map_err(|_| EscrowError::InvalidSwitchboardAttestation)?;
+
+        // Verify the attestation is recent (within last 60 seconds)
+        let clock = Clock::get()?;
+        require!(
+            feed_data.result.result_timestamp + 60 >= clock.unix_timestamp,
+            EscrowError::StaleAttestation
+        );
+
+        // Extract quality score from Switchboard result
+        // The value is encoded as i128 in the feed
+        let switchboard_quality = feed_data.result.value;
+
+        // Verify the quality score matches what was submitted
+        require!(
+            switchboard_quality == quality_score as i128,
+            EscrowError::QualityScoreMismatch
+        );
+
+        msg!("Switchboard Quality Score: {}", quality_score);
+        msg!("Refund: {}%", refund_percentage);
+
+        // Calculate split amounts (same logic as resolve_dispute)
+        let refund_amount = (escrow.amount as u128)
+            .checked_mul(refund_percentage as u128)
+            .ok_or(EscrowError::ArithmeticOverflow)?
+            .checked_div(100)
+            .ok_or(EscrowError::ArithmeticOverflow)? as u64;
+
+        let payment_amount = escrow.amount - refund_amount;
+
+        msg!("Refund to Agent: {} SOL", refund_amount as f64 / 1_000_000_000.0);
+        msg!("Payment to API: {} SOL", payment_amount as f64 / 1_000_000_000.0);
+
+        // Copy values needed for PDA signing
+        let transaction_id = escrow.transaction_id.clone();
+        let bump = escrow.bump;
+
+        // Transfer refund to agent
+        if refund_amount > 0 {
+            let seeds = &[
+                b"escrow",
+                transaction_id.as_bytes(),
+                &[bump],
+            ];
+            let signer = &[&seeds[..]];
+
+            let cpi_context = CpiContext::new_with_signer(
+                ctx.accounts.system_program.to_account_info(),
+                anchor_lang::system_program::Transfer {
+                    from: ctx.accounts.escrow.to_account_info(),
+                    to: ctx.accounts.agent.to_account_info(),
+                },
+                signer,
+            );
+            anchor_lang::system_program::transfer(cpi_context, refund_amount)?;
+        }
+
+        // Transfer payment to API
+        if payment_amount > 0 {
+            let seeds = &[
+                b"escrow",
+                transaction_id.as_bytes(),
+                &[bump],
+            ];
+            let signer = &[&seeds[..]];
+
+            let cpi_context = CpiContext::new_with_signer(
+                ctx.accounts.system_program.to_account_info(),
+                anchor_lang::system_program::Transfer {
+                    from: ctx.accounts.escrow.to_account_info(),
+                    to: ctx.accounts.api.to_account_info(),
+                },
+                signer,
+            );
+            anchor_lang::system_program::transfer(cpi_context, payment_amount)?;
+        }
+
+        let escrow = &mut ctx.accounts.escrow;
+        escrow.status = EscrowStatus::Resolved;
+        escrow.quality_score = Some(quality_score);
+        escrow.refund_percentage = Some(refund_percentage);
+
+        // Update agent reputation (same logic as resolve_dispute)
+        let agent_reputation = &mut ctx.accounts.agent_reputation;
+        let clock = Clock::get()?;
+
+        agent_reputation.total_transactions = agent_reputation.total_transactions.saturating_add(1);
+
+        let total_quality = agent_reputation.average_quality_received as u64
+            * (agent_reputation.total_transactions.saturating_sub(1)) as u64
+            + quality_score as u64;
+        agent_reputation.average_quality_received =
+            (total_quality / agent_reputation.total_transactions as u64) as u8;
+
+        if refund_percentage >= 75 {
+            agent_reputation.disputes_won = agent_reputation.disputes_won.saturating_add(1);
+        } else if refund_percentage >= 25 {
+            agent_reputation.disputes_partial = agent_reputation.disputes_partial.saturating_add(1);
+        } else {
+            agent_reputation.disputes_lost = agent_reputation.disputes_lost.saturating_add(1);
+        }
+
+        agent_reputation.reputation_score = calculate_reputation_score(agent_reputation);
+        agent_reputation.last_updated = clock.unix_timestamp;
+
+        // Update API reputation
+        let api_reputation = &mut ctx.accounts.api_reputation;
+        api_reputation.total_transactions = api_reputation.total_transactions.saturating_add(1);
+
+        let quality_delivered = 100 - refund_percentage;
+        let total_quality_api = api_reputation.average_quality_received as u64
+            * (api_reputation.total_transactions.saturating_sub(1)) as u64
+            + quality_delivered as u64;
+        api_reputation.average_quality_received =
+            (total_quality_api / api_reputation.total_transactions as u64) as u8;
+
+        if refund_percentage <= 25 {
+            api_reputation.disputes_won = api_reputation.disputes_won.saturating_add(1);
+        } else if refund_percentage <= 75 {
+            api_reputation.disputes_partial = api_reputation.disputes_partial.saturating_add(1);
+        } else {
+            api_reputation.disputes_lost = api_reputation.disputes_lost.saturating_add(1);
+        }
+
+        api_reputation.reputation_score = calculate_reputation_score(api_reputation);
+        api_reputation.last_updated = clock.unix_timestamp;
+
+        msg!("Dispute resolved via Switchboard!");
+        msg!("Agent reputation: {}", agent_reputation.reputation_score);
+        msg!("API reputation: {}", api_reputation.reputation_score);
+
+        emit!(DisputeResolved {
+            escrow: escrow.key(),
+            transaction_id: escrow.transaction_id.clone(),
+            quality_score,
+            refund_percentage,
+            refund_amount,
+            payment_amount,
+            verifier: ctx.accounts.switchboard_function.key(),
+        });
+
+        Ok(())
+    }
+
     /// Mark escrow as disputed (agent initiates dispute)
     pub fn mark_disputed(ctx: Context<MarkDisputed>) -> Result<()> {
         let escrow = &mut ctx.accounts.escrow;
@@ -765,6 +943,43 @@ pub struct ResolveDispute<'info> {
 }
 
 #[derive(Accounts)]
+pub struct ResolveDisputeSwitchboard<'info> {
+    #[account(
+        mut,
+        seeds = [b"escrow", escrow.transaction_id.as_bytes()],
+        bump = escrow.bump
+    )]
+    pub escrow: Account<'info, Escrow>,
+
+    #[account(mut)]
+    pub agent: SystemAccount<'info>,
+
+    /// CHECK: API wallet address
+    #[account(mut)]
+    pub api: AccountInfo<'info>,
+
+    /// Switchboard Function pull feed containing quality score
+    /// CHECK: Validated via PullFeedAccountData::parse
+    pub switchboard_function: AccountInfo<'info>,
+
+    #[account(
+        mut,
+        seeds = [b"reputation", agent.key().as_ref()],
+        bump = agent_reputation.bump
+    )]
+    pub agent_reputation: Account<'info, EntityReputation>,
+
+    #[account(
+        mut,
+        seeds = [b"reputation", api.key().as_ref()],
+        bump = api_reputation.bump
+    )]
+    pub api_reputation: Account<'info, EntityReputation>,
+
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
 pub struct MarkDisputed<'info> {
     #[account(
         mut,
@@ -989,4 +1204,13 @@ pub enum EscrowError {
 
     #[msg("Insufficient rent reserve in escrow account")]
     InsufficientRentReserve,
+
+    #[msg("Invalid Switchboard attestation")]
+    InvalidSwitchboardAttestation,
+
+    #[msg("Switchboard attestation is stale (older than 60 seconds)")]
+    StaleAttestation,
+
+    #[msg("Quality score mismatch between Switchboard and submitted value")]
+    QualityScoreMismatch,
 }
