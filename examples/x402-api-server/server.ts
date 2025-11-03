@@ -47,6 +47,51 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
+// Pricing info (no payment required) - must be before middleware
+app.get('/x402/pricing', (req: Request, res: Response) => {
+  res.json({
+    pricing: {
+      pay_per_query: {
+        cost_sol: 0.0001,
+        cost_usd: 0.01,
+        requests_per_payment: 1,
+        validity: '24 hours'
+      },
+      subscription_tiers: {
+        personal: {
+          cost_usd: 19,
+          interval: 'month',
+          agents: 1,
+          queries: 'unlimited',
+          features: ['MCP integration', 'Real-time alerts']
+        },
+        team: {
+          cost_usd: 99,
+          interval: 'month',
+          agents: 5,
+          queries: 'unlimited',
+          features: ['MCP integration', 'Webhook notifications', 'Priority support']
+        },
+        enterprise: {
+          cost_usd: 299,
+          interval: 'month',
+          agents: 'unlimited',
+          queries: 'unlimited',
+          features: ['MCP integration', 'SLA guarantees', '99.9% uptime', 'Dedicated support']
+        }
+      }
+    },
+    supported_chains: ['base', 'ethereum', 'solana'],
+    payment_methods: ['USDC', 'SOL'],
+    quality_guarantee: {
+      enabled: true,
+      threshold: 80,
+      refund_formula: 'sliding_scale',
+      dispute_resolution: 'x402Resolve multi-oracle consensus'
+    }
+  });
+});
+
 // Apply x402 payment middleware to all protected endpoints
 app.use('/x402/*', x402PaymentMiddleware({
   realm: 'kamiyo-security-intelligence',
@@ -425,51 +470,6 @@ app.get('/health', (req: Request, res: Response) => {
       chains: 15,
       detection_time: '5-15 minutes',
       tracked_losses: '$2.1B+'
-    }
-  });
-});
-
-// Pricing info (no payment required)
-app.get('/x402/pricing', (req: Request, res: Response) => {
-  res.json({
-    pricing: {
-      pay_per_query: {
-        cost_sol: 0.0001,
-        cost_usd: 0.01,
-        requests_per_payment: 1,
-        validity: '24 hours'
-      },
-      subscription_tiers: {
-        personal: {
-          cost_usd: 19,
-          interval: 'month',
-          agents: 1,
-          queries: 'unlimited',
-          features: ['MCP integration', 'Real-time alerts']
-        },
-        team: {
-          cost_usd: 99,
-          interval: 'month',
-          agents: 5,
-          queries: 'unlimited',
-          features: ['MCP integration', 'Webhook notifications', 'Priority support']
-        },
-        enterprise: {
-          cost_usd: 299,
-          interval: 'month',
-          agents: 'unlimited',
-          queries: 'unlimited',
-          features: ['MCP integration', 'SLA guarantees', '99.9% uptime', 'Dedicated support']
-        }
-      }
-    },
-    supported_chains: ['base', 'ethereum', 'solana'],
-    payment_methods: ['USDC', 'SOL'],
-    quality_guarantee: {
-      enabled: true,
-      threshold: 80,
-      refund_formula: 'sliding_scale',
-      dispute_resolution: 'x402Resolve multi-oracle consensus'
     }
   });
 });
