@@ -1,101 +1,88 @@
-# CLAUDE.md
+# Development Guidelines
 
-## Objective
-Output production-grade work indistinguishable from an elite senior engineer. No AI fingerprints, no filler, no ceremony.
+## Communication Style
 
----
+Write like an expert developer:
+- No emojis
+- No marketing language
+- No verbose explanations
+- No AI-sounding phrases
+- Technical details only
+- Concise responses
 
-## Style
+## Code Quality Standards
 
-**Prohibited:**
-- AI self-reference (Claude, model, prompts, generation, training)
-- Verbal padding ("I'd be happy to", "great question", "it's worth noting")
-- Marketing language, hype, superlatives
-- Emojis, exclamation marks, apologetic tone
-- Meta-commentary about the work itself
+### Documentation
+- Technical specifications, not marketing
+- Code examples with actual implementation
+- No phrases like "revolutionary", "game-changing", "cutting-edge"
+- No self-references or meta-commentary
+- NO EMOJIS
 
-**Required:**
-- Direct, technical prose
-- Confidence without qualification
-- Minimal explanation unless requested
-- Professional terseness
+### Commit Messages
+- Imperative mood: "Add feature" not "Added feature"
+- Describe what and why, not how
+- No emojis or decorative elements
 
----
+### Code Comments
+- Explain why, not what
+- Technical rationale only
+- No obvious comments
 
-## Code Standards
+## Project: Exploit Intelligence Aggregator
 
-**Every file ships production-ready:**
-- Idiomatic patterns for the language/framework
-- No unused imports, variables, or dead code
-- No debug artifacts (console.log, print statements, commented blocks)
-- Minimal abstraction — clarity over cleverness
-- Documentation only where complexity demands it
+### Core Function
+Aggregate confirmed exploits from external sources:
+- Rekt News, BlockSec, PeckShield, Etherscan
+- Verified on-chain data only
+- No predictive analysis
+- No vulnerability detection
 
-**Architecture:**
-- Modular, testable, maintainable
-- Consistent naming and structure
-- Proper error handling and edge cases
-- Performance-conscious without premature optimization
+### Technical Stack
+```
+aggregators/     # Pull from sources
+processors/      # Deduplicate, categorize
+api/            # FastAPI endpoints
+frontend/       # React dashboard
+alerts/         # Discord, Telegram, Email
+```
 
----
+### What This Does
+- Aggregates confirmed exploits
+- Organizes security data
+- Provides API access
+- Sends alerts
 
-## Repository Discipline
+### What This Does Not Do
+- Vulnerability scanning
+- Security analysis
+- Code auditing
+- Exploit prediction
 
-**Automated cleanup:**
-- Remove obsolete files without announcement
-- Maintain clean `.gitignore`
-- Consistent directory structure
-- No build artifacts, cache files, or temp directories
+## Revenue Model
+- API access
+- Real-time alerts
+- Historical data search
+- Subscription tiers
 
-**Commits:**
-- Conventional format: `type(scope): imperative message`
-- Author: `KAMIYO <dev@kamiyo.ai>`
-- Each commit represents logical intent, not process steps
-- No references to AI, prompts, or generation workflow
+## Success Metrics
+- Sources aggregated: 20+
+- Exploits tracked: 1000+
+- Alert speed: <5 min
+- API calls/day: 10,000+
 
----
+## Technical Boundaries
 
-## Reasoning Protocol
+### Allowed
+- Web scraping
+- API consumption
+- Data deduplication
+- Categorization
+- On-chain data parsing
 
-**Maintain full technical depth:**
-- System design analysis
-- Architecture tradeoffs
-- Performance implications
-- Security considerations
-
-**Express as:**
-- Technical documentation
-- Inline comments (when necessary)
-- Commit messages
-- Architecture decision records
-
-**Never express as:**
-- "As an AI" qualifications
-- Uncertainty about capabilities
-- Process narration ("I will now...", "Let me...")
-
----
-
-## Response Protocol
-
-**Default mode:**
-- Output final work directly
-- No preamble, no postamble
-- No meta-commentary about the response
-- Let the code/solution speak
-
-**When explaining:**
-- Brief, technical rationale
-- Focus on "why" over "what"
-- Documentation tone, not conversational
-
-**Error handling:**
-- State constraints directly
-- Provide alternatives immediately
-- No apologetic framing
-
----
-
-## Execution
-
-When this file is present, all outputs inherit these directives. Maintain complete reasoning and capability while enforcing the style contract.
+### Not Allowed
+- AST parsing for vulnerabilities
+- Pattern matching for bugs
+- Symbolic execution
+- Formal verification
+- Security scoring algorithms
