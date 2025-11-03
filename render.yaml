@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: x402-api-server
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: cd examples/x402-api-server && npm install && npm run build
+    startCommand: cd examples/x402-api-server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SOLANA_RPC_URL
+        value: https://api.devnet.solana.com
+      - key: ESCROW_PROGRAM_ID
+        value: D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP
+    healthCheckPath: /health

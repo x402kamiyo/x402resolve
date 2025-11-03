@@ -10,12 +10,42 @@
 import express, { Request, Response } from 'express';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { x402PaymentMiddleware, getEscrowInfo } from '@x402resolve/middleware';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-const ESCROW_PROGRAM_ID = new PublicKey('D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP');
-const connection = new Connection('https://api.devnet.solana.com');
+const PORT = process.env.PORT || 3000;
+const ESCROW_PROGRAM_ID = new PublicKey(
+  process.env.ESCROW_PROGRAM_ID || 'D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP'
+);
+const connection = new Connection(
+  process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com'
+);
+
+// Root endpoint
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    service: 'KAMIYO x402 Security Intelligence API',
+    version: '1.0.0',
+    documentation: 'https://github.com/x402kamiyo/x402resolve',
+    endpoints: {
+      exploits: '/x402/exploits/latest',
+      risk_assessment: '/x402/protocol/assess-risk',
+      wallet_check: '/x402/wallet/check-involvement/:address',
+      health: '/health',
+      pricing: '/x402/pricing'
+    },
+    payment: {
+      protocol: 'HTTP 402 Payment Required',
+      network: 'Solana Devnet',
+      program: ESCROW_PROGRAM_ID.toString(),
+      price_per_request: '0.0001 SOL (~$0.01 USD)',
+      quality_guarantee: true
+    }
+  });
+});
 
 // Apply x402 payment middleware to all protected endpoints
 app.use('/x402/*', x402PaymentMiddleware({
@@ -376,8 +406,14 @@ function calculateDataQuality(params: {
 app.get('/health', (req: Request, res: Response) => {
   res.json({
     status: 'healthy',
+    timestamp: new Date().toISOString(),
     service: 'KAMIYO Security Intelligence API',
     version: '1.0.0',
+    solana: {
+      network: 'devnet',
+      program: ESCROW_PROGRAM_ID.toString(),
+      rpc: process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com'
+    },
     payment: {
       x402_enabled: true,
       quality_guarantee: true,
@@ -389,8 +425,7 @@ app.get('/health', (req: Request, res: Response) => {
       chains: 15,
       detection_time: '5-15 minutes',
       tracked_losses: '$2.1B+'
-    },
-    timestamp: new Date().toISOString()
+    }
   });
 });
 
@@ -439,17 +474,18 @@ app.get('/x402/pricing', (req: Request, res: Response) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log(`\n🔒 KAMIYO x402 Security Intelligence API`);
   console.log(`   http://localhost:${PORT}\n`);
+  console.log(`   Solana Network: devnet`);
+  console.log(`   Program ID: ${ESCROW_PROGRAM_ID.toString()}\n`);
   console.log(`   Protected Endpoints (402 Payment Required):`);
   console.log(`   GET  /x402/exploits/latest`);
   console.log(`   POST /x402/protocol/assess-risk`);
   console.log(`   GET  /x402/wallet/check-involvement/:address`);
   console.log(`   POST /x402/dispute/:escrow\n`);
   console.log(`   Public Endpoints:`);
+  console.log(`   GET  /`);
   console.log(`   GET  /health`);
   console.log(`   GET  /x402/pricing\n`);
   console.log(`   💰 Payment: 0.0001 SOL ($0.01 USDC) per query`);
