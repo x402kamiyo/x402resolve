@@ -9,7 +9,7 @@
 
 import express, { Request, Response } from 'express';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { x402PaymentMiddleware, getEscrowInfo } from '@x402resolve/middleware';
+import { x402PaymentMiddleware, getEscrowInfo } from './middleware';
 import cors from 'cors';
 
 const app = express();

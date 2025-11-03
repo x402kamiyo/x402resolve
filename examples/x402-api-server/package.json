@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@solana/web3.js": "^1.87.6",
-    "@x402resolve/middleware": "workspace:*",
     "express": "^4.18.2",
     "cors": "^2.8.5"
   },
