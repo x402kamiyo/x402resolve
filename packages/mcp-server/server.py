@@ -127,6 +127,51 @@ async def list_tools() -> list[Tool]:
                 },
                 "required": ["transaction_id", "reason"]
             }
+        ),
+        Tool(
+            name="check_dispute_status",
+            description="Check the status of an x402Resolve dispute",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "transaction_id": {"type": "string", "description": "Transaction ID to check"}
+                },
+                "required": ["transaction_id"]
+            }
+        ),
+        Tool(
+            name="list_escrows",
+            description="List active escrows for a wallet address",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "wallet_address": {"type": "string", "description": "Solana wallet address"},
+                    "status_filter": {"type": "string", "description": "Filter by status: active, released, disputed, resolved"}
+                },
+                "required": ["wallet_address"]
+            }
+        ),
+        Tool(
+            name="release_escrow",
+            description="Release funds from escrow after dispute window expires",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "transaction_id": {"type": "string", "description": "Transaction ID of escrow to release"}
+                },
+                "required": ["transaction_id"]
+            }
+        ),
+        Tool(
+            name="get_reputation_score",
+            description="Get on-chain reputation score for a wallet address",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "wallet_address": {"type": "string", "description": "Solana wallet address"}
+                },
+                "required": ["wallet_address"]
+            }
         )
     ]
 
@@ -200,6 +245,27 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             expected_quality=expected_quality,
             evidence=evidence
         )
+        return [TextContent(type="text", text=str(result))]
+
+    elif name == "check_dispute_status":
+        transaction_id = arguments.get("transaction_id")
+        result = await check_dispute_status(transaction_id)
+        return [TextContent(type="text", text=str(result))]
+
+    elif name == "list_escrows":
+        wallet_address = arguments.get("wallet_address")
+        status_filter = arguments.get("status_filter")
+        result = await list_escrows(wallet_address, status_filter)
+        return [TextContent(type="text", text=str(result))]
+
+    elif name == "release_escrow":
+        transaction_id = arguments.get("transaction_id")
+        result = await release_escrow(transaction_id)
+        return [TextContent(type="text", text=str(result))]
+
+    elif name == "get_reputation_score":
+        wallet_address = arguments.get("wallet_address")
+        result = await get_reputation_score(wallet_address)
         return [TextContent(type="text", text=str(result))]
 
     else:
@@ -313,6 +379,204 @@ async def file_dispute(
         }
 
 
+async def check_dispute_status(transaction_id: str) -> dict:
+    """Check the status of an x402Resolve dispute"""
+    try:
+        # Check database for dispute record
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT * FROM disputes WHERE transaction_id = ?",
+                (transaction_id,)
+            )
+            dispute = cursor.fetchone()
+
+        if not dispute:
+            return {
+                "transaction_id": transaction_id,
+                "status": "not_found",
+                "message": "No dispute found for this transaction ID"
+            }
+
+        return {
+            "transaction_id": transaction_id,
+            "status": dispute["status"],
+            "quality_score": dispute["quality_score"],
+            "refund_percentage": dispute["refund_percentage"],
+            "created_at": dispute["created_at"],
+            "resolved_at": dispute["resolved_at"],
+        }
+
+    except Exception as e:
+        logger.error(f"Error checking dispute status: {e}")
+        return {
+            "error": "status_check_failed",
+            "message": str(e),
+            "transaction_id": transaction_id,
+        }
+
+
+async def list_escrows(wallet_address: str, status_filter: str | None = None) -> dict:
+    """List active escrows for a wallet address"""
+    try:
+        import httpx
+
+        verifier_url = config.x402_verifier_url or "http://localhost:8001"
+
+        logger.info(f"Fetching escrows for wallet {wallet_address}")
+
+        # Query verifier for escrow data
+        params = {"wallet": wallet_address}
+        if status_filter:
+            params["status"] = status_filter
+
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{verifier_url}/api/v1/escrows",
+                params=params
+            )
+
+            if response.status_code == 200:
+                escrows = response.json()
+                logger.info(f"Found {len(escrows)} escrows for wallet {wallet_address}")
+                return {
+                    "wallet_address": wallet_address,
+                    "escrow_count": len(escrows),
+                    "escrows": escrows,
+                }
+            else:
+                logger.warning(f"Failed to fetch escrows: {response.status_code}")
+                return {
+                    "wallet_address": wallet_address,
+                    "escrow_count": 0,
+                    "escrows": [],
+                    "message": "No escrows found or verifier unavailable"
+                }
+
+    except Exception as e:
+        logger.error(f"Error listing escrows: {e}")
+        return {
+            "error": "escrow_list_failed",
+            "message": str(e),
+            "wallet_address": wallet_address,
+            "help": "Ensure x402 Verifier Oracle is running"
+        }
+
+
+async def release_escrow(transaction_id: str) -> dict:
+    """Release funds from escrow after dispute window expires"""
+    try:
+        import httpx
+
+        verifier_url = config.x402_verifier_url or "http://localhost:8001"
+
+        logger.info(f"Releasing escrow for transaction {transaction_id}")
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{verifier_url}/api/v1/escrows/{transaction_id}/release"
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+                logger.info(f"Escrow released successfully: {transaction_id}")
+                return result
+            else:
+                logger.error(f"Failed to release escrow: {response.status_code}")
+                return {
+                    "error": "escrow_release_failed",
+                    "message": f"Failed to release escrow: {response.text}",
+                    "transaction_id": transaction_id,
+                    "status_code": response.status_code,
+                }
+
+    except Exception as e:
+        logger.error(f"Error releasing escrow: {e}")
+        return {
+            "error": "escrow_release_error",
+            "message": str(e),
+            "transaction_id": transaction_id,
+            "help": "Ensure x402 Verifier Oracle is running and dispute window has expired"
+        }
+
+
+async def get_reputation_score(wallet_address: str) -> dict:
+    """Get on-chain reputation score for a wallet address"""
+    import httpx
+
+    logger.info(f"Fetching reputation for wallet {wallet_address}")
+
+    # First try verifier API for aggregated reputation data
+    verifier_url = config.x402_verifier_url or "http://localhost:8001"
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{verifier_url}/api/v1/reputation/{wallet_address}"
+            )
+
+            if response.status_code == 200:
+                reputation = response.json()
+                logger.info(f"Retrieved reputation for {wallet_address}: {reputation.get('reputation_score')}")
+                return reputation
+    except Exception as e:
+        logger.info(f"Verifier unavailable: {e}")
+
+    # Fallback: calculate from database disputes
+    try:
+        logger.info("Calculating reputation from local disputes")
+
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Get dispute stats
+            cursor.execute("""
+                SELECT
+                    COUNT(*) as total_disputes,
+                    AVG(quality_score) as avg_quality,
+                    SUM(CASE WHEN refund_percentage = 100 THEN 1 ELSE 0 END) as disputes_won,
+                    SUM(CASE WHEN refund_percentage > 0 AND refund_percentage < 100 THEN 1 ELSE 0 END) as disputes_partial,
+                    SUM(CASE WHEN refund_percentage = 0 THEN 1 ELSE 0 END) as disputes_lost
+                FROM disputes
+                WHERE user_id = ?
+            """, (wallet_address,))
+
+            stats = cursor.fetchone()
+
+            # Calculate reputation score (0-1000)
+            total = stats["total_disputes"] or 0
+            avg_quality = stats["avg_quality"] or 50
+
+            # Reputation formula: quality-weighted success rate
+            if total == 0:
+                reputation_score = 500  # Neutral starting score
+            else:
+                won = stats["disputes_won"] or 0
+                partial = stats["disputes_partial"] or 0
+                success_rate = (won + partial * 0.5) / total
+                quality_factor = avg_quality / 100
+                reputation_score = int(success_rate * quality_factor * 1000)
+
+            return {
+                "wallet_address": wallet_address,
+                "reputation_score": reputation_score,
+                "total_disputes": total,
+                "disputes_won": stats["disputes_won"] or 0,
+                "disputes_partial": stats["disputes_partial"] or 0,
+                "disputes_lost": stats["disputes_lost"] or 0,
+                "average_quality_received": avg_quality,
+                "source": "database_fallback"
+            }
+
+    except Exception as e:
+        logger.error(f"Error calculating reputation from database: {e}")
+        return {
+            "error": "reputation_calculation_failed",
+            "message": str(e),
+            "wallet_address": wallet_address,
+        }
+
+
 async def startup():
     """Initialize server resources on startup"""
     global server_start_time
@@ -340,7 +604,7 @@ async def startup():
         logger.warning(f"KAMIYO API connection failed: {e}")
 
     logger.info("x402Resolve MCP Server started successfully")
-    logger.info("Available tools: health_check, search_crypto_exploits, assess_defi_protocol_risk, monitor_wallet, file_dispute")
+    logger.info("Available tools: health_check, search_crypto_exploits, assess_defi_protocol_risk, monitor_wallet, file_dispute, check_dispute_status, list_escrows, release_escrow, get_reputation_score")
 
 
 async def shutdown():
