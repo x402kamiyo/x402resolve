@@ -65,7 +65,7 @@ class IntelligentSecurityAgent {
   private async discoverAPI() {
     this.log('Discovering x402-enabled APIs');
 
-    const endpoint = 'http://localhost:3000/x402/exploits/latest';
+    const endpoint = 'https://x402resolve.kamiyo.ai/x402/exploits/latest';
 
     try {
       const response = await fetch(endpoint);
@@ -127,7 +127,7 @@ class IntelligentSecurityAgent {
 
     try {
       const result = await this.agent.consumeAPI(
-        'http://localhost:3000/x402/exploits/latest',
+        'https://x402resolve.kamiyo.ai/x402/exploits/latest',
         { chain: 'ethereum', severity: 'critical' },
         {
           exploit_id: '',

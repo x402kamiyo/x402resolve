@@ -31,7 +31,7 @@ async function runSecurityIntelligenceDemo() {
 
   try {
     const result1 = await agent.consumeAPI(
-      'http://localhost:3000/x402/exploits/latest',
+      'https://x402resolve.kamiyo.ai/x402/exploits/latest',
       { chain: 'ethereum', severity: 'critical' },
       {
         exploit_id: '',
@@ -64,7 +64,7 @@ async function runSecurityIntelligenceDemo() {
 
   try {
     const result2 = await agent.consumeAPI(
-      'http://localhost:3000/x402/protocol/assess-risk',
+      'https://x402resolve.kamiyo.ai/x402/protocol/assess-risk',
       {
         protocol_address: '0x1234...abcd',
         chain: 'ethereum'
@@ -93,7 +93,7 @@ async function runSecurityIntelligenceDemo() {
 
   try {
     const result3 = await agent.consumeAPI(
-      'http://localhost:3000/x402/wallet/check-involvement/0x1234...5678',
+      'https://x402resolve.kamiyo.ai/x402/wallet/check-involvement/0x1234...5678',
       {},
       {
         address: '',

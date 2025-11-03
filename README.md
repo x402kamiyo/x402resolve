@@ -158,6 +158,21 @@ const result = await agent.consumeAPI(endpoint, query, schema);
 
 ## Demo
 
+### 🌐 Live API
+**Production Endpoint**: https://x402resolve.kamiyo.ai
+
+Try the live x402 Security Intelligence API:
+```bash
+# Health check (no payment required)
+curl https://x402resolve.kamiyo.ai/health
+
+# API documentation
+curl https://x402resolve.kamiyo.ai/
+
+# Protected endpoint (402 Payment Required)
+curl https://x402resolve.kamiyo.ai/x402/exploits/latest
+```
+
 ### 🎮 Interactive Dashboard
 **Live Dashboard**: https://x402kamiyo.github.io/x402resolve/dashboard
 
