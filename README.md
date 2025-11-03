@@ -69,8 +69,19 @@ const dispute = await client.dispute({
 
 ## Demo
 
-**Video Demo**: [Watch Demo Video](https://x402kamiyo.github.io/x402resolve/media/demo-video.mp4)
+### 🎮 Interactive Dashboard
+**Live Dashboard**: https://x402kamiyo.github.io/x402resolve/dashboard
 
+Try the interactive dispute simulator:
+- **4 Dispute Scenarios**: Perfect match, partial match, poor quality, empty response
+- **Real-time Quality Assessment**: Watch Switchboard oracles score data quality
+- **Cost Calculator**: Compare Python verifier vs Switchboard at different volumes
+- **Quality Breakdown**: Visualize semantic, completeness, and freshness scores
+
+### 🎥 Video Demo
+**Demo Video**: [Watch 3-minute Demo](https://x402kamiyo.github.io/x402resolve/media/demo-video.mp4)
+
+### 🔗 Full Application
 **Live Demo**: https://x402kamiyo.github.io/x402resolve
 
 Connect Phantom wallet and submit real disputes to Solana devnet.
@@ -195,9 +206,11 @@ CLIENT          SDK         ESCROW        API       VERIFIER
 |-----------|-----------|--------|
 | **Escrow** | Solana Anchor Program (PDA) | ✅ Deployed to Devnet |
 | **Quality Scoring** | Python Verifier (FastAPI) | ✅ Production Ready |
+| **Switchboard Integration** | Decentralized Oracle (TypeScript) | ✅ Implemented |
 | **Verification** | Ed25519 Signature | ✅ On-chain Verification |
 | **Refund Execution** | Solana Smart Contract | ✅ Automated |
 | **SDK** | TypeScript Client | ✅ npm Package |
+| **Dashboard** | React + Vite (TypeScript) | ✅ Live Demo |
 | **MCP Server** | 9 Production Tools | ✅ Claude Code Integration |
 
 **Quality Scoring Algorithm:**
@@ -228,18 +241,33 @@ Security features in production:
 
 Full details: [TRUST_MODEL.md](./TRUST_MODEL.md)
 
-## Roadmap: Full Decentralization
+## Switchboard Integration
 
-**Phase 2 - Switchboard Oracle Integration** ([Technical Plan](./docs/roadmap/SWITCHBOARD_INTEGRATION.md))
+**✅ IMPLEMENTED** - Decentralized Oracle Network ([Technical Documentation](./packages/x402-escrow/SWITCHBOARD_INTEGRATION.md))
 
-Target: 99% trustless via decentralized oracle network
-- Replace Python verifier with Switchboard Functions
-- Multi-oracle consensus (median of 3+ independent nodes)
-- On-chain attestation verification
-- Economic security via staked oracle nodes
-- Eligible for Switchboard bounty program
+The system now supports **dual dispute resolution paths**:
 
-Timeline: Q1 2026 (post-hackathon)
+### Option 1: Python Verifier (Centralized)
+- Cost: ~$0 per dispute (after $30-50/month hosting)
+- Latency: 100-500ms
+- Algorithm: ML embeddings (SentenceTransformer)
+- Use case: High volume, trusted counterparties
+
+### Option 2: Switchboard On-Demand (Decentralized)
+- Cost: ~$0.005 per dispute
+- Latency: 2-5 seconds
+- Algorithm: Heuristic matching (Jaccard + keywords)
+- Use case: Trustlessness critical, high-value disputes
+
+**Key Achievement**: 95% identical refund outcomes between centralized and decentralized paths
+
+**Components Implemented**:
+- ✅ Switchboard Function (TypeScript quality scorer)
+- ✅ Anchor program `resolve_dispute_switchboard` instruction
+- ✅ SDK integration with `SwitchboardClient`
+- ✅ Interactive dashboard for visualization
+
+**Comparison**: [Python vs Switchboard Analysis](./DISPUTE_RESOLUTION_COMPARISON.md)
 
 ## Development
 
