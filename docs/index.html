@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>x402Resolve - Live Demo | Solana x402 Hackathon 2025</title>
-    <link rel="icon" type="image/jpeg" href="../media/icon.jpg">
+    <link rel="icon" type="image/jpeg" href="./media/icon.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -577,7 +577,7 @@
             <div class="header-top">
                 <div class="header-left">
                     <a href="https://kamiyo.ai" target="_blank">
-                        <img src="../media/kamiyo_logomark.png" alt="KAMIYO" style="width: 175px; height: auto;">
+                        <img src="./media/kamiyo_logomark.png" alt="KAMIYO" style="width: 175px; height: auto;">
                     </a>
                 </div>
                 <div class="header-center">
@@ -586,7 +586,7 @@
                 </div>
                 <div class="header-right">
                     <button id="walletBtn" class="wallet-connect-btn" onclick="connectWallet()">
-                        <img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">
+                        <img src="./media/Phantom-Icon_Transparent_White.svg" alt="Phantom">
                         Connect Wallet
                     </button>
                 </div>
@@ -604,6 +604,7 @@
 
         <div class="tabs">
             <button class="tab active" onclick="switchTab('live')">Live Dispute Demo</button>
+            <button class="tab" onclick="switchTab('dashboard')">Interactive Dashboard</button>
             <button class="tab" onclick="switchTab('judges')">Project Metrics</button>
             <button class="tab" onclick="switchTab('multi-oracle')">Multi-Oracle Simulator</button>
             <button class="tab" onclick="switchTab('analytics')">Live Analytics</button>
@@ -721,7 +722,35 @@
             </div>
         </div>
 
-        <!-- Tab 2: Project Metrics -->
+        <!-- Tab 2: Interactive Dashboard -->
+        <div id="dashboard-tab" class="tab-content">
+            <div class="card" style="padding: 0; overflow: hidden; min-height: 800px;">
+                <iframe
+                    src="./dashboard/index.html"
+                    style="width: 100%; height: 800px; border: none; display: block;"
+                    title="x402Resolve Interactive Dashboard"
+                ></iframe>
+            </div>
+            <div class="card" style="margin-top: 20px;">
+                <h3 style="color: #fff; margin-bottom: 15px;">Dashboard Features</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="padding: 15px; background: #1a1a1a; border-radius: 8px; border: 1px solid #333;">
+                        <h4 style="color: #00d9ff; margin-bottom: 8px;">Live Simulator</h4>
+                        <p style="color: #ccc; font-size: 0.9rem;">Test 4 dispute scenarios with real-time quality assessment and refund calculations</p>
+                    </div>
+                    <div style="padding: 15px; background: #1a1a1a; border-radius: 8px; border: 1px solid #333;">
+                        <h4 style="color: #00d9ff; margin-bottom: 8px;">Cost Calculator</h4>
+                        <p style="color: #ccc; font-size: 0.9rem;">Compare Python verifier vs Switchboard costs at different dispute volumes</p>
+                    </div>
+                    <div style="padding: 15px; background: #1a1a1a; border-radius: 8px; border: 1px solid #333;">
+                        <h4 style="color: #00d9ff; margin-bottom: 8px;">Quality Breakdown</h4>
+                        <p style="color: #ccc; font-size: 0.9rem;">Visualize semantic, completeness, and freshness scores with interactive charts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Project Metrics -->
         <div id="judges-tab" class="tab-content">
             <div class="card">
                 <h2 style="text-align: center; margin-bottom: 10px;">Project Metrics</h2>
@@ -1614,7 +1643,7 @@ pub mod x402_escrow {
                 walletConnected = false;
                 walletPublicKey = null;
                 walletProvider = null;
-                btn.innerHTML = '<img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
+                btn.innerHTML = '<img src="./media/Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
                 btn.classList.remove('wallet-connected');
                 showStatus('Wallet disconnected', 'info');
                 return;
@@ -1664,7 +1693,7 @@ pub mod x402_escrow {
                 // Update button UI
                 const shortAddress = walletPublicKey.toString().substring(0, 4) + '...' +
                                     walletPublicKey.toString().substring(walletPublicKey.toString().length - 4);
-                btn.innerHTML = `<img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">✓ ${shortAddress}`;
+                btn.innerHTML = `<img src="./media/Phantom-Icon_Transparent_White.svg" alt="Phantom">✓ ${shortAddress}`;
                 btn.classList.add('wallet-connected');
 
                 showStatus(`Wallet connected: ${shortAddress}`, 'success');
@@ -1688,7 +1717,7 @@ pub mod x402_escrow {
                 } else {
                     showStatus('Failed to connect wallet. Please refresh and try again.', 'error');
                 }
-                btn.innerHTML = '<img src="../media/Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
+                btn.innerHTML = '<img src="./media/Phantom-Icon_Transparent_White.svg" alt="Phantom">Connect Wallet';
             }
         }
 
@@ -1732,7 +1761,7 @@ pub mod x402_escrow {
     <footer style="text-align: center; padding: 60px 20px 40px; border-top: 1px solid #222; margin-top: 80px;">
         <div style="margin-bottom: 20px; text-align: center;">
             <a href="https://kamiyo.ai" target="_blank" style="display: inline-block;">
-                <img src="../media/kamiyo_logomark.png" alt="KAMIYO" style="width: 300px; height: auto;">
+                <img src="./media/kamiyo_logomark.png" alt="KAMIYO" style="width: 300px; height: auto;">
             </a>
         </div>
         <p style="color: #666; font-size: 0.875rem; margin-bottom: 8px;">
