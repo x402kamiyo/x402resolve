@@ -15,7 +15,7 @@ python3.11 --version
 
 ```bash
 # 1. Navigate to project root
-cd /Users/dennisgoslar/Projekter/kamiyo
+cd /path/to/x402resolve
 
 # 2. Install MCP dependencies
 pip3.11 install -r requirements-mcp.txt
@@ -73,7 +73,7 @@ Edit `~/.config/claude/mcp_config.json`:
     "kamiyo-security": {
       "command": "python3.11",
       "args": [
-        "/Users/dennisgoslar/Projekter/kamiyo/mcp/server.py"
+        "/path/to/x402resolve/packages/mcp-server/server.py"
       ],
       "env": {
         "KAMIYO_API_URL": "http://localhost:8000",
@@ -112,14 +112,14 @@ pip3.11 install fastmcp
 ### "Database connection failed"
 ```bash
 # Make sure KAMIYO API is running
-cd /Users/dennisgoslar/Projekter/kamiyo
+cd /path/to/x402resolve
 python3.11 api/main.py
 ```
 
 ### "Module not found: mcp"
 ```bash
 # Run from project root
-cd /Users/dennisgoslar/Projekter/kamiyo
+cd /path/to/x402resolve
 export PYTHONPATH=.
 ```
 
