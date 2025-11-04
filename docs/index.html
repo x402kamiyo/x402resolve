@@ -401,7 +401,7 @@
             border: 1px solid;
             pointer-events: none;
             z-index: 9999;
-            animation: ripple-expand 0.8s ease-out forwards;
+            animation: ripple-expand 1.4s ease-out forwards;
         }
 
         @keyframes ripple-expand {
@@ -409,16 +409,19 @@
                 width: 0;
                 height: 0;
                 opacity: 1;
-                border-color: #4fe9ea;
+                border-color: #ff44f5;
             }
-            50% {
-                border-color: #00d9ff;
+            30% {
+                border-color: #ff44f5;
+            }
+            60% {
+                border-color: #e056e8;
             }
             100% {
-                width: 80px;
-                height: 80px;
+                width: 100px;
+                height: 100px;
                 opacity: 0;
-                border-color: #ff44f5;
+                border-color: #c068db;
             }
         }
         /* ======================================== */
@@ -1082,8 +1085,8 @@ pub mod x402_escrow {
                     // Remove after animation completes
                     setTimeout(() => {
                         ripple.remove();
-                    }, 800);
-                }, i * 100); // Stagger by 100ms
+                    }, 1400);
+                }, i * 180); // Stagger by 180ms for slower pulse
             }
         });
         /* ======================================== */
