@@ -44,15 +44,13 @@ Extends RFC 9110 Section 15.5.3 (HTTP 402) with Solana escrow and multi-oracle q
 
 ## Tracks & Bounties
 
-**Primary Tracks:**
-- **Best x402 Dev Tool** - TypeScript/Python SDKs, HTTP 402 middleware, agent client
-- **Best use of Switchboard** - Multi-oracle consensus with Switchboard integration
-- **Best x402 API Integration** - Production API with quality-verified micropayments
-- **Best Trustless Agent** - Autonomous dispute resolution, PDA-based escrow
+**Applying for:**
+- **Best Trustless Agent** ($10k) - Oracle reputation, stake-based validation, PDA escrow
+- **Best x402 Dev Tool** ($10k) - TypeScript/Python SDKs, HTTP 402 middleware, agent client
+- **Best x402 API Integration** ($10k) - Production API, quality-verified micropayments
 
 **Sponsor Bounties:**
-- **Best Multi-Protocol Agent** - Python ML + Switchboard oracle bridging
-- **Machine Economy Prize** - Agent-to-agent payments with quality guarantees
+- **Best use of Switchboard** ($5k) - Multi-oracle consensus integration
 
 ## Quick Start
 
