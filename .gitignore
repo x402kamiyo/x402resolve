@@ -54,4 +54,10 @@ Thumbs.db
 
 # Files
 CLAUDE.md
-video-automation/
+
+# Video automation output
+video-automation/temp/
+video-automation/output/
+video-automation/node_modules/
+video-automation/dist/
+video-automation/.env

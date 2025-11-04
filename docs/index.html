@@ -655,8 +655,12 @@
                 <div class="card">
                     <h2><span>🔬</span> Quality Verification</h2>
 
-                    <div id="statusDisplay">
-                        <p style="color: #666; text-align: center; padding: 40px;">
+                    <div id="statusDisplay" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 500px; padding: 60px 20px 40px 20px;">
+                        <video id="demoVideo" autoplay loop muted playsinline style="width: 50%; max-width: 50%; border-radius: 8px; display: block; margin-bottom: 20px;">
+                            <source src="./media/pfn_x_42.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <p style="color: #666; text-align: center; font-size: 0.875rem;">
                             Submit a dispute to see real-time quality scoring
                         </p>
                     </div>
@@ -1402,13 +1406,20 @@ pub mod x402_escrow {
                 item.classList.remove('active');
             });
 
-            document.getElementById('statusDisplay').style.display = 'block';
+            document.getElementById('statusDisplay').style.display = 'flex';
             document.getElementById('timelineDisplay').style.display = 'none';
             document.getElementById('resultsDisplay').style.display = 'none';
             document.getElementById('transactionId').value = '';
 
             document.getElementById('submitBtn').disabled = false;
             document.getElementById('submitBtn').textContent = 'Submit to Solana Devnet';
+
+            // Restart demo video
+            const video = document.getElementById('demoVideo');
+            if (video) {
+                video.currentTime = 0;
+                video.play();
+            }
         }
 
         // Analytics
