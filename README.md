@@ -5,6 +5,7 @@
 [![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://explorer.solana.com/address/D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP?cluster=devnet)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-101%20passing-success)](./tests)
+[![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)](./tests)
 [![Anchor](https://img.shields.io/badge/Anchor-0.30.1-663399)](https://www.anchor-lang.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 
