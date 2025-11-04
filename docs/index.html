@@ -404,11 +404,11 @@
         }
 
         .click-ripple.magenta {
-            animation: ripple-expand-magenta 1.4s ease-out forwards;
+            animation: ripple-expand-magenta 2.5s ease-out forwards;
         }
 
         .click-ripple.black {
-            animation: ripple-expand-black 1.4s ease-out forwards;
+            animation: ripple-expand-black 2.5s ease-out forwards;
         }
 
         @keyframes ripple-expand-magenta {
@@ -1084,8 +1084,8 @@ pub mod x402_escrow {
            Comment out this section to disable
            ======================================== */
         document.addEventListener('click', (e) => {
-            // Create 5 ripples with staggered timing
-            for (let i = 0; i < 5; i++) {
+            // Create 3 ripples with staggered timing
+            for (let i = 0; i < 3; i++) {
                 setTimeout(() => {
                     const ripple = document.createElement('div');
                     // All magenta rings
@@ -1102,8 +1102,8 @@ pub mod x402_escrow {
                     // Remove after animation completes
                     setTimeout(() => {
                         ripple.remove();
-                    }, 1400);
-                }, i * 180); // Stagger by 180ms for slower pulse
+                    }, 2500);
+                }, i * 250); // Stagger by 250ms
             }
         });
         /* ======================================== */
