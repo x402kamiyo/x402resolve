@@ -1032,29 +1032,41 @@ pub mod x402_escrow {
         function highlightSyntax() {
             document.querySelectorAll('.code-block pre').forEach(block => {
                 // Skip if already highlighted
-                if (block.dataset.highlighted === 'true') return;
+                if (block.querySelector('.code-keyword, .code-function, .code-string')) return;
 
-                let code = block.textContent;
+                const code = block.textContent;
 
-                // Highlight comments first (gray)
-                code = code.replace(/\/\/(.*?)$/gm, '<span class="code-comment">//$1</span>');
-                code = code.replace(/(#.*?)$/gm, '<span class="code-comment">$1</span>');
+                // Clear and rebuild
+                block.textContent = '';
 
-                // Highlight strings (light blue)
-                code = code.replace(/(['"`])((?:(?!\1).)*?)\1/g, '<span class="code-string">$1$2$1</span>');
+                // Split by lines
+                const lines = code.split('\n');
 
-                // Highlight function names (cyan)
-                code = code.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, '<span class="code-function">$1</span>(');
+                lines.forEach((line, idx) => {
+                    if (idx > 0) block.appendChild(document.createTextNode('\n'));
 
-                // Highlight keywords (magenta)
-                const keywords = ['import', 'from', 'const', 'let', 'var', 'await', 'async', 'if', 'return', 'pub', 'fn', 'use', 'mod', 'def', 'class', 'for'];
-                keywords.forEach(keyword => {
-                    const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
-                    code = code.replace(regex, '<span class="code-keyword">$1</span>');
+                    let remaining = line;
+                    const parts = [];
+
+                    // Simple keyword highlighting
+                    const words = remaining.split(/(\s+|[(){}\[\];,.])/);
+
+                    words.forEach(word => {
+                        if (['import', 'from', 'const', 'let', 'var', 'await', 'async', 'if', 'return', 'pub', 'fn', 'use', 'mod', 'def', 'class', 'for'].includes(word)) {
+                            const span = document.createElement('span');
+                            span.className = 'code-keyword';
+                            span.textContent = word;
+                            block.appendChild(span);
+                        } else if (word.match(/^['"`].*['"`]$/)) {
+                            const span = document.createElement('span');
+                            span.className = 'code-string';
+                            span.textContent = word;
+                            block.appendChild(span);
+                        } else {
+                            block.appendChild(document.createTextNode(word));
+                        }
+                    });
                 });
-
-                block.innerHTML = code;
-                block.dataset.highlighted = 'true';
             });
         }
 
