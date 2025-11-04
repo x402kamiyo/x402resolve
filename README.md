@@ -20,6 +20,7 @@
 
 - [Overview](#overview)
 - [Tracks & Bounties](#tracks--bounties)
+- [Economics](#economics)
 - [Quick Start](#quick-start)
 - [Architecture](#architecture)
 - [Quality Scoring](#quality-scoring)
@@ -27,7 +28,6 @@
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Examples](#examples)
-- [Economics](#economics)
 - [Performance](#performance)
 - [Security](#security)
 
@@ -50,6 +50,18 @@ Extends RFC 9110 Section 15.5.3 (HTTP 402) with Solana escrow and multi-oracle q
 | Best x402 Dev Tool | $10,000 | TypeScript/Python SDKs, HTTP 402 middleware, agent client |
 | Best x402 API Integration | $10,000 | Production API, quality-verified micropayments |
 | Best use of Switchboard | $5,000 | Multi-oracle consensus integration |
+
+## Economics
+
+Cost comparison at 1% dispute rate (100 disputes/month on $5,000 API spend):
+
+| Method | Cost/Dispute | Total/Month | Resolution |
+|--------|--------------|-------------|------------|
+| Traditional | $35 | $3,500 | 30-90 days |
+| x402Resolve | $0.005 | $0.50 | 48 hours |
+| Reduction | 99.98% | 99.98% | 98% faster |
+
+**Annual savings: $38,880** (92% reduction including refunds and infrastructure)
 
 ## Quick Start
 
@@ -163,18 +175,6 @@ anchor deploy
 - [Agent Dispute](./examples/agent-dispute) - Autonomous dispute filing
 - [API Server](./examples/x402-api-server) - HTTP 402 implementation
 - [Autonomous Agent](./examples/autonomous-agent) - Full agent autonomy
-
-## Economics
-
-Cost comparison at 1% dispute rate (100 disputes/month on $5,000 API spend):
-
-| Method | Cost/Dispute | Total/Month | Resolution |
-|--------|--------------|-------------|------------|
-| Traditional | $35 | $3,500 | 30-90 days |
-| x402Resolve | $0.005 | $0.50 | 48 hours |
-| Reduction | 99.98% | 99.98% | 98% faster |
-
-**Annual savings: $38,880** (92% reduction including refunds and infrastructure)
 
 ## Performance
 
