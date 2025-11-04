@@ -19,9 +19,9 @@
 ## Table of Contents
 
 - [Tracks & Bounties](#tracks--bounties)
-- [Economics](#economics)
 - [Overview](#overview)
 - [Quick Start](#quick-start)
+- [Economics](#economics)
 - [Architecture](#architecture)
 - [Quality Scoring](#quality-scoring)
 - [Live Deployment](#live-deployment)
@@ -39,18 +39,6 @@
 | Best x402 Dev Tool | $10,000 | TypeScript/Python SDKs, HTTP 402 middleware, agent client |
 | Best x402 API Integration | $10,000 | Production API, quality-verified micropayments |
 | Best use of Switchboard | $5,000 | Multi-oracle consensus integration |
-
-## Economics
-
-Cost comparison at 1% dispute rate (100 disputes/month on $5,000 API spend):
-
-| Method | Cost/Dispute | Total/Month | Resolution |
-|--------|--------------|-------------|------------|
-| Traditional | $35 | $3,500 | 30-90 days |
-| x402Resolve | $0.005 | $0.50 | 48 hours |
-| Reduction | 99.98% | 99.98% | 98% faster |
-
-**Annual savings: $38,880** (92% reduction including refunds and infrastructure)
 
 ## Overview
 
@@ -98,6 +86,18 @@ const result = await agent.consumeAPI(
   { expectedSchema }
 );
 ```
+
+## Economics
+
+Cost comparison at 1% dispute rate (100 disputes/month on $5,000 API spend):
+
+| Method | Cost/Dispute | Total/Month | Resolution |
+|--------|--------------|-------------|------------|
+| Traditional | $35 | $3,500 | 30-90 days |
+| x402Resolve | $0.005 | $0.50 | 48 hours |
+| Reduction | 99.98% | 99.98% | 98% faster |
+
+**Annual savings: $38,880** (92% reduction including refunds and infrastructure)
 
 ## Architecture
 
