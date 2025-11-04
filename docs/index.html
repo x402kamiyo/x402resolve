@@ -391,6 +391,38 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* ========================================
+           DEMO EFFECTS - Click Ripple
+           Comment out this section to disable
+           ======================================== */
+        .click-ripple {
+            position: fixed;
+            border-radius: 50%;
+            border: 1px solid;
+            pointer-events: none;
+            z-index: 9999;
+            animation: ripple-expand 0.8s ease-out forwards;
+        }
+
+        @keyframes ripple-expand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                border-color: #4fe9ea;
+            }
+            50% {
+                border-color: #00d9ff;
+            }
+            100% {
+                width: 80px;
+                height: 80px;
+                opacity: 0;
+                border-color: #ff44f5;
+            }
+        }
+        /* ======================================== */
+
         .alert {
             padding: 12px 16px;
             border-radius: 6px;
@@ -1027,6 +1059,29 @@ pub mod x402_escrow {
         // Global state
         let currentChart = null;
         let consensusChart = null;
+
+        /* ========================================
+           DEMO EFFECTS - Click Ripple JavaScript
+           Comment out this section to disable
+           ======================================== */
+        document.addEventListener('click', (e) => {
+            // Create ripple element
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+
+            // Position at click location
+            ripple.style.left = (e.clientX - 0) + 'px';
+            ripple.style.top = (e.clientY - 0) + 'px';
+
+            // Add to body
+            document.body.appendChild(ripple);
+
+            // Remove after animation completes
+            setTimeout(() => {
+                ripple.remove();
+            }, 800);
+        });
+        /* ======================================== */
 
         // Initialize
         function highlightSyntax() {
