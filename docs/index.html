@@ -453,6 +453,28 @@
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 0.9rem;
             margin: 15px 0;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .code-keyword {
+            color: #ff44f5;
+        }
+
+        .code-function {
+            color: #4fe9ea;
+        }
+
+        .code-string {
+            color: #00d9ff;
+        }
+
+        .code-comment {
+            color: #666;
+            font-style: italic;
         }
 
         .copy-button {
@@ -787,20 +809,17 @@
                 <div class="card">
                     <h3 style="margin-bottom: 20px; text-align: center;">Key Differentiators</h3>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                        <div style="text-align: center; padding: 20px; background: #000; border-radius: 8px; border: 1px solid #222;">
-                            <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">81%</div>
-                            <div style="color: #ccc; margin-top: 10px;">Average Fraud Reduction</div>
-                            <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">Across 11 industries</div>
+                        <div style="text-align: center; padding: 30px 20px; background: #0a0a0a; border-radius: 8px; border: 1px solid #222;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 10px;">Fraud Reduction</div>
+                            <div class="gradient-text" style="font-size: 2.5rem; font-weight: 300;">81%</div>
                         </div>
-                        <div style="text-align: center; padding: 20px; background: #000; border-radius: 8px; border: 1px solid #222;">
-                            <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">48hrs</div>
-                            <div style="color: #ccc; margin-top: 10px;">Resolution Time</div>
-                            <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">85% faster than traditional</div>
+                        <div style="text-align: center; padding: 30px 20px; background: #0a0a0a; border-radius: 8px; border: 1px solid #222;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 10px;">Resolution Time</div>
+                            <div class="gradient-text" style="font-size: 2.5rem; font-weight: 300;">48hrs</div>
                         </div>
-                        <div style="text-align: center; padding: 20px; background: #000; border-radius: 8px; border: 1px solid #222;">
-                            <div style="font-size: 2rem; color: #00d9ff; font-weight: bold;">99.9%</div>
-                            <div style="color: #ccc; margin-top: 10px;">Oracle Fallback Success</div>
-                            <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">4-layer redundancy</div>
+                        <div style="text-align: center; padding: 30px 20px; background: #0a0a0a; border-radius: 8px; border: 1px solid #222;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 10px;">Oracle Success</div>
+                            <div class="gradient-text" style="font-size: 2.5rem; font-weight: 300;">99.9%</div>
                         </div>
                     </div>
                 </div>
@@ -1010,11 +1029,37 @@ pub mod x402_escrow {
         let consensusChart = null;
 
         // Initialize
+        function highlightSyntax() {
+            document.querySelectorAll('.code-block pre').forEach(block => {
+                let code = block.innerHTML;
+
+                // Highlight keywords (magenta)
+                const keywords = ['import', 'from', 'const', 'let', 'var', 'await', 'async', 'if', 'return', 'pub', 'fn', 'use', 'mod', 'def', 'class', 'for'];
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+                    code = code.replace(regex, '<span class="code-keyword">$1</span>');
+                });
+
+                // Highlight function names (cyan)
+                code = code.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, '<span class="code-function">$1</span>(');
+
+                // Highlight strings (light blue)
+                code = code.replace(/(['"`])(.*?)\1/g, '<span class="code-string">$1$2$1</span>');
+
+                // Highlight comments (gray)
+                code = code.replace(/\/\/(.*?)$/gm, '<span class="code-comment">//$1</span>');
+                code = code.replace(/(#.*?)$/gm, '<span class="code-comment">$1</span>');
+
+                block.innerHTML = code;
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             await checkSolanaConnection();
             await checkProgramStatus();
             await checkOracleStatus();
             initializeCharts();
+            highlightSyntax();
         });
 
         // Tab switching
@@ -1582,22 +1627,22 @@ pub mod x402_escrow {
             // Simulate loading program stats
             setTimeout(() => {
                 document.getElementById('programStats').innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">Total Disputes</div>
-                            <div class="stat-value">1,247</div>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                        <div style="text-align: center; padding: 30px 20px; background: #0a0a0a; border-radius: 8px; border: 1px solid #222;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 10px;">Total Disputes</div>
+                            <div class="gradient-text" style="font-size: 2.5rem; font-weight: 300;">1,247</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Resolved</div>
-                            <div class="stat-value">1,189</div>
+                        <div style="text-align: center; padding: 30px 20px; background: #0a0a0a; border-radius: 8px; border: 1px solid #222;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 10px;">Resolved</div>
+                            <div class="gradient-text" style="font-size: 2.5rem; font-weight: 300;">1,189</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Avg Quality</div>
-                            <div class="stat-value">72.5</div>
+                        <div style="text-align: center; padding: 30px 20px; background: #0a0a0a; border-radius: 8px; border: 1px solid #222;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 10px;">Avg Quality</div>
+                            <div class="gradient-text" style="font-size: 2.5rem; font-weight: 300;">72.5</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Total Refunded</div>
-                            <div class="stat-value">8.4 SOL</div>
+                        <div style="text-align: center; padding: 30px 20px; background: #0a0a0a; border-radius: 8px; border: 1px solid #222;">
+                            <div style="color: #888; font-size: 0.875rem; margin-bottom: 10px;">Total Refunded</div>
+                            <div class="gradient-text" style="font-size: 2.5rem; font-weight: 300;">8.4 SOL</div>
                         </div>
                     </div>
                 `;
