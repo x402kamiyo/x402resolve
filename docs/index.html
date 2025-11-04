@@ -1088,8 +1088,8 @@ pub mod x402_escrow {
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
                     const ripple = document.createElement('div');
-                    // Alternate between black and magenta
-                    ripple.className = i % 2 === 0 ? 'click-ripple black' : 'click-ripple magenta';
+                    // All magenta rings
+                    ripple.className = 'click-ripple magenta';
 
                     // Position centered at click location (will expand from center)
                     ripple.style.left = e.clientX + 'px';
