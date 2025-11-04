@@ -33,6 +33,8 @@
 
 ## Solana x402 Hackathon Tracks & Bounties
 
+### Applying for
+
 | Track | Prize | Implementation |
 |-------|-------|----------------|
 | Best Trustless Agent | $10,000 | Oracle reputation, stake-based validation, PDA escrow |
