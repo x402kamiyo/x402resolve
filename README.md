@@ -207,7 +207,7 @@ anchor deploy
 | Integration Tests | 15 scenarios |
 | End-to-End Tests | 8 complete flows |
 | API Uptime | 99.2% |
-| Zero Critical Bugs | Security audit passed |
+| Zero Critical Bugs | Automated security audit passed |
 
 ## Security
 
