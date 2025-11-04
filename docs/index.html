@@ -314,8 +314,13 @@
 
         .oracle-score {
             font-size: 2.5rem;
-            font-weight: bold;
+            font-weight: 300;
             margin: 10px 0;
+            background: linear-gradient(90deg, #4fe9ea, #ff44f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
         }
 
         .oracle-reputation {
@@ -335,15 +340,20 @@
             text-align: center;
             padding: 30px;
             background: #1a1a1a;
-            border: 1px solid #00d9ff;
+            border: 1px solid #222;
             border-radius: 8px;
             margin-top: 20px;
         }
 
         .consensus-score {
             font-size: 4rem;
-            font-weight: bold;
+            font-weight: 300;
             margin: 10px 0;
+            background: linear-gradient(90deg, #4fe9ea, #ff44f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
         }
 
         .chart-container {
@@ -1341,8 +1351,8 @@ pub mod x402_escrow {
                     Median of 3 oracle assessments
                 </div>
                 ${refundPct > 0 ? `
-                    <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 8px;">
-                        <div style="font-size: 1.5rem; font-weight: bold;">${refundAmount} SOL Refund</div>
+                    <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <div class="gradient-text" style="font-size: 1.5rem; font-weight: 300;">${refundAmount} SOL Refund</div>
                         <div style="font-size: 1.1rem; margin-top: 5px;">${refundPct}% of ${value} SOL escrow</div>
                     </div>
                 ` : '<div style="margin-top: 20px; font-size: 1.2rem;">✓ No refund needed (quality ≥ 80)</div>'}
