@@ -1351,9 +1351,9 @@ pub mod x402_escrow {
                     Median of 3 oracle assessments
                 </div>
                 ${refundPct > 0 ? `
-                    <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <div class="gradient-text" style="font-size: 1.5rem; font-weight: 300;">${refundAmount} SOL Refund</div>
-                        <div style="font-size: 1.1rem; margin-top: 5px;">${refundPct}% of ${value} SOL escrow</div>
+                    <div class="alert alert-info" style="margin-top: 20px;">
+                        <strong>${refundAmount} SOL Refund</strong><br>
+                        ${refundPct}% of ${value} SOL escrow
                     </div>
                 ` : '<div style="margin-top: 20px; font-size: 1.2rem;">✓ No refund needed (quality ≥ 80)</div>'}
             `;
