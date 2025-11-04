@@ -1036,11 +1036,6 @@ pub mod x402_escrow {
 
                 let code = block.textContent;
 
-                // Escape HTML entities first
-                code = code.replace(/&/g, '&amp;')
-                           .replace(/</g, '&lt;')
-                           .replace(/>/g, '&gt;');
-
                 // Highlight comments first (gray)
                 code = code.replace(/\/\/(.*?)$/gm, '<span class="code-comment">//$1</span>');
                 code = code.replace(/(#.*?)$/gm, '<span class="code-comment">$1</span>');
