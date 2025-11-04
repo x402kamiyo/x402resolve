@@ -10,8 +10,6 @@
 
 Quality-verified HTTP 402 payments with sliding-scale refunds on Solana
 
-## Judges
-
 **Quick Access:**
 - **Live Demo**: https://x402kamiyo.github.io/x402resolve
 - **API Endpoint**: https://x402resolve.kamiyo.ai
