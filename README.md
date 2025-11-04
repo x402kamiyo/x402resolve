@@ -18,7 +18,7 @@
 
 ## Table of Contents
 
-- [Tracks & Bounties](#tracks--bounties)
+- [Solana x402 Hackathon Tracks & Bounties](#solana-x402-hackathon-tracks--bounties)
 - [Overview](#overview)
 - [Quick Start](#quick-start)
 - [Economics](#economics)
@@ -31,7 +31,7 @@
 - [Performance](#performance)
 - [Security](#security)
 
-## Tracks & Bounties
+## Solana x402 Hackathon Tracks & Bounties
 
 | Track | Prize | Implementation |
 |-------|-------|----------------|
