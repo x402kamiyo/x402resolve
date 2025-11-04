@@ -19,6 +19,7 @@ Quality-verified HTTP 402 payments with sliding-scale refunds on Solana
 ## Table of Contents
 
 - [Overview](#overview)
+- [Tracks & Bounties](#tracks--bounties)
 - [Quick Start](#quick-start)
 - [Architecture](#architecture)
 - [Quality Scoring](#quality-scoring)
@@ -40,6 +41,18 @@ Extends RFC 9110 Section 15.5.3 (HTTP 402) with Solana escrow and multi-oracle q
 - PDA-based escrow without admin keys
 - Ed25519 signature verification
 - 99.9% cost reduction vs traditional chargebacks
+
+## Tracks & Bounties
+
+**Primary Tracks:**
+- **Best x402 Dev Tool** - TypeScript/Python SDKs, HTTP 402 middleware, agent client
+- **Best use of Switchboard** - Multi-oracle consensus with Switchboard integration
+- **Best x402 API Integration** - Production API with quality-verified micropayments
+- **Best Trustless Agent** - Autonomous dispute resolution, PDA-based escrow
+
+**Sponsor Bounties:**
+- **Best Multi-Protocol Agent** - Python ML + Switchboard oracle bridging
+- **Machine Economy Prize** - Agent-to-agent payments with quality guarantees
 
 ## Quick Start
 
