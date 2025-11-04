@@ -8,7 +8,7 @@
 [![Anchor](https://img.shields.io/badge/Anchor-0.30.1-663399)](https://www.anchor-lang.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 
-Quality-verified HTTP 402 payments with sliding-scale refunds on Solana
+## Quality-verified HTTP 402 payments with sliding-scale refunds on Solana
 
 **Quick Access:**
 - **Live Demo**: https://x402kamiyo.github.io/x402resolve
@@ -44,13 +44,12 @@ Extends RFC 9110 Section 15.5.3 (HTTP 402) with Solana escrow and multi-oracle q
 
 ## Tracks & Bounties
 
-**Applying for:**
-- **Best Trustless Agent** ($10k) - Oracle reputation, stake-based validation, PDA escrow
-- **Best x402 Dev Tool** ($10k) - TypeScript/Python SDKs, HTTP 402 middleware, agent client
-- **Best x402 API Integration** ($10k) - Production API, quality-verified micropayments
-
-**Sponsor Bounties:**
-- **Best use of Switchboard** ($5k) - Multi-oracle consensus integration
+| Track | Prize | Implementation |
+|-------|-------|----------------|
+| Best Trustless Agent | $10,000 | Oracle reputation, stake-based validation, PDA escrow |
+| Best x402 Dev Tool | $10,000 | TypeScript/Python SDKs, HTTP 402 middleware, agent client |
+| Best x402 API Integration | $10,000 | Production API, quality-verified micropayments |
+| Best use of Switchboard | $5,000 | Multi-oracle consensus integration |
 
 ## Quick Start
 
