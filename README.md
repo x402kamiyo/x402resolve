@@ -101,6 +101,8 @@ const result = await agent.consumeAPI(
 
 ## Architecture
 
+### High-Level Flow
+
 ```
 ┌──────────┐    ┌────────┐    ┌─────┐    ┌────────┐
 │  Client  │───▶│ Escrow │───▶│ API │◀──▶│ Oracle │
@@ -112,6 +114,107 @@ const result = await agent.consumeAPI(
                      │
                      ▼
               Sliding-Scale Refund
+```
+
+### Dispute Resolution Flow
+
+```
+1. Payment          2. API Call         3. Quality Check      4. Settlement
+┌─────────┐        ┌─────────┐         ┌──────────┐         ┌──────────┐
+│ Client  │        │   API   │         │  Oracle  │         │  Escrow  │
+│ creates │───────▶│ returns │────────▶│ assesses │────────▶│ executes │
+│ escrow  │  SOL   │  data   │  JSON   │ quality  │  score  │  refund  │
+└─────────┘        └─────────┘         └──────────┘         └──────────┘
+   0.01 SOL          Response            Score: 65            0.0035 SOL
+   locked            received            (35% refund)         returned
+```
+
+### Multi-Oracle Consensus
+
+```
+Transaction > 1 SOL requires 3 oracles:
+
+┌─────────────┐
+│ Dispute TX  │
+│  1.5 SOL    │
+└──────┬──────┘
+       │
+       ├─────────┬─────────┬─────────┐
+       ▼         ▼         ▼         ▼
+   ┌───────┐ ┌───────┐ ┌───────┐ ┌──────────┐
+   │Oracle │ │Oracle │ │Oracle │ │Consensus │
+   │Alpha  │ │ Beta  │ │Gamma  │ │ Engine   │
+   │  68   │ │  72   │ │  65   │ │          │
+   └───┬───┘ └───┬───┘ └───┬───┘ └────┬─────┘
+       │         │         │           │
+       └─────────┴─────────┴───────────┤
+                                       ▼
+                              Median Score: 68
+                              Std Dev: 2.9
+                              Confidence: 95%
+```
+
+### PDA Account Structure
+
+```
+Escrow PDA (seeds: ["escrow", client_pubkey, nonce])
+├── authority: Client PublicKey (32 bytes)
+├── recipient: API Provider PublicKey (32 bytes)
+├── amount: u64 (8 bytes)
+├── quality_threshold: u8 (1 byte)
+├── created_at: i64 (8 bytes)
+├── expires_at: i64 (8 bytes)
+├── state: EscrowState (1 byte)
+│   ├── Pending
+│   ├── Disputed
+│   └── Resolved
+└── bump: u8 (1 byte)
+
+Oracle Registry PDA (seeds: ["oracle", oracle_pubkey])
+├── oracle: PublicKey (32 bytes)
+├── stake: u64 (8 bytes)
+├── reputation: u16 (2 bytes)
+├── total_assessments: u64 (8 bytes)
+└── slashed: bool (1 byte)
+```
+
+### Payment State Machine
+
+```
+     [CREATE]
+        │
+        ▼
+   ┌─────────┐
+   │ PENDING │──────────────┐
+   └────┬────┘              │ Timeout/Cancel
+        │                   │
+   [API_CALL]               │
+        │                   │
+        ▼                   ▼
+   ┌─────────┐         ┌──────────┐
+   │FULFILLED│         │ REFUNDED │
+   └────┬────┘         └──────────┘
+        │
+   [DISPUTE]
+        │
+        ▼
+   ┌─────────┐
+   │DISPUTED │
+   └────┬────┘
+        │
+   [ORACLE_ASSESS]
+        │
+        ├───────────┬───────────┐
+        ▼           ▼           ▼
+   Quality≥80  50≤Quality<80  Quality<50
+   No Refund   Partial Refund Full Refund
+        │           │           │
+        └───────────┴───────────┘
+                    │
+                    ▼
+               ┌─────────┐
+               │RESOLVED │
+               └─────────┘
 ```
 
 ### Components
