@@ -401,27 +401,43 @@
             border: 1px solid;
             pointer-events: none;
             z-index: 9999;
-            animation: ripple-expand 1.4s ease-out forwards;
         }
 
-        @keyframes ripple-expand {
+        .click-ripple.magenta {
+            animation: ripple-expand-magenta 1.4s ease-out forwards;
+        }
+
+        .click-ripple.cyan {
+            animation: ripple-expand-cyan 1.4s ease-out forwards;
+        }
+
+        @keyframes ripple-expand-magenta {
             0% {
                 width: 0;
                 height: 0;
                 opacity: 1;
                 border-color: #ff44f5;
             }
-            30% {
+            100% {
+                width: 125px;
+                height: 125px;
+                opacity: 0;
                 border-color: #ff44f5;
             }
-            60% {
-                border-color: #e056e8;
+        }
+
+        @keyframes ripple-expand-cyan {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                border-color: #4fe9ea;
             }
             100% {
-                width: 100px;
-                height: 100px;
+                width: 125px;
+                height: 125px;
                 opacity: 0;
-                border-color: #c068db;
+                border-color: #4fe9ea;
             }
         }
         /* ======================================== */
@@ -1072,7 +1088,8 @@ pub mod x402_escrow {
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
                     const ripple = document.createElement('div');
-                    ripple.className = 'click-ripple';
+                    // Alternate between magenta and cyan
+                    ripple.className = i % 2 === 0 ? 'click-ripple magenta' : 'click-ripple cyan';
 
                     // Position centered at click location (will expand from center)
                     ripple.style.left = e.clientX + 'px';
