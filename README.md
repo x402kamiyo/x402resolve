@@ -129,92 +129,93 @@ const result = await agent.consumeAPI(
    locked            received            (35% refund)         returned
 ```
 
-### Multi-Oracle Consensus
+### Oracle Options
 
 ```
-Transaction > 1 SOL requires 3 oracles:
+Current Implementation (Phase 1):
 
 ┌─────────────┐
-│ Dispute TX  │
-│  1.5 SOL    │
+│   Dispute   │
 └──────┬──────┘
        │
-       ├─────────┬─────────┬─────────┐
-       ▼         ▼         ▼         ▼
-   ┌───────┐ ┌───────┐ ┌───────┐ ┌──────────┐
-   │Oracle │ │Oracle │ │Oracle │ │Consensus │
-   │Alpha  │ │ Beta  │ │Gamma  │ │ Engine   │
-   │  68   │ │  72   │ │  65   │ │          │
-   └───┬───┘ └───┬───┘ └───┬───┘ └────┬─────┘
-       │         │         │           │
-       └─────────┴─────────┴───────────┤
-                                       ▼
-                              Median Score: 68
-                              Std Dev: 2.9
-                              Confidence: 95%
+       ├──────────────┬──────────────┐
+       ▼              ▼              ▼
+┌────────────┐ ┌────────────┐ ┌────────────┐
+│  Python    │ │Switchboard │ │   Future   │
+│   Oracle   │ │   Oracle   │ │Multi-Oracle│
+│            │ │            │ │ (Phase 2)  │
+│Ed25519 sig │ │On-chain fn │ │  Median    │
+└────────────┘ └────────────┘ └────────────┘
+     │              │
+     └──────┬───────┘
+            ▼
+      Quality Score
+    Refund Percentage
 ```
 
 ### PDA Account Structure
 
 ```
-Escrow PDA (seeds: ["escrow", client_pubkey, nonce])
-├── authority: Client PublicKey (32 bytes)
-├── recipient: API Provider PublicKey (32 bytes)
+Escrow PDA (seeds: ["escrow", agent_pubkey, transaction_id])
+├── agent: Agent PublicKey (32 bytes)
+├── api: API Provider PublicKey (32 bytes)
 ├── amount: u64 (8 bytes)
-├── quality_threshold: u8 (1 byte)
-├── created_at: i64 (8 bytes)
-├── expires_at: i64 (8 bytes)
-├── state: EscrowState (1 byte)
-│   ├── Pending
+├── status: EscrowStatus (1 + 1 bytes)
+│   ├── Active
+│   ├── Released
 │   ├── Disputed
 │   └── Resolved
-└── bump: u8 (1 byte)
+├── created_at: i64 (8 bytes)
+├── expires_at: i64 (8 bytes)
+├── transaction_id: String (4 + 64 bytes)
+├── bump: u8 (1 byte)
+├── quality_score: Option<u8> (1 + 1 bytes)
+└── refund_percentage: Option<u8> (1 + 1 bytes)
 
-Oracle Registry PDA (seeds: ["oracle", oracle_pubkey])
-├── oracle: PublicKey (32 bytes)
-├── stake: u64 (8 bytes)
-├── reputation: u16 (2 bytes)
-├── total_assessments: u64 (8 bytes)
-└── slashed: bool (1 byte)
+Agent Reputation PDA (seeds: ["agent_reputation", agent_pubkey])
+├── agent: PublicKey (32 bytes)
+├── total_disputes: u64 (8 bytes)
+├── disputes_won: u64 (8 bytes, quality <50)
+├── disputes_partial: u64 (8 bytes, quality 50-79)
+└── disputes_lost: u64 (8 bytes, quality >=80)
 ```
 
 ### Payment State Machine
 
 ```
-     [CREATE]
-        │
-        ▼
-   ┌─────────┐
-   │ PENDING │──────────────┐
-   └────┬────┘              │ Timeout/Cancel
-        │                   │
-   [API_CALL]               │
-        │                   │
-        ▼                   ▼
-   ┌─────────┐         ┌──────────┐
-   │FULFILLED│         │ REFUNDED │
-   └────┬────┘         └──────────┘
-        │
-   [DISPUTE]
-        │
-        ▼
-   ┌─────────┐
-   │DISPUTED │
-   └────┬────┘
-        │
-   [ORACLE_ASSESS]
-        │
-        ├───────────┬───────────┐
-        ▼           ▼           ▼
-   Quality≥80  50≤Quality<80  Quality<50
-   No Refund   Partial Refund Full Refund
-        │           │           │
-        └───────────┴───────────┘
-                    │
-                    ▼
-               ┌─────────┐
-               │RESOLVED │
-               └─────────┘
+  [initialize_escrow]
+          │
+          ▼
+     ┌────────┐
+     │ Active │──────────────────┐
+     └───┬────┘                  │
+         │                       │ [cancel/timeout]
+         │                       │ (refund to agent)
+         ├────────┬──────────────┤
+         │        │              │
+[release_funds] [mark_disputed]  │
+         │        │              │
+         ▼        ▼              ▼
+    ┌─────────┐ ┌─────────┐  [refund]
+    │Released │ │Disputed │
+    └─────────┘ └────┬────┘
+    (API paid)       │
+                     │
+          [resolve_dispute]
+          (oracle assesses)
+                     │
+                     ├──────────┬──────────┐
+                     ▼          ▼          ▼
+              Refund=100%  0<Refund<100%  Refund=0%
+              (Full)       (Partial)      (None)
+                     │          │          │
+                     └──────────┴──────────┘
+                                │
+                                ▼
+                          ┌─────────┐
+                          │Resolved │
+                          └─────────┘
+                    (Split per refund_percentage)
 ```
 
 ### Components
@@ -228,18 +229,26 @@ Oracle Registry PDA (seeds: ["oracle", oracle_pubkey])
 
 ## Quality Scoring
 
-Multi-factor algorithm (0-100 scale):
+Oracle assesses data quality and independently determines two values:
 
+**1. Quality Score (0-100)**
 ```
 Quality = (Completeness × 0.4) + (Accuracy × 0.3) + (Freshness × 0.3)
-
-Refund = 100 - Quality  (for scores < 80)
 ```
 
-**Example:**
-- Quality: 65% → Refund: 35%
-- Quality: 85% → Refund: 0%
-- Quality: 40% → Refund: 100%
+**2. Refund Percentage (0-100%)**
+
+Oracle determines refund based on quality thresholds:
+- Quality < 50 → Typically 100% refund (disputes_won)
+- Quality 50-79 → Partial refund 25-75% (disputes_partial)
+- Quality ≥ 80 → Typically 0% refund (disputes_lost)
+
+**Example Cases:**
+- Quality: 65, Refund: 35% → Partial refund
+- Quality: 85, Refund: 0% → No refund
+- Quality: 40, Refund: 100% → Full refund
+
+*Note: quality_score and refund_percentage are passed separately to the smart contract. The oracle has flexibility in refund calculation.*
 
 ## Live Deployment
 
