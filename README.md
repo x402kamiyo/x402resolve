@@ -14,6 +14,7 @@ Quality-verified HTTP 402 payments with sliding-scale refunds on Solana
 - **Live Demo**: https://x402kamiyo.github.io/x402resolve
 - **API Endpoint**: https://x402resolve.kamiyo.ai
 - **Devnet Program**: [`D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP`](https://explorer.solana.com/address/D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP?cluster=devnet)
+- **Video**: (in production)
 
 ## Table of Contents
 
