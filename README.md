@@ -4,20 +4,32 @@
 
 [![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://explorer.solana.com/address/D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP?cluster=devnet)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-80%2B%20passing-success)](./tests)
 [![Anchor](https://img.shields.io/badge/Anchor-0.30.1-663399)](https://www.anchor-lang.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 
+Quality-verified HTTP 402 payments with sliding-scale refunds on Solana
+
 ## Judges
 
-**Quick Access Links:**
+**Quick Access:**
 - **Live Demo**: https://x402kamiyo.github.io/x402resolve
 - **API Endpoint**: https://x402resolve.kamiyo.ai
 - **Devnet Program**: [`D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP`](https://explorer.solana.com/address/D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP?cluster=devnet)
-- **Repository**: https://github.com/x402kamiyo/x402resolve
-- **Documentation**: [./docs/markdown/API_REFERENCE.md](./docs/markdown/API_REFERENCE.md)
-- **Security Audit**: [./docs/security/SECURITY_AUDIT_REPORT.md](./docs/security/SECURITY_AUDIT_REPORT.md)
 
-HTTP 402 Payment Required implementation with cryptographic quality verification and sliding-scale refunds.
+## Table of Contents
+
+- [Overview](#overview)
+- [Quick Start](#quick-start)
+- [Architecture](#architecture)
+- [Quality Scoring](#quality-scoring)
+- [Live Deployment](#live-deployment)
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Examples](#examples)
+- [Economics](#economics)
+- [Performance](#performance)
+- [Security](#security)
 
 ## Overview
 
