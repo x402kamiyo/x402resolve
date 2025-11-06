@@ -1519,7 +1519,24 @@ pub mod x402_escrow {
 
             } catch (error) {
                 console.error('Transaction failed:', error);
-                showStatus(`Error: ${error.message}`, 'error');
+                console.error('Full error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    wallet: walletConnected,
+                    walletPubkey: walletPublicKey?.toString(),
+                    oracleSystem: !!window.oracleSystem,
+                    solana: !!window.solana
+                });
+
+                let errorMsg = error.message || 'Unknown error';
+                if (errorMsg.includes('User rejected') || errorMsg.includes('rejected')) {
+                    errorMsg = 'Transaction rejected by wallet';
+                } else if (errorMsg.includes('Attempt to debit') || errorMsg.includes('insufficient')) {
+                    errorMsg = 'Insufficient SOL balance - visit faucet.solana.com';
+                } else if (errorMsg.includes('blockhash') || errorMsg.includes('timeout')) {
+                    errorMsg = 'Network error, please try again';
+                }
+                showStatus(`Error: ${errorMsg}`, 'error');
                 btn.textContent = 'Try Again';
                 btn.disabled = false;
             }
