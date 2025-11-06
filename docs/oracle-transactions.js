@@ -3,20 +3,30 @@
  * Production implementation for real on-chain dispute resolution
  */
 
-const PROGRAM_ID = 'D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP';
+const PROGRAM_ID = '7SMYZjQK4ERuUH8b75RLtxAjoKYy1BmE6VFNigYidxjN';
 const DEVNET_RPC = 'https://api.devnet.solana.com';
 
 // Browser-compatible Buffer replacement
 class BufferPolyfill {
     static from(data, encoding) {
+        let arr;
         if (Array.isArray(data)) {
-            return new Uint8Array(data);
-        }
-        if (typeof data === 'string') {
+            arr = new Uint8Array(data);
+        } else if (typeof data === 'string') {
             const encoder = new TextEncoder();
-            return encoder.encode(data);
+            arr = encoder.encode(data);
+        } else {
+            arr = new Uint8Array(data);
         }
-        return new Uint8Array(data);
+
+        // Add copy method to all from() results
+        arr.copy = function(target, targetStart, sourceStart, sourceEnd) {
+            const start = sourceStart || 0;
+            const end = sourceEnd || this.length;
+            target.set(this.slice(start, end), targetStart);
+        };
+
+        return arr;
     }
 
     static alloc(size) {
@@ -38,7 +48,9 @@ class BufferPolyfill {
             this[offset] = value;
         };
         arr.copy = function(target, targetStart, sourceStart, sourceEnd) {
-            target.set(this.slice(sourceStart, sourceEnd), targetStart);
+            const start = sourceStart || 0;
+            const end = sourceEnd || this.length;
+            target.set(this.slice(start, end), targetStart);
         };
         return arr;
     }
