@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl-fast.min.js"></script>
-    <script src="./oracle-transactions.js"></script>
+    <script src="./oracle-transactions.js" defer></script>
     <style>
         * {
             margin: 0;
@@ -1235,6 +1235,16 @@ pub mod x402_escrow {
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Ensure oracle system is initialized
+            if (!window.oracleSystem) {
+                console.error('Oracle system not initialized, retrying...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                if (!window.oracleSystem) {
+                    console.error('Oracle system failed to initialize');
+                    showStatus('Failed to initialize oracle system', 'error');
+                }
+            }
+
             await checkSolanaConnection();
             await checkProgramStatus();
             await checkOracleStatus();
@@ -1316,6 +1326,12 @@ pub mod x402_escrow {
         // Multi-Oracle Simulation
         async function runMultiOracle() {
             const btn = document.getElementById('oracleBtn');
+
+            // Check oracle system
+            if (!window.oracleSystem) {
+                showStatus('Oracle system not initialized. Please refresh the page.', 'error');
+                return;
+            }
 
             // Check wallet connection
             if (!walletConnected || !walletPublicKey) {
