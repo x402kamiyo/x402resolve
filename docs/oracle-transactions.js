@@ -448,29 +448,48 @@ class OracleTransactionSystem {
             transaction.recentBlockhash = blockhash;
             transaction.feePayer = wallet;
 
-            // Sign transaction
-            const signed = await window.solana.signTransaction(transaction);
+            // Use signAndSendTransaction for better Phantom compatibility
+            if (window.solana && window.solana.signAndSendTransaction) {
+                const { signature } = await window.solana.signAndSendTransaction(transaction);
+                console.log('Transaction sent:', signature);
 
-            // Send transaction
-            const signature = await this.connection.sendRawTransaction(signed.serialize(), {
-                skipPreflight: false,
-                maxRetries: 3
-            });
+                // Confirm transaction
+                const confirmation = await this.connection.confirmTransaction({
+                    signature,
+                    blockhash,
+                    lastValidBlockHeight
+                }, 'confirmed');
 
-            console.log('Transaction sent:', signature);
+                if (confirmation.value.err) {
+                    throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
+                }
 
-            // Confirm transaction
-            const confirmation = await this.connection.confirmTransaction({
-                signature,
-                blockhash,
-                lastValidBlockHeight
-            }, 'confirmed');
+                return signature;
+            } else {
+                // Fallback to signTransaction + sendRawTransaction
+                const signed = await window.solana.signTransaction(transaction);
 
-            if (confirmation.value.err) {
-                throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
+                // Send transaction
+                const signature = await this.connection.sendRawTransaction(signed.serialize(), {
+                    skipPreflight: false,
+                    maxRetries: 3
+                });
+
+                console.log('Transaction sent:', signature);
+
+                // Confirm transaction
+                const confirmation = await this.connection.confirmTransaction({
+                    signature,
+                    blockhash,
+                    lastValidBlockHeight
+                }, 'confirmed');
+
+                if (confirmation.value.err) {
+                    throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
+                }
+
+                return signature;
             }
-
-            return signature;
         } catch (error) {
             console.error('Transaction failed:', error);
             throw error;
