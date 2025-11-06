@@ -43,7 +43,7 @@ if [ ! -f "$HOME/.config/solana/id.json" ]; then
 fi
 
 # Install Node.js dependencies
-cd /workspaces/x402resolve/packages/x402-escrow
+cd /workspaces/x402resolve-program/packages/x402-escrow
 yarn install || npm install
 
 echo "✓ Solana development environment setup complete!"

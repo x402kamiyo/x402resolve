@@ -9,7 +9,7 @@
 const solanaWeb3 = require('@solana/web3.js');
 const nacl = require('tweetnacl');
 
-const PROGRAM_ID = new solanaWeb3.PublicKey('D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP');
+const PROGRAM_ID = new solanaWeb3.PublicKey('7SMYZjQK4ERuUH8b75RLtxAjoKYy1BmE6VFNigYidxjN');
 const RPC_URL = 'https://api.devnet.solana.com';
 const TEST_WALLET = '5PFae6U5UVBEzfmrWnkMpuMu6iifg915rkvZ1hk5vN1o';
 

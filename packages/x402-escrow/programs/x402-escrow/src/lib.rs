@@ -8,10 +8,9 @@ use anchor_lang::solana_program::{
     ed25519_program,
     sysvar::instructions::{load_instruction_at_checked, ID as INSTRUCTIONS_ID},
 };
-use switchboard_on_demand::accounts::PullFeedAccountData;
-use switchboard_on_demand::CrossbarClient;
+use switchboard_on_demand::on_demand::accounts::pull_feed::PullFeedAccountData;
 
-declare_id!("D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP");
+declare_id!("7SMYZjQK4ERuUH8b75RLtxAjoKYy1BmE6VFNigYidxjN");
 
 // Validation constants
 const MIN_TIME_LOCK: i64 = 3600;                    // 1 hour
@@ -489,16 +488,20 @@ pub mod x402_escrow {
         let pull_feed = &ctx.accounts.switchboard_function;
 
         // Load and verify the Switchboard attestation
-        let feed_data = PullFeedAccountData::parse(pull_feed.to_account_info().data.borrow())
+        let feed_account_info = pull_feed.to_account_info();
+        let feed_data = PullFeedAccountData::parse(feed_account_info.data.borrow())
             .map_err(|_| EscrowError::InvalidSwitchboardAttestation)?;
 
-        // Verify the attestation is recent (within last 300 seconds / 5 minutes)
-        // Increased from 60s to account for network delays and clock drift
+        // Validate timestamp freshness (attestation must be within 300 seconds)
         let clock = Clock::get()?;
+        let age_seconds = clock.unix_timestamp - feed_data.last_update_timestamp;
+
         require!(
-            feed_data.result.result_timestamp + 300 >= clock.unix_timestamp,
+            age_seconds >= 0 && age_seconds <= 300,
             EscrowError::StaleAttestation
         );
+
+        msg!("Switchboard attestation age: {} seconds", age_seconds);
 
         // Extract quality score from Switchboard result
         // The value is encoded as i128 in the feed

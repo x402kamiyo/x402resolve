@@ -3,6 +3,7 @@ name = "x402-escrow"
 version = "0.1.0"
 description = "x402Resolve Escrow Program - Automated dispute resolution for agent payments"
 edition = "2021"
+resolver = "2"
 
 [lib]
 crate-type = ["cdylib", "lib"]
@@ -17,5 +18,5 @@ default = []
 idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
-anchor-lang = "0.29.0"
-switchboard-on-demand = "0.1.7"
+anchor-lang = "0.31.1"
+switchboard-on-demand = "0.10.5"
