@@ -6,6 +6,46 @@
 const PROGRAM_ID = 'D9adezZ12cosX3GG2jK6PpbwMFLHzcCYVpcPCFcaciYP';
 const DEVNET_RPC = 'https://api.devnet.solana.com';
 
+// Browser-compatible Buffer replacement
+class BufferPolyfill {
+    static from(data, encoding) {
+        if (Array.isArray(data)) {
+            return new Uint8Array(data);
+        }
+        if (typeof data === 'string') {
+            const encoder = new TextEncoder();
+            return encoder.encode(data);
+        }
+        return new Uint8Array(data);
+    }
+
+    static alloc(size) {
+        const arr = new Uint8Array(size);
+        // Add helper methods
+        arr.writeBigUInt64LE = function(value, offset) {
+            const view = new DataView(this.buffer);
+            view.setBigUint64(offset, value, true);
+        };
+        arr.writeBigInt64LE = function(value, offset) {
+            const view = new DataView(this.buffer);
+            view.setBigInt64(offset, value, true);
+        };
+        arr.writeUInt32LE = function(value, offset) {
+            const view = new DataView(this.buffer);
+            view.setUint32(offset, value, true);
+        };
+        arr.writeUInt8 = function(value, offset) {
+            this[offset] = value;
+        };
+        arr.copy = function(target, targetStart, sourceStart, sourceEnd) {
+            target.set(this.slice(sourceStart, sourceEnd), targetStart);
+        };
+        return arr;
+    }
+}
+
+const Buffer = BufferPolyfill;
+
 // Oracle keypair for signing (in production, this would be a secure backend service)
 // For demo purposes, we'll generate a deterministic keypair
 const ORACLE_SEED = new Uint8Array(32);
