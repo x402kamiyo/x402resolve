@@ -54,6 +54,7 @@ Thumbs.db
 
 # Files
 CLAUDE.md
+render.yaml
 
 # Video automation output
 video-automation/temp/
