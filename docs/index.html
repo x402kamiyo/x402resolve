@@ -882,6 +882,9 @@
                 <button onclick="runMultiOracle()" id="oracleBtn" class="btn-magenta-outline">
                     Run On-Chain Quality Assessment
                 </button>
+                <div id="oracleProgress" style="width: 100%; height: 2px; background: #1a1a1a; margin-top: 10px; border-radius: 1px; overflow: hidden; display: none;">
+                    <div id="oracleProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #ff44f5, #00d9ff); transition: width 0.3s ease;"></div>
+                </div>
                 <p style="font-size: 0.85rem; color: #666; margin-top: 10px; text-align: center;">
                     Creates real escrow on Solana devnet and resolves with oracle-signed quality score
                 </p>
@@ -1326,6 +1329,8 @@ pub mod x402_escrow {
         // Multi-Oracle Simulation
         async function runMultiOracle() {
             const btn = document.getElementById('oracleBtn');
+            const progressBar = document.getElementById('oracleProgress');
+            const progressFill = document.getElementById('oracleProgressBar');
 
             // Check oracle system
             if (!window.oracleSystem) {
@@ -1342,6 +1347,10 @@ pub mod x402_escrow {
             btn.disabled = true;
             btn.textContent = 'Creating Escrow...';
 
+            // Show and reset progress bar
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+
             const value = parseFloat(document.getElementById('oracleValue').value);
             const transactionId = `oracle_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
             const apiPublicKey = window.oracleSystem.oracleKeypair.publicKey; // Using oracle as API for demo
@@ -1349,6 +1358,7 @@ pub mod x402_escrow {
             try {
                 // Step 1: Ensure reputation accounts exist
                 btn.textContent = 'Initializing Reputation Accounts...';
+                progressFill.style.width = '10%';
 
                 try {
                     const agentRepInit = await window.oracleSystem.ensureReputationAccount(
@@ -1378,6 +1388,8 @@ pub mod x402_escrow {
                     console.log('API reputation exists or error:', e.message);
                 }
 
+                progressFill.style.width = '25%';
+
                 // Step 2: Create Escrow
                 btn.textContent = 'Creating Escrow...';
                 const escrowTx = await window.oracleSystem.createEscrow(
@@ -1390,10 +1402,12 @@ pub mod x402_escrow {
                 console.log('Escrow created:', escrowSig);
 
                 showStatus(`Escrow created: ${escrowSig.substring(0, 8)}...`, 'success');
+                progressFill.style.width = '50%';
                 await sleep(2000);
 
                 // Step 3: Generate Oracle Assessment
                 btn.textContent = 'Oracle Assessing Quality...';
+                progressFill.style.width = '65%';
                 const assessment = await window.oracleSystem.generateQualityAssessment(transactionId);
 
                 // Simulate 3 oracle scores for display
@@ -1486,15 +1500,18 @@ pub mod x402_escrow {
                     }
                 });
 
+                progressFill.style.width = '80%';
                 await sleep(2000);
 
                 // Step 4: Resolve Dispute with Oracle Signature
                 btn.textContent = 'Resolving Dispute On-Chain...';
+                progressFill.style.width = '90%';
                 const resolveTx = await window.oracleSystem.resolveDispute(transactionId, assessment);
                 const resolveSig = await window.oracleSystem.sendAndConfirm(resolveTx, walletPublicKey);
 
                 console.log('Dispute resolved:', resolveSig);
                 showStatus(`Dispute resolved: ${resolveSig.substring(0, 8)}...`, 'success');
+                progressFill.style.width = '100%';
 
                 // Show consensus result with real transaction link
                 const refundAmount = (value * assessment.refundPercentage / 100).toFixed(3);
@@ -1528,6 +1545,11 @@ pub mod x402_escrow {
                 btn.textContent = 'Run Another Assessment';
                 btn.disabled = false;
 
+                // Hide progress bar after completion
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                }, 1000);
+
                 // Reload recent assessments to show the new transaction
                 setTimeout(() => {
                     loadRecentDisputeData();
@@ -1555,6 +1577,7 @@ pub mod x402_escrow {
                 showStatus(`Error: ${errorMsg}`, 'error');
                 btn.textContent = 'Try Again';
                 btn.disabled = false;
+                progressBar.style.display = 'none';
             }
         }
 

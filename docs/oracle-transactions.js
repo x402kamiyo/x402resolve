@@ -300,9 +300,9 @@ class OracleTransactionSystem {
         }
 
         // Parse escrow data (simplified - would need proper deserialization)
-        const data = escrowAccount.data;
-        const agentPubkey = new solanaWeb3.PublicKey(data.slice(8, 40));
-        const apiPubkey = new solanaWeb3.PublicKey(data.slice(40, 72));
+        const escrowData = escrowAccount.data;
+        const agentPubkey = new solanaWeb3.PublicKey(escrowData.slice(8, 40));
+        const apiPubkey = new solanaWeb3.PublicKey(escrowData.slice(40, 72));
 
         const { pda: agentReputation } = this.deriveReputationPDA(agentPubkey);
         const { pda: apiReputation } = this.deriveReputationPDA(apiPubkey);
