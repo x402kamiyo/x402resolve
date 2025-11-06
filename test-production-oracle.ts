@@ -23,7 +23,7 @@ for (let i = 0; i < 32; i++) {
 const oracleKeypair = Keypair.fromSeed(ORACLE_SEED);
 
 async function main() {
-    console.log('🚀 x402Resolve Production Oracle Test\n');
+    console.log('x402Resolve Production Oracle Test\n');
 
     const connection = new Connection(RPC_URL, 'confirmed');
 
@@ -34,11 +34,11 @@ async function main() {
     if (fs.existsSync(keypairPath)) {
         const keypairData = JSON.parse(fs.readFileSync(keypairPath, 'utf-8'));
         agentKeypair = Keypair.fromSecretKey(new Uint8Array(keypairData));
-        console.log('✓ Loaded existing agent keypair');
+        console.log('[OK] Loaded existing agent keypair');
     } else {
         agentKeypair = Keypair.generate();
         fs.writeFileSync(keypairPath, JSON.stringify(Array.from(agentKeypair.secretKey)));
-        console.log('✓ Generated new agent keypair');
+        console.log('[OK] Generated new agent keypair');
     }
 
     console.log(`Agent: ${agentKeypair.publicKey.toString()}`);
@@ -49,16 +49,16 @@ async function main() {
     console.log(`Agent balance: ${agentBalance / LAMPORTS_PER_SOL} SOL`);
 
     if (agentBalance < 0.1 * LAMPORTS_PER_SOL) {
-        console.log('\n⚠️  Low balance! Requesting airdrop...');
+        console.log('\nWarning: Low balance! Requesting airdrop...');
         try {
             const airdropSig = await connection.requestAirdrop(
                 agentKeypair.publicKey,
                 1 * LAMPORTS_PER_SOL
             );
             await connection.confirmTransaction(airdropSig);
-            console.log('✓ Airdrop successful');
+            console.log('[OK] Airdrop successful');
         } catch (e) {
-            console.error('❌ Airdrop failed:', e.message);
+            console.error('[FAILED] Airdrop failed:', e.message);
             console.log('Please manually fund the agent wallet with devnet SOL');
             return;
         }
@@ -71,23 +71,23 @@ async function main() {
     });
     const program = new anchor.Program(idl, PROGRAM_ID, provider);
 
-    console.log('\n📝 Running Production Test Flow\n');
+    console.log('\nRunning Production Test Flow\n');
 
     // Step 1: Initialize reputation accounts
-    console.log('1️⃣  Initializing reputation accounts...');
+    console.log('Step 1: Initializing reputation accounts...');
 
     try {
         await initReputation(program, agentKeypair.publicKey, agentKeypair);
-        console.log('  ✓ Agent reputation initialized');
+        console.log('  [OK] Agent reputation initialized');
     } catch (e) {
-        console.log('  ℹ️  Agent reputation exists or error:', e.message);
+        console.log('  [Info] Agent reputation exists or error:', e.message);
     }
 
     try {
         await initReputation(program, oracleKeypair.publicKey, agentKeypair);
-        console.log('  ✓ API reputation initialized');
+        console.log('  [OK] API reputation initialized');
     } catch (e) {
-        console.log('  ℹ️  API reputation exists or error:', e.message);
+        console.log('  [Info] API reputation exists or error:', e.message);
     }
 
     // Step 2: Create escrow
@@ -95,7 +95,7 @@ async function main() {
     const amount = new anchor.BN(0.01 * LAMPORTS_PER_SOL);
     const timeLock = new anchor.BN(86400); // 24 hours
 
-    console.log('\n2️⃣  Creating escrow...');
+    console.log('\nStep 2: Creating escrow...');
     console.log(`  Transaction ID: ${transactionId}`);
     console.log(`  Amount: 0.01 SOL`);
 
@@ -108,15 +108,15 @@ async function main() {
             timeLock,
             transactionId
         );
-        console.log(`  ✓ Escrow created: ${escrowSig}`);
-        console.log(`  🔗 https://explorer.solana.com/tx/${escrowSig}?cluster=devnet`);
+        console.log(`  [OK] Escrow created: ${escrowSig}`);
+        console.log(`  Link: https://explorer.solana.com/tx/${escrowSig}?cluster=devnet`);
     } catch (e) {
-        console.error('  ❌ Failed to create escrow:', e);
+        console.error('  [FAILED] Failed to create escrow:', e);
         return;
     }
 
     // Step 3: Generate oracle assessment
-    console.log('\n3️⃣  Generating oracle assessment...');
+    console.log('\nStep 3: Generating oracle assessment...');
 
     const qualityScore = 65 + Math.floor(Math.random() * 15);
     const refundPercentage = qualityScore < 50 ? 100 : qualityScore < 80 ? Math.round((80 - qualityScore) / 80 * 100) : 0;
@@ -129,7 +129,7 @@ async function main() {
     console.log(`  Refund: ${refundPercentage}%`);
 
     // Step 4: Resolve dispute
-    console.log('\n4️⃣  Resolving dispute on-chain...');
+    console.log('\nStep 4: Resolving dispute on-chain...');
 
     try {
         const resolveSig = await resolveDispute(
@@ -141,13 +141,13 @@ async function main() {
             refundPercentage,
             Array.from(signature)
         );
-        console.log(`  ✓ Dispute resolved: ${resolveSig}`);
-        console.log(`  🔗 https://explorer.solana.com/tx/${resolveSig}?cluster=devnet`);
+        console.log(`  [OK] Dispute resolved: ${resolveSig}`);
+        console.log(`  Link: https://explorer.solana.com/tx/${resolveSig}?cluster=devnet`);
 
         const refundAmount = (0.01 * refundPercentage / 100).toFixed(4);
-        console.log(`\n✅ Success! Agent received ${refundAmount} SOL refund`);
+        console.log(`\n[PASS] Success! Agent received ${refundAmount} SOL refund`);
     } catch (e) {
-        console.error('  ❌ Failed to resolve dispute:', e);
+        console.error('  [FAILED] Failed to resolve dispute:', e);
         if (e.logs) {
             console.log('\nProgram logs:');
             e.logs.forEach(log => console.log('  ', log));
@@ -155,7 +155,7 @@ async function main() {
         return;
     }
 
-    console.log('\n🎉 Production test completed successfully!\n');
+    console.log('\nProduction test completed successfully!\n');
 }
 
 async function initReputation(

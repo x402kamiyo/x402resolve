@@ -1,41 +1,23 @@
-# Claude Desktop MCP Integration Guide
+# Claude Desktop MCP Integration
 
-Complete guide to integrating x402Resolve with Claude Desktop via Model Context Protocol (MCP).
-
-## Table of Contents
-
-- [What is MCP?](#what-is-mcp)
-- [Quick Start](#quick-start)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Available Tools](#available-tools)
-- [Example Conversations](#example-conversations)
-- [Troubleshooting](#troubleshooting)
-
----
+x402Resolve integration with Claude Desktop via Model Context Protocol.
 
 ## What is MCP?
 
-Model Context Protocol (MCP) allows Claude Desktop to interact with external tools and services. x402Resolve provides 5 MCP tools for:
+MCP enables Claude Desktop external tool access. x402Resolve provides 5 tools:
 
-1. **Health checking** - Verify system connectivity
-2. **Exploit search** - Query KAMIYO security database
-3. **Risk assessment** - Analyze DeFi protocol security
-4. **Wallet monitoring** - Check exposure to compromised protocols
-5. **Dispute filing** - Submit quality disputes with automated verification
-
----
+1. Health check - System connectivity
+2. Exploit search - KAMIYO database queries
+3. Risk assessment - Protocol security analysis
+4. Wallet monitoring - Exposure detection
+5. Dispute filing - Automated quality disputes
 
 ## Quick Start
 
-**Time to complete:** 5 minutes
-
 1. Install Claude Desktop: https://claude.ai/download
-2. Set up x402Resolve MCP server (instructions below)
+2. Configure x402Resolve MCP server (below)
 3. Restart Claude Desktop
-4. Try asking: *"Can you search for Uniswap exploits?"*
-
----
+4. Test: "Search for Uniswap exploits"
 
 ## Installation
 

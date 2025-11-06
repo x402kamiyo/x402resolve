@@ -9,7 +9,7 @@
 [![Anchor](https://img.shields.io/badge/Anchor-0.30.1-663399)](https://www.anchor-lang.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 
-## Quality-verified HTTP 402 payments with sliding-scale refunds on Solana
+## HTTP 402 payments with oracle-verified quality assessment and proportional refunds
 
 **Quick Access:**
 - **Live Demo**: https://x402kamiyo.github.io/x402resolve
@@ -45,14 +45,13 @@
 
 ## Overview
 
-Extends RFC 9110 Section 15.5.3 (HTTP 402) with Solana escrow and multi-oracle quality assessment. Payments held in PDA until quality verified. Refunds proportional to quality score (0-100%).
+RFC 9110 HTTP 402 implementation with Solana PDA escrow and oracle quality verification. Refunds scale 0-100% based on quality score.
 
 **Technical Features:**
-- Sliding-scale refunds based on quality metrics
-- Multi-oracle verification (Python ML + Switchboard)
-- PDA-based escrow without admin keys
-- Ed25519 signature verification
-- 99.9% cost reduction vs traditional chargebacks
+- Quality-proportional refunds (semantic, completeness, freshness scoring)
+- Oracle verification: Python ML + Switchboard multi-oracle consensus
+- PDA escrow (no admin keys, Ed25519 signatures)
+- 99.9% lower cost vs traditional chargeback systems
 
 ## Quick Start
 
@@ -92,7 +91,7 @@ const result = await agent.consumeAPI(
 
 ## Economics
 
-Cost comparison at 1% dispute rate (100 disputes/month on $5,000 API spend):
+Cost comparison at 1% dispute rate (100 disputes/month, $5K spend):
 
 | Method | Cost/Dispute | Total/Month | Resolution |
 |--------|--------------|-------------|------------|
@@ -100,7 +99,7 @@ Cost comparison at 1% dispute rate (100 disputes/month on $5,000 API spend):
 | x402Resolve | $0.005 | $0.50 | 48 hours |
 | Reduction | 99.98% | 99.98% | 98% faster |
 
-**Annual savings: $38,880** (92% reduction including refunds and infrastructure)
+Annual savings: $38,880 (92% reduction including refunds and infrastructure)
 
 ## Architecture
 
@@ -232,26 +231,24 @@ Agent Reputation PDA (seeds: ["agent_reputation", agent_pubkey])
 
 ## Quality Scoring
 
-Oracle assesses data quality and independently determines two values:
+Oracle determines quality score (0-100) and refund percentage independently:
 
-**1. Quality Score (0-100)**
+**Score Calculation:**
 ```
 Quality = (Completeness × 0.4) + (Accuracy × 0.3) + (Freshness × 0.3)
 ```
 
-**2. Refund Percentage (0-100%)**
+**Refund Thresholds:**
+- Quality < 50: 100% refund (disputes_won)
+- Quality 50-79: Partial 25-75% (disputes_partial)
+- Quality ≥ 80: 0% refund (disputes_lost)
 
-Oracle determines refund based on quality thresholds:
-- Quality < 50 → Typically 100% refund (disputes_won)
-- Quality 50-79 → Partial refund 25-75% (disputes_partial)
-- Quality ≥ 80 → Typically 0% refund (disputes_lost)
+**Examples:**
+- Score 65 → 35% refund
+- Score 85 → 0% refund
+- Score 40 → 100% refund
 
-**Example Cases:**
-- Quality: 65, Refund: 35% → Partial refund
-- Quality: 85, Refund: 0% → No refund
-- Quality: 40, Refund: 100% → Full refund
-
-*Note: quality_score and refund_percentage are passed separately to the smart contract. The oracle has flexibility in refund calculation.*
+Note: Oracle passes quality_score and refund_percentage separately to smart contract.
 
 ## Live Deployment
 
